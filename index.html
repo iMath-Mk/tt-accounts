@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>TT Accounts Mobile</title>
+  <title>TT Accounts & Ledger Portal</title>
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: #151d30;
-      --card-border: #222f4c;
+      --bg: #090d16;
+      --card-bg: #131b2e;
+      --card-border: #1e293b;
       --primary: #38bdf8;
+      --primary-hover: #0284c7;
       --accent: #818cf8;
       --text: #f8fafc;
       --text-dim: #94a3b8;
       --success: #34d399;
       --danger: #f87171;
+      --warning: #fbbf24;
       --input-bg: #0b1120;
     }
 
@@ -30,24 +32,180 @@
       background-color: var(--bg);
       color: var(--text);
       padding: 12px;
-      padding-bottom: 80px;
+      padding-bottom: 90px;
+      min-height: 100vh;
     }
 
-    header {
+    /* Modals & Overlays */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 16px;
+    }
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    /* Auth Screens */
+    .auth-container {
+      max-width: 420px;
+      margin: 20px auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .auth-header {
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
-
-    h1 {
-      font-size: 20px;
+    .auth-title {
+      font-size: 22px;
       font-weight: 700;
       color: var(--primary);
-      margin-bottom: 4px;
+    }
+    .auth-sub {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+    .auth-toggle {
+      display: flex;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 18px;
+    }
+    .auth-toggle button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .auth-toggle button.active {
+      background: var(--primary);
+      color: #0b0f19;
+    }
+
+    /* Form Fields */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .form-group.full {
+      grid-column: span 2;
+    }
+    label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    input, select, textarea {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 11px 12px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.2s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #090d16;
+    }
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      width: auto;
+    }
+
+    /* Nav / Top App Bar */
+    .app-nav {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .avatar-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #1e293b;
+      border: 2px solid var(--primary);
     }
 
     /* Live Rate Bar */
     .rate-banner {
-      background: #1e293b;
+      background: #172033;
       border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 10px 14px;
@@ -57,84 +215,28 @@
       margin-bottom: 14px;
     }
 
-    .rate-banner span {
-      font-size: 13px;
-      color: var(--text-dim);
-    }
-
-    .rate-banner b {
-      color: var(--success);
-      font-size: 15px;
-    }
-
-    .btn-refresh {
-      background: var(--primary);
-      border: none;
-      color: #0b0f19;
-      font-weight: bold;
-      font-size: 12px;
-      padding: 5px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    /* Top Summary Cards */
+    /* Dashboard Stats */
     .stats-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
-
     .stat-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       padding: 12px;
       border-radius: 10px;
     }
-
     .stat-label {
       font-size: 11px;
       text-transform: uppercase;
       color: var(--text-dim);
       margin-bottom: 4px;
     }
-
     .stat-val {
       font-size: 16px;
       font-weight: 700;
-    }
-
-    /* Action Buttons */
-    .actions {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .btn {
-      flex: 1;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn-add {
-      background: var(--primary);
-      color: #0b0f19;
-    }
-
-    .btn-export {
-      background: var(--card-bg);
-      color: var(--text);
-      border: 1px solid var(--card-border);
     }
 
     /* Vertical Cards */
@@ -143,74 +245,16 @@
       border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 14px;
-      margin-bottom: 14px;
-      position: relative;
+      margin-bottom: 12px;
     }
-
     .tx-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
       border-bottom: 1px solid var(--card-border);
     }
-
-    .tx-index {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .btn-del {
-      background: none;
-      border: none;
-      color: var(--danger);
-      font-size: 18px;
-      padding: 4px 8px;
-      cursor: pointer;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .form-group.full {
-      grid-column: span 2;
-    }
-
-    label {
-      font-size: 11px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    input {
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 9px 10px;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-      width: 100%;
-    }
-
-    input:focus {
-      border-color: var(--primary);
-    }
-
-    /* Read-Only Calculation Box */
     .calc-box {
       background: rgba(56, 189, 248, 0.05);
       border: 1px dashed rgba(56, 189, 248, 0.3);
@@ -221,117 +265,321 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
-
     .calc-item {
       display: flex;
       flex-direction: column;
     }
-
     .calc-item .c-label {
       font-size: 10px;
       color: var(--text-dim);
       text-transform: uppercase;
     }
-
     .calc-item .c-val {
       font-size: 13px;
       font-weight: 700;
-      color: var(--text);
     }
-
     .calc-item.bal {
       grid-column: span 2;
       border-top: 1px solid var(--card-border);
       padding-top: 6px;
-      margin-top: 2px;
+      display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
     }
-
     .calc-item.bal .c-val {
       font-size: 16px;
       color: var(--primary);
     }
+
+    /* Admin Panels */
+    .admin-member-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 4px;
+    }
+    .badge-success { background: rgba(52, 211, 153, 0.2); color: var(--success); }
+    .badge-danger { background: rgba(248, 113, 113, 0.2); color: var(--danger); }
+
+    .help-link {
+      font-size: 12px;
+      color: var(--primary);
+      text-align: center;
+      display: block;
+      margin-top: 12px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>TT Accounts Ledger</h1>
-    <p style="font-size: 12px; color: var(--text-dim);">Live Currency & Touch Friendly</p>
-  </header>
-
-  <!-- Live Rate Indicator -->
-  <div class="rate-banner">
-    <div>
-      <span>Live Market Rate (QAR $\rightarrow$ LKR):</span><br/>
-      1 QAR = <b id="market-rate-text">Fetching...</b>
-    </div>
-    <button class="btn-refresh" onclick="fetchLiveRate()">⟳ Refresh</button>
-  </div>
-
-  <!-- Summary Dashboard -->
-  <div class="stats-container">
-    <div class="stat-card">
-      <div class="stat-label">Total Turnover</div>
-      <div class="stat-val" id="stat-usd">$0.00</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Commission (LKR)</div>
-      <div class="stat-val" id="stat-lkr" style="color: var(--accent);">0.00</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Total Received</div>
-      <div class="stat-val" id="stat-rec" style="color: var(--danger);">0.00 QR</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Balance Due</div>
-      <div class="stat-val" id="stat-bal" style="color: var(--primary);">0.00 QR</div>
+  <!-- ==================== CONSENT MODAL ==================== -->
+  <div id="consent-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 style="color: var(--primary); margin-bottom: 8px;">Activity & Device Transparency</h3>
+      <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px;">
+        To protect account integrity, your current login time, approximate IP address, and browser/device specifications are logged and accessible to the system administrator. 
+        <br/><br/>
+        Do you consent to allowing activity tracking on this device?
+      </p>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-secondary" onclick="resolveConsent(false)">Decline</button>
+        <button class="btn btn-primary" onclick="resolveConsent(true)">Allow & Continue</button>
+      </div>
     </div>
   </div>
 
-  <!-- Action Controls -->
-  <div class="actions">
-    <button class="btn btn-add" onclick="addNewEntry()">+ New Entry</button>
-    <button class="btn btn-export" onclick="exportData()">Export CSV</button>
+  <!-- ==================== PHOTO ACCESS CONSENT MODAL ==================== -->
+  <div id="photo-consent-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 style="color: var(--primary); margin-bottom: 8px;">Profile Image & Gallery Consent</h3>
+      <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px;">
+        By selecting an image to upload, you authorize the administrator to view this uploaded profile picture in the administrator management panel.
+      </p>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-secondary" onclick="document.getElementById('photo-consent-modal').classList.add('hidden')">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmOpenGallery()">I Agree, Choose Photo</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Vertical Cards Container -->
-  <div id="tx-list"></div>
+  <!-- ==================== CONTACT / FORGOT PASSWORD MODAL ==================== -->
+  <div id="contact-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 style="color: var(--primary); margin-bottom: 8px;">Contact Support / Password Reset</h3>
+      <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 12px;">
+        If you forgot your password, are unable to sign in, or need account adjustments, contact our support desk:
+      </p>
+      <div style="background: var(--input-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 16px;">
+        <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Official Support Email</div>
+        <a href="mailto:info@ideas.limited" style="color: var(--primary); font-size: 16px; font-weight: bold; text-decoration: none;">info@ideas.limited</a>
+      </div>
+      <button class="btn btn-primary" onclick="document.getElementById('contact-modal').classList.add('hidden')">Close</button>
+    </div>
+  </div>
 
+  <!-- ==================== LANDING / AUTH VIEW ==================== -->
+  <div id="view-auth">
+    <div class="auth-container">
+      <div class="auth-header">
+        <div class="auth-title">TT Accounts Portal</div>
+        <div class="auth-sub">Select portal to proceed</div>
+      </div>
+
+      <!-- Top Switch: Admin vs Member -->
+      <div class="auth-toggle">
+        <button id="btn-tab-admin" class="active" onclick="switchPortalTab('admin')">Admin Login</button>
+        <button id="btn-tab-member" onclick="switchPortalTab('member')">Members Portal</button>
+      </div>
+
+      <!-- 1. ADMIN LOGIN -->
+      <div id="admin-login-form">
+        <div class="form-group">
+          <label>Admin Username / Email</label>
+          <input type="text" id="admin-email" placeholder="admin@1994.info" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Admin Password</label>
+          <input type="password" id="admin-password" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary" style="margin-top: 8px;" onclick="handleAdminLogin()">Secure Admin Login</button>
+      </div>
+
+      <!-- 2. MEMBERS LOGIN & SIGNUP -->
+      <div id="member-portal-form" class="hidden">
+        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+          <button id="btn-sub-login" class="btn btn-sm btn-primary" style="flex:1;" onclick="switchMemberSubTab('login')">Sign In</button>
+          <button id="btn-sub-signup" class="btn btn-sm btn-secondary" style="flex:1;" onclick="switchMemberSubTab('signup')">Create Account</button>
+        </div>
+
+        <!-- Member Sign In -->
+        <div id="member-login-box">
+          <div class="form-group">
+            <label>Email or Mobile Number</label>
+            <input type="text" id="member-login-id" placeholder="e.g. user@gmail.com or 0771234567">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="member-login-pass" placeholder="••••••••">
+          </div>
+          <button class="btn btn-primary" onclick="handleMemberLogin()">Sign In to Member Ledger</button>
+        </div>
+
+        <!-- Member Sign Up -->
+        <div id="member-signup-box" class="hidden">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="signup-name" placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="signup-email" placeholder="name@example.com">
+          </div>
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" id="signup-phone" placeholder="e.g. +94 77 123 4567">
+          </div>
+          <div class="form-group">
+            <label>Choose Password</label>
+            <input type="password" id="signup-pass" placeholder="At least 6 characters">
+          </div>
+          <button class="btn btn-primary" onclick="handleMemberSignup()">Register & Generate Ledger ID</button>
+        </div>
+      </div>
+
+      <a class="help-link" onclick="document.getElementById('contact-modal').classList.remove('hidden')">
+        Forgot password or need assistance? Contact us
+      </a>
+    </div>
+  </div>
+
+  <!-- ==================== MEMBER LEDGER VIEW ==================== -->
+  <div id="view-member" class="hidden">
+    <div class="app-nav">
+      <div class="user-pill">
+        <input type="file" id="member-avatar-input" accept="image/*" class="hidden" onchange="handleAvatarFile(event)">
+        <img id="member-avatar-display" class="avatar-img" src="" onclick="requestPhotoConsent()" title="Tap to upload profile image">
+        <div>
+          <div style="font-weight: 700; font-size: 14px;" id="nav-member-name">User Name</div>
+          <div style="font-size: 11px; color: var(--primary); font-weight: 600;" id="nav-member-ledger-id">LEDGER #0000</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+
+    <!-- Live Rate Banner -->
+    <div class="rate-banner">
+      <div>
+        <span style="font-size: 11px; color: var(--text-dim);">LIVE MARKET CONVERSION</span><br/>
+        1 QAR = <b id="member-market-rate" style="color: var(--success);">83.00 LKR</b>
+      </div>
+      <button class="btn btn-sm btn-primary" onclick="fetchLiveRate()">⟳ Live Rate</button>
+    </div>
+
+    <!-- Dashboard Summary -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-label">Total Turnover</div>
+        <div class="stat-val" id="member-stat-usd">$0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Commission (LKR)</div>
+        <div class="stat-val" id="member-stat-lkr" style="color: var(--accent);">0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Received</div>
+        <div class="stat-val" id="member-stat-rec" style="color: var(--danger);">0.00 QR</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Balance Due</div>
+        <div class="stat-val" id="member-stat-bal" style="color: var(--primary);">0.00 QR</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+      <button id="member-add-btn" class="btn btn-primary" style="flex: 2;" onclick="addMemberTx()">+ New Ledger Entry</button>
+      <button class="btn btn-secondary" style="flex: 1;" onclick="exportMemberCSV()">Export CSV</button>
+    </div>
+
+    <!-- Member Transactions Container -->
+    <div id="member-tx-list"></div>
+  </div>
+
+  <!-- ==================== ADMIN PORTAL VIEW ==================== -->
+  <div id="view-admin" class="hidden">
+    <div class="app-nav">
+      <div>
+        <div style="font-weight: 700; color: var(--primary); font-size: 16px;">System Admin Console</div>
+        <div style="font-size: 11px; color: var(--text-dim);">Superuser: admin@1994.info</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+
+    <!-- Admin Navigation Tabs -->
+    <div class="auth-toggle" style="margin-bottom: 14px;">
+      <button id="btn-admin-members" class="active" onclick="switchAdminTab('members')">Members & Ledgers</button>
+      <button id="btn-admin-logs" onclick="switchAdminTab('logs')">Audit & Device Logs</button>
+    </div>
+
+    <!-- Admin: Members Management Section -->
+    <div id="admin-sec-members">
+      <div id="admin-members-list"></div>
+    </div>
+
+    <!-- Admin: Edit Member Ledger Modal/Screen -->
+    <div id="admin-sec-ledger" class="hidden">
+      <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 12px;">
+        <button class="btn btn-secondary btn-sm" onclick="closeAdminLedgerEdit()">← Back to Members</button>
+        <span style="font-size: 13px; font-weight: 700; color: var(--primary);" id="admin-editing-title">Editing Member</span>
+      </div>
+      <button class="btn btn-primary" style="margin-bottom: 12px;" onclick="addAdminTx()">+ Add Row For Member</button>
+      <div id="admin-member-tx-list"></div>
+    </div>
+
+    <!-- Admin: Activity & Device Logs Section -->
+    <div id="admin-sec-logs" class="hidden">
+      <div style="display: flex; justify-content: space-between; align-items:center; margin-bottom: 10px;">
+        <span style="font-size: 12px; color: var(--text-dim);">Real-time member activity and consent logs</span>
+        <button class="btn btn-sm btn-secondary" onclick="clearLogs()">Clear Logs</button>
+      </div>
+      <div id="admin-logs-list"></div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
   <script>
-    let globalLiveRate = 83.00; // default fallback
+    // System Keys & Storage Initializations
+    const STORAGE_KEY_MEMBERS = "tt_members_db";
+    const STORAGE_KEY_LOGS = "tt_system_audit_logs";
+    let globalLiveRate = 83.00;
+    let currentUser = null; // null = guest, { role: 'admin' } or member object
+    let pendingUserLogin = null;
+    let currentAdminEditingMemberId = null;
 
-    // Default Seed Data
-    let defaultData = [
-      { date: "2026-08-11", details: "THUAN DAO", usd: 16000, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { date: "2026-08-20", details: "AADIL GLOBAL PTE LTD", usd: 18000, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { date: "2026-09-04", details: "AADIL GLOBAL PTE LTD", usd: 24600, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { date: "2026-09-21", details: "Received frm Thami", usd: 0, comRate: 1.5, convRate: 83.0, received: 510, remarks: "ABDULLAH" }
-    ];
-
-    let transactions = JSON.parse(localStorage.getItem("tt_data")) || defaultData;
-
-    // Fetch Live Rate from public API
+    // Fetch Live Exchange Rate
     async function fetchLiveRate() {
-      const textElem = document.getElementById("market-rate-text");
-      textElem.textContent = "Updating...";
       try {
         const res = await fetch("https://open.er-api.com/v6/latest/QAR");
         const data = await res.json();
         if (data && data.rates && data.rates.LKR) {
           globalLiveRate = parseFloat(data.rates.LKR.toFixed(2));
-          textElem.textContent = globalLiveRate + " LKR";
-        } else {
-          throw new Error("Invalid format");
+          const el = document.getElementById("member-market-rate");
+          if (el) el.textContent = `${globalLiveRate} LKR`;
         }
-      } catch (err) {
+      } catch (e) {
         globalLiveRate = 83.00;
-        textElem.textContent = "83.00 LKR (Offline)";
       }
     }
 
+    // Storage Helpers
+    function getMembers() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY_MEMBERS) || "[]");
+    }
+    function saveMembers(members) {
+      localStorage.setItem(STORAGE_KEY_MEMBERS, JSON.stringify(members));
+    }
+    function getLogs() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY_LOGS) || "[]");
+    }
+    function addLog(logEntry) {
+      const logs = getLogs();
+      logs.unshift(logEntry);
+      localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(logs.slice(0, 150))); // retain last 150 logs
+    }
+
+    // Number Formatter
     function fmt(n) {
       return (Number(n) || 0).toLocaleString("en-US", {
         minimumFractionDigits: 2,
@@ -339,21 +587,207 @@
       });
     }
 
-    function saveAndRender() {
-      localStorage.setItem("tt_data", JSON.stringify(transactions));
-      renderList();
+    // Device & IP Gathering
+    async function captureDeviceInfo() {
+      let ip = "Detecting...";
+      try {
+        const ipRes = await fetch("https://api.ipify.org?format=json");
+        const ipData = await ipRes.json();
+        ip = ipData.ip || "Unknown IP";
+      } catch (err) {
+        ip = "Local / Offline";
+      }
+
+      return {
+        ip: ip,
+        userAgent: navigator.userAgent,
+        screen: `${window.screen.width}x${window.screen.height}`,
+        platform: navigator.platform || "Mobile/Web",
+        time: new Date().toLocaleString()
+      };
     }
 
-    function renderList() {
-      const container = document.getElementById("tx-list");
+    // --- Portal Switchers ---
+    function switchPortalTab(tab) {
+      const btnAdmin = document.getElementById("btn-tab-admin");
+      const btnMember = document.getElementById("btn-tab-member");
+      const adminForm = document.getElementById("admin-login-form");
+      const memberForm = document.getElementById("member-portal-form");
+
+      if (tab === 'admin') {
+        btnAdmin.classList.add("active");
+        btnMember.classList.remove("active");
+        adminForm.classList.remove("hidden");
+        memberForm.classList.add("hidden");
+      } else {
+        btnMember.classList.add("active");
+        btnAdmin.classList.remove("active");
+        memberForm.classList.remove("hidden");
+        adminForm.classList.add("hidden");
+      }
+    }
+
+    function switchMemberSubTab(sub) {
+      const btnLogin = document.getElementById("btn-sub-login");
+      const btnSignup = document.getElementById("btn-sub-signup");
+      const boxLogin = document.getElementById("member-login-box");
+      const boxSignup = document.getElementById("member-signup-box");
+
+      if (sub === 'login') {
+        btnLogin.className = "btn btn-sm btn-primary";
+        btnSignup.className = "btn btn-sm btn-secondary";
+        boxLogin.classList.remove("hidden");
+        boxSignup.classList.add("hidden");
+      } else {
+        btnSignup.className = "btn btn-sm btn-primary";
+        btnLogin.className = "btn btn-sm btn-secondary";
+        boxSignup.classList.remove("hidden");
+        boxLogin.classList.add("hidden");
+      }
+    }
+
+    // --- Authentication Actions ---
+    function handleAdminLogin() {
+      const email = document.getElementById("admin-email").value.trim();
+      const pass = document.getElementById("admin-password").value.trim();
+
+      if (email === "admin@1994.info" && pass === "07107107i") {
+        currentUser = { role: "admin", email: "admin@1994.info" };
+        document.getElementById("view-auth").classList.add("hidden");
+        document.getElementById("view-admin").classList.remove("hidden");
+        renderAdminMembers();
+        renderAdminLogs();
+      } else {
+        alert("Invalid Admin Credentials. Access Denied.");
+      }
+    }
+
+    async function handleMemberSignup() {
+      const name = document.getElementById("signup-name").value.trim();
+      const email = document.getElementById("signup-email").value.trim().toLowerCase();
+      const phone = document.getElementById("signup-phone").value.trim();
+      const pass = document.getElementById("signup-pass").value;
+
+      if (!name || !email || !phone || !pass) {
+        alert("Please complete all registration fields.");
+        return;
+      }
+
+      const members = getMembers();
+
+      // Check unique constraints
+      const emailExists = members.some(m => m.email === email);
+      const phoneExists = members.some(m => m.phone === phone);
+
+      if (emailExists || phoneExists) {
+        alert("You already have an account with us using this email or mobile number. Please sign in or contact support to reset.");
+        return;
+      }
+
+      // Generate Unique Ledger ID
+      const ledgerId = "TT-" + (1000 + members.length + 1);
+
+      const newMember = {
+        id: "usr_" + Date.now(),
+        name: name,
+        email: email,
+        phone: phone,
+        password: pass,
+        ledgerId: ledgerId,
+        avatar: "",
+        isBlocked: false,
+        canEdit: true, // permission privilege
+        transactions: [
+          { date: new Date().toISOString().slice(0,10), details: "Opening Balance", usd: 0, comRate: 1.5, convRate: globalLiveRate, received: 0, remarks: "New Account" }
+        ],
+        createdAt: new Date().toISOString()
+      };
+
+      members.push(newMember);
+      saveMembers(members);
+
+      alert(`Account created successfully! Your unique Ledger ID is: ${ledgerId}`);
+      switchMemberSubTab('login');
+      document.getElementById("member-login-id").value = email;
+    }
+
+    function handleMemberLogin() {
+      const loginId = document.getElementById("member-login-id").value.trim().toLowerCase();
+      const pass = document.getElementById("member-login-pass").value;
+
+      const members = getMembers();
+      const member = members.find(m => (m.email === loginId || m.phone === loginId) && m.password === pass);
+
+      if (!member) {
+        alert("Invalid login details. If you forgot your password, please contact info@ideas.limited");
+        return;
+      }
+
+      if (member.isBlocked) {
+        alert("You are blocked by the admin. Please contact info@ideas.limited for more details.");
+        return;
+      }
+
+      // Trigger Consent Modal before entering dashboard
+      pendingUserLogin = member;
+      document.getElementById("consent-modal").classList.remove("hidden");
+    }
+
+    async function resolveConsent(isAllowed) {
+      document.getElementById("consent-modal").classList.add("hidden");
+      const devInfo = await captureDeviceInfo();
+
+      addLog({
+        userId: pendingUserLogin.id,
+        userName: pendingUserLogin.name,
+        ledgerId: pendingUserLogin.ledgerId,
+        email: pendingUserLogin.email,
+        phone: pendingUserLogin.phone,
+        time: devInfo.time,
+        ip: devInfo.ip,
+        device: devInfo.userAgent,
+        consentGranted: isAllowed
+      });
+
+      currentUser = pendingUserLogin;
+      pendingUserLogin = null;
+
+      document.getElementById("view-auth").classList.add("hidden");
+      document.getElementById("view-member").classList.remove("hidden");
+      renderMemberDashboard();
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById("view-member").classList.add("hidden");
+      document.getElementById("view-admin").classList.add("hidden");
+      document.getElementById("view-auth").classList.remove("hidden");
+    }
+
+    // --- Member Ledger Dashboard & Calculations ---
+    function renderMemberDashboard() {
+      if (!currentUser) return;
+
+      document.getElementById("nav-member-name").textContent = currentUser.name;
+      document.getElementById("nav-member-ledger-id").textContent = currentUser.ledgerId;
+      document.getElementById("member-avatar-display").src = currentUser.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
+      const addBtn = document.getElementById("member-add-btn");
+      if (!currentUser.canEdit) {
+        addBtn.style.display = "none";
+      } else {
+        addBtn.style.display = "flex";
+      }
+
+      const container = document.getElementById("member-tx-list");
       container.innerHTML = "";
 
       let runningBal = 0;
-      let totalUsd = 0;
-      let totalLkr = 0;
-      let totalRec = 0;
+      let sumUsd = 0;
+      let sumLkr = 0;
+      let sumRec = 0;
 
-      transactions.forEach((tx, idx) => {
+      currentUser.transactions.forEach((tx, idx) => {
         const usd = parseFloat(tx.usd) || 0;
         const comRate = parseFloat(tx.comRate) || 0;
         const convRate = parseFloat(tx.convRate) || globalLiveRate;
@@ -363,53 +797,55 @@
         const comQr = convRate > 0 ? (comLkr / convRate) : 0;
         runningBal += comQr - received;
 
-        totalUsd += usd;
-        totalLkr += comLkr;
-        totalRec += received;
+        sumUsd += usd;
+        sumLkr += comLkr;
+        sumRec += received;
+
+        const readOnlyAttr = currentUser.canEdit ? "" : "disabled";
 
         const card = document.createElement("div");
         card.className = "tx-card";
         card.innerHTML = `
           <div class="tx-header">
-            <span class="tx-index">#${idx + 1} TRANSACTION</span>
-            <button class="btn-del" onclick="deleteEntry(${idx})">✕</button>
+            <span style="font-size: 11px; font-weight: 700; color: var(--accent);">ENTRY #${idx + 1}</span>
+            ${currentUser.canEdit ? `<button class="btn-sm btn-danger" onclick="deleteMemberTx(${idx})">✕</button>` : ''}
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>Date</label>
-              <input type="date" value="${tx.date || ''}" onchange="updateVal(${idx}, 'date', this.value)">
+              <input type="date" value="${tx.date || ''}" ${readOnlyAttr} onchange="updateMemberField(${idx}, 'date', this.value)">
             </div>
             <div class="form-group">
               <label>USD Amount</label>
-              <input type="number" step="any" value="${tx.usd ?? ''}" placeholder="0.00" oninput="updateVal(${idx}, 'usd', this.value)">
+              <input type="number" step="any" value="${tx.usd ?? ''}" ${readOnlyAttr} placeholder="0.00" oninput="updateMemberField(${idx}, 'usd', this.value)">
             </div>
           </div>
 
-          <div class="form-group full" style="margin-bottom: 8px;">
+          <div class="form-group full">
             <label>Details / Counterparty</label>
-            <input type="text" value="${tx.details || ''}" placeholder="Client or company name" onchange="updateVal(${idx}, 'details', this.value)">
+            <input type="text" value="${tx.details || ''}" ${readOnlyAttr} placeholder="Transaction Details" onchange="updateMemberField(${idx}, 'details', this.value)">
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>COM Rate</label>
-              <input type="number" step="any" value="${tx.comRate ?? 1.5}" oninput="updateVal(${idx}, 'comRate', this.value)">
+              <input type="number" step="any" value="${tx.comRate ?? 1.5}" ${readOnlyAttr} oninput="updateMemberField(${idx}, 'comRate', this.value)">
             </div>
             <div class="form-group">
-              <label>Conv. Rate (LKR/QR)</label>
-              <input type="number" step="any" value="${tx.convRate ?? globalLiveRate}" oninput="updateVal(${idx}, 'convRate', this.value)">
+              <label>Conv. Rate (QR/LKR)</label>
+              <input type="number" step="any" value="${tx.convRate ?? globalLiveRate}" ${readOnlyAttr} oninput="updateMemberField(${idx}, 'convRate', this.value)">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>Received (QR)</label>
-              <input type="number" step="any" value="${tx.received ?? ''}" placeholder="0.00" oninput="updateVal(${idx}, 'received', this.value)">
+              <input type="number" step="any" value="${tx.received ?? ''}" ${readOnlyAttr} placeholder="0.00" oninput="updateMemberField(${idx}, 'received', this.value)">
             </div>
             <div class="form-group">
               <label>Remarks</label>
-              <input type="text" value="${tx.remarks || ''}" placeholder="Notes" onchange="updateVal(${idx}, 'remarks', this.value)">
+              <input type="text" value="${tx.remarks || ''}" ${readOnlyAttr} onchange="updateMemberField(${idx}, 'remarks', this.value)">
             </div>
           </div>
 
@@ -423,7 +859,7 @@
               <span class="c-val">${fmt(comQr)}</span>
             </div>
             <div class="calc-item bal">
-              <span class="c-label">Balance After Row</span>
+              <span class="c-label">Total Balance (QR)</span>
               <span class="c-val">${fmt(runningBal)} QR</span>
             </div>
           </div>
@@ -431,25 +867,26 @@
         container.appendChild(card);
       });
 
-      document.getElementById("stat-usd").textContent = "$" + fmt(totalUsd);
-      document.getElementById("stat-lkr").textContent = fmt(totalLkr);
-      document.getElementById("stat-rec").textContent = fmt(totalRec) + " QR";
-      document.getElementById("stat-bal").textContent = fmt(runningBal) + " QR";
+      document.getElementById("member-stat-usd").textContent = `$${fmt(sumUsd)}`;
+      document.getElementById("member-stat-lkr").textContent = `${fmt(sumLkr)} LKR`;
+      document.getElementById("member-stat-rec").textContent = `${fmt(sumRec)} QR`;
+      document.getElementById("member-stat-bal").textContent = `${fmt(runningBal)} QR`;
     }
 
-    function updateVal(index, field, value) {
+    function updateMemberField(index, field, value) {
       if (['usd', 'comRate', 'convRate', 'received'].includes(field)) {
-        transactions[index][field] = value === '' ? '' : parseFloat(value);
+        currentUser.transactions[index][field] = value === '' ? '' : parseFloat(value);
       } else {
-        transactions[index][field] = value;
+        currentUser.transactions[index][field] = value;
       }
-      saveAndRender();
+      persistCurrentMemberChanges();
+      renderMemberDashboard();
     }
 
-    function addNewEntry() {
-      const today = new Date().toISOString().split("T")[0];
-      transactions.unshift({
-        date: today,
+    function addMemberTx() {
+      if (!currentUser.canEdit) return;
+      currentUser.transactions.unshift({
+        date: new Date().toISOString().slice(0,10),
         details: "",
         usd: "",
         comRate: 1.5,
@@ -457,34 +894,357 @@
         received: "",
         remarks: ""
       });
-      saveAndRender();
-      window.scrollTo({ top: 180, behavior: 'smooth' });
+      persistCurrentMemberChanges();
+      renderMemberDashboard();
     }
 
-    function deleteEntry(index) {
-      if (confirm("Delete this entry?")) {
-        transactions.splice(index, 1);
-        saveAndRender();
+    function deleteMemberTx(idx) {
+      if (!currentUser.canEdit) return;
+      if (confirm("Delete this transaction entry?")) {
+        currentUser.transactions.splice(idx, 1);
+        persistCurrentMemberChanges();
+        renderMemberDashboard();
       }
     }
 
-    function exportData() {
-      let csv = "Date,Details,USD,COM Rate,LKR Rate,Received QR,Remarks\n";
-      transactions.forEach(t => {
-        csv += `"${t.date}","${t.details}",${t.usd || 0},${t.comRate || 1.5},${t.convRate || globalLiveRate},${t.received || 0},"${t.remarks || ''}"\n`;
+    function persistCurrentMemberChanges() {
+      const members = getMembers();
+      const idx = members.findIndex(m => m.id === currentUser.id);
+      if (idx !== -1) {
+        members[idx] = currentUser;
+        saveMembers(members);
+      }
+    }
+
+    // Photo Upload with Consent
+    function requestPhotoConsent() {
+      document.getElementById("photo-consent-modal").classList.remove("hidden");
+    }
+
+    function confirmOpenGallery() {
+      document.getElementById("photo-consent-modal").classList.add("hidden");
+      document.getElementById("member-avatar-input").click();
+    }
+
+    function handleAvatarFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        currentUser.avatar = evt.target.result;
+        persistCurrentMemberChanges();
+        renderMemberDashboard();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function exportMemberCSV() {
+      let csv = "Date,Details,USD,COM Rate,Conversion Rate,Received QR,Balance QR,Remarks\n";
+      let runBal = 0;
+      currentUser.transactions.forEach(t => {
+        const comLkr = (t.usd || 0) * (t.comRate || 1.5);
+        const comQr = t.convRate ? (comLkr / t.convRate) : 0;
+        runBal += comQr - (t.received || 0);
+        csv += `"${t.date}","${t.details}",${t.usd || 0},${t.comRate || 1.5},${t.convRate || globalLiveRate},${t.received || 0},${runBal.toFixed(2)},"${t.remarks || ''}"\n`;
       });
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `TT_Accounts_${new Date().toISOString().slice(0,10)}.csv`;
+      a.download = `${currentUser.ledgerId}_Ledger.csv`;
       a.click();
+    }
+
+    // --- Admin Console Operations ---
+    function switchAdminTab(tab) {
+      const btnMembers = document.getElementById("btn-admin-members");
+      const btnLogs = document.getElementById("btn-admin-logs");
+      const secMembers = document.getElementById("admin-sec-members");
+      const secLogs = document.getElementById("admin-sec-logs");
+      const secLedger = document.getElementById("admin-sec-ledger");
+
+      secLedger.classList.add("hidden");
+
+      if (tab === 'members') {
+        btnMembers.classList.add("active");
+        btnLogs.classList.remove("active");
+        secMembers.classList.remove("hidden");
+        secLogs.classList.add("hidden");
+        renderAdminMembers();
+      } else {
+        btnLogs.classList.add("active");
+        btnMembers.classList.remove("active");
+        secLogs.classList.remove("hidden");
+        secMembers.classList.add("hidden");
+        renderAdminLogs();
+      }
+    }
+
+    function renderAdminMembers() {
+      const container = document.getElementById("admin-members-list");
+      const members = getMembers();
+
+      if (members.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim);">No registered members found.</div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      members.forEach(m => {
+        const card = document.createElement("div");
+        card.className = "admin-member-card";
+        card.innerHTML = `
+          <div style="display:flex; justify-content: space-between; align-items:flex-start; margin-bottom: 8px;">
+            <div style="display:flex; gap: 10px; align-items:center;">
+              <img src="${m.avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border);">
+              <div>
+                <b style="font-size: 14px; color: #fff;">${m.name}</b>
+                <div style="font-size: 11px; color: var(--primary);">${m.ledgerId}</div>
+                <div style="font-size: 11px; color: var(--text-dim);">${m.email} | ${m.phone}</div>
+              </div>
+            </div>
+            <div>
+              <span class="badge ${m.isBlocked ? 'badge-danger' : 'badge-success'}">
+                ${m.isBlocked ? 'BLOCKED' : 'ACTIVE'}
+              </span>
+            </div>
+          </div>
+
+          <div style="display:flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; border-top: 1px solid var(--card-border); padding-top: 10px;">
+            <button class="btn btn-sm btn-primary" onclick="openAdminLedgerEdit('${m.id}')">View / Amend Ledger</button>
+            <button class="btn btn-sm btn-secondary" onclick="toggleBlockMember('${m.id}')">
+              ${m.isBlocked ? 'Unblock User' : 'Block User'}
+            </button>
+            <button class="btn btn-sm btn-secondary" onclick="togglePrivilege('${m.id}')">
+              ${m.canEdit ? 'Privilege: Editable' : 'Privilege: Read Only'}
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="deleteMember('${m.id}')">Delete Member</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleBlockMember(memberId) {
+      const members = getMembers();
+      const m = members.find(u => u.id === memberId);
+      if (m) {
+        m.isBlocked = !m.isBlocked;
+        saveMembers(members);
+        renderAdminMembers();
+      }
+    }
+
+    function togglePrivilege(memberId) {
+      const members = getMembers();
+      const m = members.find(u => u.id === memberId);
+      if (m) {
+        m.canEdit = !m.canEdit;
+        saveMembers(members);
+        renderAdminMembers();
+      }
+    }
+
+    function deleteMember(memberId) {
+      if (confirm("Are you sure you want to permanently delete this member and their ledger records?")) {
+        let members = getMembers();
+        members = members.filter(u => u.id !== memberId);
+        saveMembers(members);
+        renderAdminMembers();
+      }
+    }
+
+    // Admin Ledger Editing
+    function openAdminLedgerEdit(memberId) {
+      currentAdminEditingMemberId = memberId;
+      const members = getMembers();
+      const member = members.find(u => u.id === memberId);
+
+      document.getElementById("admin-sec-members").classList.add("hidden");
+      document.getElementById("admin-sec-ledger").classList.remove("hidden");
+      document.getElementById("admin-editing-title").textContent = `${member.name} (${member.ledgerId})`;
+
+      renderAdminMemberTxList();
+    }
+
+    function closeAdminLedgerEdit() {
+      currentAdminEditingMemberId = null;
+      document.getElementById("admin-sec-ledger").classList.add("hidden");
+      document.getElementById("admin-sec-members").classList.remove("hidden");
+      renderAdminMembers();
+    }
+
+    function renderAdminMemberTxList() {
+      const container = document.getElementById("admin-member-tx-list");
+      const members = getMembers();
+      const member = members.find(u => u.id === currentAdminEditingMemberId);
+      if (!member) return;
+
+      container.innerHTML = "";
+      let runningBal = 0;
+
+      member.transactions.forEach((tx, idx) => {
+        const usd = parseFloat(tx.usd) || 0;
+        const comRate = parseFloat(tx.comRate) || 0;
+        const convRate = parseFloat(tx.convRate) || globalLiveRate;
+        const received = parseFloat(tx.received) || 0;
+
+        const comLkr = usd * comRate;
+        const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+        runningBal += comQr - received;
+
+        const card = document.createElement("div");
+        card.className = "tx-card";
+        card.innerHTML = `
+          <div class="tx-header">
+            <span style="font-size: 11px; font-weight: 700; color: var(--accent);">ENTRY #${idx + 1}</span>
+            <button class="btn-sm btn-danger" onclick="deleteAdminTx(${idx})">Delete</button>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" value="${tx.date || ''}" onchange="updateAdminField(${idx}, 'date', this.value)">
+            </div>
+            <div class="form-group">
+              <label>USD</label>
+              <input type="number" step="any" value="${tx.usd ?? ''}" oninput="updateAdminField(${idx}, 'usd', this.value)">
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>Details</label>
+            <input type="text" value="${tx.details || ''}" onchange="updateAdminField(${idx}, 'details', this.value)">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>COM Rate</label>
+              <input type="number" step="any" value="${tx.comRate ?? 1.5}" oninput="updateAdminField(${idx}, 'comRate', this.value)">
+            </div>
+            <div class="form-group">
+              <label>Conv Rate</label>
+              <input type="number" step="any" value="${tx.convRate ?? globalLiveRate}" oninput="updateAdminField(${idx}, 'convRate', this.value)">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Received (QR)</label>
+              <input type="number" step="any" value="${tx.received ?? ''}" oninput="updateAdminField(${idx}, 'received', this.value)">
+            </div>
+            <div class="form-group">
+              <label>Remarks</label>
+              <input type="text" value="${tx.remarks || ''}" onchange="updateAdminField(${idx}, 'remarks', this.value)">
+            </div>
+          </div>
+
+          <div class="calc-box">
+            <div class="calc-item">
+              <span class="c-label">Commission (LKR)</span>
+              <span class="c-val">${fmt(comLkr)}</span>
+            </div>
+            <div class="calc-item">
+              <span class="c-label">Commission (QR)</span>
+              <span class="c-val">${fmt(comQr)}</span>
+            </div>
+            <div class="calc-item bal">
+              <span class="c-label">Balance (QR)</span>
+              <span class="c-val">${fmt(runningBal)} QR</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function updateAdminField(idx, field, value) {
+      const members = getMembers();
+      const member = members.find(u => u.id === currentAdminEditingMemberId);
+      if (!member) return;
+
+      if (['usd', 'comRate', 'convRate', 'received'].includes(field)) {
+        member.transactions[idx][field] = value === '' ? '' : parseFloat(value);
+      } else {
+        member.transactions[idx][field] = value;
+      }
+      saveMembers(members);
+      renderAdminMemberTxList();
+    }
+
+    function addAdminTx() {
+      const members = getMembers();
+      const member = members.find(u => u.id === currentAdminEditingMemberId);
+      if (!member) return;
+
+      member.transactions.unshift({
+        date: new Date().toISOString().slice(0,10),
+        details: "",
+        usd: "",
+        comRate: 1.5,
+        convRate: globalLiveRate,
+        received: "",
+        remarks: ""
+      });
+      saveMembers(members);
+      renderAdminMemberTxList();
+    }
+
+    function deleteAdminTx(idx) {
+      const members = getMembers();
+      const member = members.find(u => u.id === currentAdminEditingMemberId);
+      if (!member) return;
+
+      if (confirm("Delete this entry?")) {
+        member.transactions.splice(idx, 1);
+        saveMembers(members);
+        renderAdminMemberTxList();
+      }
+    }
+
+    // --- Admin Audit Logs ---
+    function renderAdminLogs() {
+      const container = document.getElementById("admin-logs-list");
+      const logs = getLogs();
+
+      if (logs.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim);">No activity logs captured yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      logs.forEach(l => {
+        const item = document.createElement("div");
+        item.className = "tx-card";
+        item.style.fontSize = "12px";
+        item.innerHTML = `
+          <div style="display:flex; justify-content: space-between; margin-bottom: 6px;">
+            <b>${l.userName} (${l.ledgerId})</b>
+            <span class="badge ${l.consentGranted ? 'badge-success' : 'badge-danger'}">
+              Consent: ${l.consentGranted ? 'ALLOWED' : 'DECLINED'}
+            </span>
+          </div>
+          <div style="color: var(--text-dim); margin-bottom: 4px;">
+            <b>Time:</b> ${l.time} | <b>IP:</b> ${l.ip}
+          </div>
+          <div style="color: var(--text-dim); font-size: 11px; word-break: break-all;">
+            <b>Device / Browser:</b> ${l.device}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function clearLogs() {
+      if (confirm("Clear all activity logs?")) {
+        localStorage.removeItem(STORAGE_KEY_LOGS);
+        renderAdminLogs();
+      }
     }
 
     // Init
     (async () => {
       await fetchLiveRate();
-      renderList();
     })();
   </script>
 </body>
