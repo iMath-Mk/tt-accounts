@@ -36,7 +36,7 @@
       min-height: 100vh;
     }
 
-    /* Modal dialogs */
+    /* Modals */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -56,6 +56,7 @@
       padding: 20px;
       width: 100%;
       max-width: 420px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
 
     /* Auth Box */
@@ -73,7 +74,7 @@
       margin-bottom: 20px;
     }
     .auth-title {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       color: var(--primary);
     }
@@ -108,7 +109,7 @@
       color: #0b0f19;
     }
 
-    /* Form Fields */
+    /* Fields */
     .form-group {
       display: flex;
       flex-direction: column;
@@ -161,22 +162,11 @@
       gap: 8px;
       touch-action: manipulation;
     }
-    .btn-primary {
-      background: var(--primary);
-      color: #090d16;
-    }
-    .btn-primary:active {
-      background: var(--primary-hover);
-    }
-    .btn-secondary {
-      background: var(--card-bg);
-      color: var(--text);
-      border: 1px solid var(--card-border);
-    }
-    .btn-danger {
-      background: var(--danger);
-      color: #fff;
-    }
+    .btn-primary { background: var(--primary); color: #090d16; }
+    .btn-primary:active { background: var(--primary-hover); }
+    .btn-secondary { background: var(--card-bg); color: var(--text); border: 1px solid var(--card-border); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-success { background: var(--success); color: #090d16; }
     .btn-sm {
       padding: 7px 12px;
       font-size: 12px;
@@ -184,7 +174,7 @@
       width: auto;
     }
 
-    /* Navigation Bar */
+    /* App Nav */
     .app-nav {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -221,7 +211,7 @@
       margin-bottom: 14px;
     }
 
-    /* Summary Dashboard */
+    /* Dashboard Stats */
     .stats-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -298,14 +288,7 @@
       color: var(--primary);
     }
 
-    /* Admin Member Card */
-    .admin-member-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
+    /* Badges */
     .badge {
       display: inline-block;
       padding: 3px 8px;
@@ -315,6 +298,7 @@
     }
     .badge-success { background: rgba(52, 211, 153, 0.2); color: var(--success); }
     .badge-danger { background: rgba(248, 113, 113, 0.2); color: var(--danger); }
+    .badge-warning { background: rgba(251, 191, 36, 0.2); color: var(--warning); }
 
     .help-link {
       font-size: 13px;
@@ -326,23 +310,83 @@
       cursor: pointer;
     }
 
+    .session-badge {
+      font-size: 11px;
+      color: var(--warning);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
+
+  <!-- ==================== MEMBER EDIT / PROPOSAL MODAL ==================== -->
+  <div id="member-propose-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 style="color: var(--primary); margin-bottom: 6px;">Propose Ledger Entry</h3>
+      <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 14px;">
+        Members cannot edit the live ledger directly. Your entry will be submitted to the Admin for approval.
+      </p>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="prop-date">
+        </div>
+        <div class="form-group">
+          <label>USD Amount</label>
+          <input type="number" step="any" id="prop-usd" placeholder="0.00">
+        </div>
+      </div>
+
+      <div class="form-group full">
+        <label>Details / Counterparty</label>
+        <input type="text" id="prop-details" placeholder="Counterparty / Client">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>COM Rate</label>
+          <input type="number" step="any" id="prop-comRate" value="1.5">
+        </div>
+        <div class="form-group">
+          <label>Conv Rate</label>
+          <input type="number" step="any" id="prop-convRate" value="83.0">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Received (QR)</label>
+          <input type="number" step="any" id="prop-received" placeholder="0.00">
+        </div>
+        <div class="form-group">
+          <label>Remarks</label>
+          <input type="text" id="prop-remarks" placeholder="Optional notes">
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('member-propose-modal').classList.add('hidden')">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-submit-proposal">Submit For Approval</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ==================== CONSENT MODAL ==================== -->
   <div id="consent-modal" class="modal-overlay hidden">
     <div class="modal-card">
       <h3 style="color: var(--primary); margin-bottom: 8px;">Activity & Device Transparency</h3>
       <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px;">
-        To ensure security, your login time, IP address, and device type will be logged for administrative review.
+        Your login time, IP address, and browser info will be shared with the Administrator management logs.
         <br/><br/>
-        Do you consent to allowing your activity to be viewed?
+        Do you consent to allowing activity tracking on this device?
       </p>
       <div style="display: flex; gap: 10px;">
         <button type="button" class="btn btn-secondary" id="btn-consent-decline">Decline</button>
-        <button type="button" class="btn btn-primary" id="btn-consent-allow">Allow & Continue</button>
+        <button type="button" class="btn btn-primary" id="btn-consent-allow">Allow & Proceed</button>
       </div>
     </div>
   </div>
@@ -352,7 +396,7 @@
     <div class="modal-card">
       <h3 style="color: var(--primary); margin-bottom: 8px;">Profile Photo Access</h3>
       <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px;">
-        Allow access to upload your profile image? The administrator will also be able to view this profile picture in the management console.
+        Do you allow access to upload your profile photo? The Administrator will also have access to view this photo inside the management panel.
       </p>
       <div style="display: flex; gap: 10px;">
         <button type="button" class="btn btn-secondary" onclick="document.getElementById('photo-consent-modal').classList.add('hidden')">Cancel</button>
@@ -361,12 +405,12 @@
     </div>
   </div>
 
-  <!-- ==================== CONTACT / FORGOT MODAL ==================== -->
+  <!-- ==================== CONTACT MODAL ==================== -->
   <div id="contact-modal" class="modal-overlay hidden">
     <div class="modal-card">
-      <h3 style="color: var(--primary); margin-bottom: 8px;">Contact Support / Password Reset</h3>
+      <h3 style="color: var(--primary); margin-bottom: 8px;">Support & Password Reset</h3>
       <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 12px;">
-        If you forgot your password or need assistance with your account, contact our support desk:
+        For password resets or account inquiries, please contact our support desk:
       </p>
       <div style="background: var(--input-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 16px;">
         <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Official Support Email</div>
@@ -390,7 +434,7 @@
         <button type="button" id="btn-tab-member">Members Login</button>
       </div>
 
-      <!-- 1. ADMIN LOGIN FORM -->
+      <!-- ADMIN LOGIN -->
       <div id="admin-login-form">
         <div class="form-group">
           <label>Username</label>
@@ -403,7 +447,7 @@
         <button type="button" class="btn btn-primary" id="btn-do-admin-login" style="margin-top: 8px;">Secure Admin Login</button>
       </div>
 
-      <!-- 2. MEMBERS LOGIN & SIGNUP FORM -->
+      <!-- MEMBER PORTAL -->
       <div id="member-portal-form" class="hidden">
         <div style="display: flex; gap: 8px; margin-bottom: 14px;">
           <button type="button" id="btn-sub-login" class="btn btn-sm btn-primary" style="flex:1;">Sign In</button>
@@ -451,12 +495,12 @@
     </div>
   </div>
 
-  <!-- ==================== MEMBER LEDGER VIEW ==================== -->
+  <!-- ==================== MEMBER PORTAL VIEW ==================== -->
   <div id="view-member" class="hidden">
     <div class="app-nav">
       <div class="user-pill">
         <input type="file" id="member-avatar-input" accept="image/*" class="hidden">
-        <img id="member-avatar-display" class="avatar-img" src="" title="Tap to upload photo">
+        <img id="member-avatar-display" class="avatar-img" src="" title="Tap to change photo">
         <div>
           <div style="font-weight: 700; font-size: 14px;" id="nav-member-name">Member Name</div>
           <div style="font-size: 11px; color: var(--primary); font-weight: 600;" id="nav-member-ledger-id">LEDGER #</div>
@@ -465,13 +509,15 @@
       <button type="button" class="btn btn-secondary btn-sm" id="btn-member-logout">Sign Out</button>
     </div>
 
+    <div class="session-badge">⏳ Auto-logout active after 3 hours of inactivity</div>
+
     <!-- Live Rate Banner -->
     <div class="rate-banner">
       <div>
-        <span style="font-size: 11px; color: var(--text-dim);">LIVE MARKET RATE</span><br/>
+        <span style="font-size: 11px; color: var(--text-dim);">LIVE MARKET CONVERSION</span><br/>
         1 QAR = <b id="member-market-rate" style="color: var(--success);">83.00 LKR</b>
       </div>
-      <button type="button" class="btn btn-sm btn-primary" id="btn-refresh-rate">⟳ Live Rate</button>
+      <button type="button" class="btn btn-sm btn-primary" id="btn-refresh-rate-member">⟳ Live Rate</button>
     </div>
 
     <!-- Dashboard Summary -->
@@ -495,14 +541,17 @@
     </div>
 
     <div style="display: flex; gap: 8px; margin-bottom: 14px;">
-      <button type="button" id="member-add-btn" class="btn btn-primary" style="flex: 2;">+ New Entry</button>
+      <button type="button" id="btn-open-propose" class="btn btn-primary" style="flex: 2;">+ Propose New Entry</button>
       <button type="button" id="member-export-btn" class="btn btn-secondary" style="flex: 1;">Export CSV</button>
     </div>
 
+    <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; font-weight: bold;">
+      Master Ledger Entries (Read-Only)
+    </div>
     <div id="member-tx-list"></div>
   </div>
 
-  <!-- ==================== ADMIN VIEW ==================== -->
+  <!-- ==================== ADMIN PORTAL VIEW ==================== -->
   <div id="view-admin" class="hidden">
     <div class="app-nav">
       <div>
@@ -512,57 +561,157 @@
       <button type="button" class="btn btn-secondary btn-sm" id="btn-admin-logout">Sign Out</button>
     </div>
 
+    <div class="session-badge">⏳ Auto-logout active after 3 hours of inactivity</div>
+
+    <!-- Admin Section Tabs -->
     <div class="auth-toggle" style="margin-bottom: 14px;">
-      <button type="button" id="btn-admin-tab-members" class="active">Members & Ledgers</button>
-      <button type="button" id="btn-admin-tab-logs">Audit & Device Logs</button>
+      <button type="button" id="btn-admin-tab-ledger" class="active">Master Ledger</button>
+      <button type="button" id="btn-admin-tab-approvals">Approvals <span id="badge-pending-count" class="badge badge-warning hidden">0</span></button>
+      <button type="button" id="btn-admin-tab-members">Members</button>
+      <button type="button" id="btn-admin-tab-logs">Device Logs</button>
     </div>
 
-    <div id="admin-sec-members">
+    <!-- SECTION 1: MASTER LEDGER (SHOWN IMMEDIATELY) -->
+    <div id="admin-sec-ledger">
+      <!-- Live Rate Bar -->
+      <div class="rate-banner">
+        <div>
+          <span style="font-size: 11px; color: var(--text-dim);">LIVE MARKET CONVERSION</span><br/>
+          1 QAR = <b id="admin-market-rate" style="color: var(--success);">83.00 LKR</b>
+        </div>
+        <button type="button" class="btn btn-sm btn-primary" id="btn-refresh-rate-admin">⟳ Live Rate</button>
+      </div>
+
+      <!-- Dashboard Summary -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-label">Total Turnover</div>
+          <div class="stat-val" id="admin-stat-usd">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Commission (LKR)</div>
+          <div class="stat-val" id="admin-stat-lkr" style="color: var(--accent);">0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Received</div>
+          <div class="stat-val" id="admin-stat-rec" style="color: var(--danger);">0.00 QR</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Balance Due</div>
+          <div class="stat-val" id="admin-stat-bal" style="color: var(--primary);">0.00 QR</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+        <button type="button" id="btn-admin-add-entry" class="btn btn-primary" style="flex: 2;">+ Add New Entry</button>
+        <button type="button" id="btn-admin-export" class="btn btn-secondary" style="flex: 1;">Export CSV</button>
+      </div>
+
+      <div id="admin-tx-list"></div>
+    </div>
+
+    <!-- SECTION 2: PENDING MEMBER PROPOSALS -->
+    <div id="admin-sec-approvals" class="hidden">
+      <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 10px;">
+        Member submitted entries awaiting administrator acceptance:
+      </div>
+      <div id="admin-approvals-list"></div>
+    </div>
+
+    <!-- SECTION 3: MEMBERS LIST -->
+    <div id="admin-sec-members" class="hidden">
       <div id="admin-members-list"></div>
     </div>
 
-    <div id="admin-sec-ledger" class="hidden">
-      <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 12px;">
-        <button type="button" class="btn btn-secondary btn-sm" id="btn-admin-back-members">← Back</button>
-        <span style="font-size: 13px; font-weight: 700; color: var(--primary);" id="admin-editing-title">Editing</span>
-      </div>
-      <button type="button" class="btn btn-primary" style="margin-bottom: 12px;" id="btn-admin-add-tx">+ Add Row For Member</button>
-      <div id="admin-member-tx-list"></div>
-    </div>
-
+    <!-- SECTION 4: AUDIT LOGS -->
     <div id="admin-sec-logs" class="hidden">
       <div style="display: flex; justify-content: space-between; align-items:center; margin-bottom: 10px;">
-        <span style="font-size: 12px; color: var(--text-dim);">Member activity logs & device info</span>
+        <span style="font-size: 12px; color: var(--text-dim);">Member device and consent records</span>
         <button type="button" class="btn btn-sm btn-secondary" id="btn-clear-logs">Clear Logs</button>
       </div>
       <div id="admin-logs-list"></div>
     </div>
   </div>
 
-  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
   <script>
-    const STORAGE_KEY_MEMBERS = "tt_members_db";
-    const STORAGE_KEY_LOGS = "tt_system_audit_logs";
-    let globalLiveRate = 83.00;
-    let currentUser = null;
-    let pendingUserLogin = null;
-    let currentAdminEditingMemberId = null;
+    // Storage Keys
+    const KEY_MASTER_LEDGER = "tt_master_ledger_data";
+    const KEY_MEMBERS = "tt_members_database";
+    const KEY_PROPOSALS = "tt_pending_proposals";
+    const KEY_LOGS = "tt_audit_logs_v2";
 
+    // Global App States
+    let globalLiveRate = 83.00;
+    let currentUser = null; // null, {role: 'admin'}, or member object
+    let pendingLoginUser = null;
+    let autoLogoutTimer = null;
+    const INACTIVITY_LIMIT_MS = 3 * 60 * 60 * 1000; // 3 Hours
+
+    // Default Avatar
     const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
+    // Initial Historical Sheet Transactions (Seed Data)
+    const SEED_TRANSACTIONS = [
+      { id: "tx_1", date: "11/08", details: "THUAN DAO", usd: 16000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_2", date: "20/08", details: "AADIL GLOBAL PTE LTD", usd: 18000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_3", date: "04/09", details: "AADIL GLOBAL PTE LTD", usd: 24600.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_4", date: "07/09", details: "KAWLOON INTERNATIO", usd: 27000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_5", date: "08/09", details: "KAWLOON INTERNATIO", usd: 15900.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_6", date: "09/09", details: "SINFINI MA", usd: 20000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_7", date: "11/09", details: "MAS BUSINESS PROTECTI", usd: 13094.39, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_8", date: "09/15", details: "SINFINI MA", usd: 22959.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_9", date: "09/16", details: "AADIL GLOBAL PTE LTD", usd: 27360.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_10", date: "10/29", details: "EXPO LANKA M/", usd: 16805.75, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_11", date: "21/09/2025", details: "Received frm Thami", usd: 0, comRate: 1.5, convRate: 83.0, received: 510.0, remarks: "ABDULLAH" },
+      { id: "tx_12", date: "05/11", details: "HSN GOODS", usd: 24900.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_13", date: "05/11", details: "TFT TRADIN", usd: 18074.39, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_14", date: "06/11", details: "TFT TRADIN", usd: 19900.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_15", date: "09/11", details: "STAR BIT T", usd: 27149.86, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_16", date: "09/11", details: "TFT TRADIN", usd: 24600.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_17", date: "10/11", details: "AADIL GLOBAL PTE LTD", usd: 23200.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_18", date: "11/11", details: "HSN GOODS", usd: 25125.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_19", date: "11/10", details: "RECEIVED BY DT 611*3.7", usd: 0, comRate: 1.5, convRate: 83.0, received: 2260.0, remarks: "ABDULLAH" },
+      { id: "tx_20", date: "03/11", details: "AADIL GLOBAL PTE LTD", usd: 25975.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { id: "tx_21", date: "08/11", details: "RECEIVED BY QR", usd: 0, comRate: 1.5, convRate: 83.0, received: 3000.0, remarks: "HUZAIFA" },
+      { id: "tx_22", date: "13/11", details: "TFT TRADIN", usd: 13560.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" }
+    ];
+
+    // Data Storage Managers
+    function getLedger() {
+      try {
+        const stored = localStorage.getItem(KEY_MASTER_LEDGER);
+        return stored ? JSON.parse(stored) : SEED_TRANSACTIONS;
+      } catch (e) {
+        return SEED_TRANSACTIONS;
+      }
+    }
+    function saveLedger(data) {
+      localStorage.setItem(KEY_MASTER_LEDGER, JSON.stringify(data));
+    }
     function getMembers() {
       try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY_MEMBERS) || "[]");
+        return JSON.parse(localStorage.getItem(KEY_MEMBERS) || "[]");
       } catch (e) {
         return [];
       }
     }
     function saveMembers(m) {
-      localStorage.setItem(STORAGE_KEY_MEMBERS, JSON.stringify(m));
+      localStorage.setItem(KEY_MEMBERS, JSON.stringify(m));
+    }
+    function getProposals() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_PROPOSALS) || "[]");
+      } catch (e) {
+        return [];
+      }
+    }
+    function saveProposals(p) {
+      localStorage.setItem(KEY_PROPOSALS, JSON.stringify(p));
     }
     function getLogs() {
       try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY_LOGS) || "[]");
+        return JSON.parse(localStorage.getItem(KEY_LOGS) || "[]");
       } catch (e) {
         return [];
       }
@@ -570,7 +719,7 @@
     function addLog(entry) {
       const logs = getLogs();
       logs.unshift(entry);
-      localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(logs.slice(0, 150)));
+      localStorage.setItem(KEY_LOGS, JSON.stringify(logs.slice(0, 150)));
     }
 
     function fmt(n) {
@@ -580,6 +729,31 @@
       });
     }
 
+    // --- 3-Hour Inactivity Auto Logout Engine ---
+    function resetInactivityTimer() {
+      if (autoLogoutTimer) clearTimeout(autoLogoutTimer);
+      if (currentUser) {
+        autoLogoutTimer = setTimeout(() => {
+          triggerAutoLogout();
+        }, INACTIVITY_LIMIT_MS);
+      }
+    }
+
+    function triggerAutoLogout() {
+      currentUser = null;
+      if (autoLogoutTimer) clearTimeout(autoLogoutTimer);
+      document.getElementById("view-member").classList.add("hidden");
+      document.getElementById("view-admin").classList.add("hidden");
+      document.getElementById("view-auth").classList.remove("hidden");
+      alert("Session expired due to inactivity (> 3 hours). Please enter your username and password again to log in.");
+    }
+
+    // Attach Activity Listeners
+    ['mousedown', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(evt => {
+      window.addEventListener(evt, resetInactivityTimer, { passive: true });
+    });
+
+    // Device / IP Info
     async function captureDeviceInfo() {
       let ip = "Direct/Cellular";
       try {
@@ -600,20 +774,24 @@
       };
     }
 
+    // Live Currency Rate
     async function fetchLiveRate() {
       try {
         const res = await fetch("https://open.er-api.com/v6/latest/QAR");
         const data = await res.json();
         if (data && data.rates && data.rates.LKR) {
           globalLiveRate = parseFloat(data.rates.LKR.toFixed(2));
-          const el = document.getElementById("member-market-rate");
-          if (el) el.textContent = `${globalLiveRate} LKR`;
+          const el1 = document.getElementById("admin-market-rate");
+          const el2 = document.getElementById("member-market-rate");
+          if (el1) el1.textContent = `${globalLiveRate} LKR`;
+          if (el2) el2.textContent = `${globalLiveRate} LKR`;
         }
       } catch (e) {
         globalLiveRate = 83.00;
       }
     }
 
+    // Top Tabs
     function setAuthTab(tab) {
       const btnAdmin = document.getElementById("btn-tab-admin");
       const btnMember = document.getElementById("btn-tab-member");
@@ -652,22 +830,25 @@
       }
     }
 
-    function executeAdminLogin() {
+    // --- Authentication ---
+    function doAdminLogin() {
       const u = document.getElementById("admin-email").value.trim();
       const p = document.getElementById("admin-password").value.trim();
 
       if (u === "admin@1994.info" && p === "07107107i") {
         currentUser = { role: "admin" };
+        resetInactivityTimer();
         document.getElementById("view-auth").classList.add("hidden");
         document.getElementById("view-admin").classList.remove("hidden");
-        renderAdminMembers();
-        renderAdminLogs();
+        setAdminSubTab('ledger');
+        renderAdminMasterLedger();
+        updatePendingBadges();
       } else {
         alert("Invalid Username or Password.");
       }
     }
 
-    function executeMemberSignup() {
+    function doMemberSignup() {
       const name = document.getElementById("signup-name").value.trim();
       const email = document.getElementById("signup-email").value.trim().toLowerCase();
       const phone = document.getElementById("signup-phone").value.trim();
@@ -694,10 +875,7 @@
         ledgerId: ledgerId,
         avatar: "",
         isBlocked: false,
-        canEdit: true,
-        transactions: [
-          { date: new Date().toISOString().slice(0,10), details: "Opening Balance", usd: 0, comRate: 1.5, convRate: globalLiveRate, received: 0, remarks: "Account Created" }
-        ]
+        createdAt: new Date().toISOString()
       };
 
       members.push(newMember);
@@ -707,7 +885,7 @@
       document.getElementById("member-login-id").value = email;
     }
 
-    function executeMemberLogin() {
+    function doMemberLogin() {
       const loginId = document.getElementById("member-login-id").value.trim().toLowerCase();
       const pass = document.getElementById("member-login-pass").value;
 
@@ -724,7 +902,7 @@
         return;
       }
 
-      pendingUserLogin = member;
+      pendingLoginUser = member;
       document.getElementById("consent-modal").classList.remove("hidden");
     }
 
@@ -733,42 +911,38 @@
       const devInfo = await captureDeviceInfo();
 
       addLog({
-        userId: pendingUserLogin.id,
-        userName: pendingUserLogin.name,
-        ledgerId: pendingUserLogin.ledgerId,
-        email: pendingUserLogin.email,
-        phone: pendingUserLogin.phone,
+        userId: pendingLoginUser.id,
+        userName: pendingLoginUser.name,
+        ledgerId: pendingLoginUser.ledgerId,
+        email: pendingLoginUser.email,
+        phone: pendingLoginUser.phone,
         time: devInfo.time,
         ip: devInfo.ip,
         device: devInfo.userAgent,
         consentGranted: allowed
       });
 
-      currentUser = pendingUserLogin;
-      pendingUserLogin = null;
+      currentUser = pendingLoginUser;
+      pendingLoginUser = null;
+      resetInactivityTimer();
 
       document.getElementById("view-auth").classList.add("hidden");
       document.getElementById("view-member").classList.remove("hidden");
-      renderMemberDashboard();
+      renderMemberPortal();
     }
 
     function doLogout() {
       currentUser = null;
+      if (autoLogoutTimer) clearTimeout(autoLogoutTimer);
       document.getElementById("view-member").classList.add("hidden");
       document.getElementById("view-admin").classList.add("hidden");
       document.getElementById("view-auth").classList.remove("hidden");
     }
 
-    function renderMemberDashboard() {
-      if (!currentUser) return;
-      document.getElementById("nav-member-name").textContent = currentUser.name;
-      document.getElementById("nav-member-ledger-id").textContent = currentUser.ledgerId;
-      document.getElementById("member-avatar-display").src = currentUser.avatar || DEFAULT_AVATAR;
-
-      const addBtn = document.getElementById("member-add-btn");
-      addBtn.style.display = currentUser.canEdit ? "flex" : "none";
-
-      const container = document.getElementById("member-tx-list");
+    // --- ADMIN MASTER LEDGER RENDER & LIVE EDITING ---
+    function renderAdminMasterLedger() {
+      const txList = getLedger();
+      const container = document.getElementById("admin-tx-list");
       container.innerHTML = "";
 
       let runningBal = 0;
@@ -776,7 +950,7 @@
       let sumLkr = 0;
       let sumRec = 0;
 
-      currentUser.transactions.forEach((tx, idx) => {
+      txList.forEach((tx, idx) => {
         const usd = parseFloat(tx.usd) || 0;
         const comRate = parseFloat(tx.comRate) || 0;
         const convRate = parseFloat(tx.convRate) || globalLiveRate;
@@ -790,51 +964,49 @@
         sumLkr += comLkr;
         sumRec += received;
 
-        const dis = currentUser.canEdit ? "" : "disabled";
-
         const card = document.createElement("div");
         card.className = "tx-card";
         card.innerHTML = `
           <div class="tx-header">
             <span style="font-size: 11px; font-weight: 700; color: var(--accent);">ENTRY #${idx + 1}</span>
-            ${currentUser.canEdit ? `<button type="button" class="btn-sm btn-danger" onclick="deleteMemberEntry(${idx})">✕</button>` : ''}
+            <button type="button" class="btn-sm btn-danger" onclick="deleteMasterTx(${idx})">Delete</button>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>Date</label>
-              <input type="date" value="${tx.date || ''}" ${dis} onchange="updateMemberValue(${idx}, 'date', this.value)">
+              <input type="text" value="${tx.date || ''}" onchange="updateMasterTx(${idx}, 'date', this.value)">
             </div>
             <div class="form-group">
               <label>USD Amount</label>
-              <input type="number" step="any" value="${tx.usd ?? ''}" ${dis} placeholder="0.00" oninput="updateMemberValue(${idx}, 'usd', this.value)">
+              <input type="number" step="any" value="${tx.usd ?? ''}" placeholder="0.00" oninput="updateMasterTx(${idx}, 'usd', this.value)">
             </div>
           </div>
 
           <div class="form-group full">
             <label>Details / Counterparty</label>
-            <input type="text" value="${tx.details || ''}" ${dis} placeholder="Client name" onchange="updateMemberValue(${idx}, 'details', this.value)">
+            <input type="text" value="${tx.details || ''}" placeholder="Counterparty name" onchange="updateMasterTx(${idx}, 'details', this.value)">
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>COM Rate</label>
-              <input type="number" step="any" value="${tx.comRate ?? 1.5}" ${dis} oninput="updateMemberValue(${idx}, 'comRate', this.value)">
+              <input type="number" step="any" value="${tx.comRate ?? 1.5}" oninput="updateMasterTx(${idx}, 'comRate', this.value)">
             </div>
             <div class="form-group">
               <label>Conv Rate</label>
-              <input type="number" step="any" value="${tx.convRate ?? globalLiveRate}" ${dis} oninput="updateMemberValue(${idx}, 'convRate', this.value)">
+              <input type="number" step="any" value="${tx.convRate ?? globalLiveRate}" oninput="updateMasterTx(${idx}, 'convRate', this.value)">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>Received (QR)</label>
-              <input type="number" step="any" value="${tx.received ?? ''}" ${dis} placeholder="0.00" oninput="updateMemberValue(${idx}, 'received', this.value)">
+              <input type="number" step="any" value="${tx.received ?? ''}" placeholder="0.00" oninput="updateMasterTx(${idx}, 'received', this.value)">
             </div>
             <div class="form-group">
               <label>Remarks</label>
-              <input type="text" value="${tx.remarks || ''}" ${dis} onchange="updateMemberValue(${idx}, 'remarks', this.value)">
+              <input type="text" value="${tx.remarks || ''}" placeholder="Notes" onchange="updateMasterTx(${idx}, 'remarks', this.value)">
             </div>
           </div>
 
@@ -856,151 +1028,66 @@
         container.appendChild(card);
       });
 
-      document.getElementById("member-stat-usd").textContent = "$" + fmt(sumUsd);
-      document.getElementById("member-stat-lkr").textContent = fmt(sumLkr) + " LKR";
-      document.getElementById("member-stat-rec").textContent = fmt(sumRec) + " QR";
-      document.getElementById("member-stat-bal").textContent = fmt(runningBal) + " QR";
+      document.getElementById("admin-stat-usd").textContent = "$" + fmt(sumUsd);
+      document.getElementById("admin-stat-lkr").textContent = fmt(sumLkr) + " LKR";
+      document.getElementById("admin-stat-rec").textContent = fmt(sumRec) + " QR";
+      document.getElementById("admin-stat-bal").textContent = fmt(runningBal) + " QR";
     }
 
-    function updateMemberValue(idx, key, val) {
+    function updateMasterTx(idx, key, val) {
+      const txList = getLedger();
       if (['usd', 'comRate', 'convRate', 'received'].includes(key)) {
-        currentUser.transactions[idx][key] = val === '' ? '' : parseFloat(val);
+        txList[idx][key] = val === '' ? '' : parseFloat(val);
       } else {
-        currentUser.transactions[idx][key] = val;
+        txList[idx][key] = val;
       }
-      saveCurrentMember();
-      renderMemberDashboard();
+      saveLedger(txList);
+      renderAdminMasterLedger();
     }
 
-    function deleteMemberEntry(idx) {
-      if (confirm("Delete this transaction?")) {
-        currentUser.transactions.splice(idx, 1);
-        saveCurrentMember();
-        renderMemberDashboard();
-      }
-    }
-
-    function saveCurrentMember() {
-      const members = getMembers();
-      const idx = members.findIndex(m => m.id === currentUser.id);
-      if (idx !== -1) {
-        members[idx] = currentUser;
-        saveMembers(members);
-      }
-    }
-
-    function setAdminTab(tab) {
-      const btnM = document.getElementById("btn-admin-tab-members");
-      const btnL = document.getElementById("btn-admin-tab-logs");
-      const secM = document.getElementById("admin-sec-members");
-      const secL = document.getElementById("admin-sec-logs");
-      const secLedger = document.getElementById("admin-sec-ledger");
-
-      secLedger.classList.add("hidden");
-
-      if (tab === 'members') {
-        btnM.classList.add("active");
-        btnL.classList.remove("active");
-        secM.classList.remove("hidden");
-        secL.classList.add("hidden");
-        renderAdminMembers();
-      } else {
-        btnL.classList.add("active");
-        btnM.classList.remove("active");
-        secL.classList.remove("hidden");
-        secM.classList.add("hidden");
-        renderAdminLogs();
-      }
-    }
-
-    function renderAdminMembers() {
-      const container = document.getElementById("admin-members-list");
-      const members = getMembers();
-      container.innerHTML = "";
-
-      if (members.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim);">No registered members found yet.</div>`;
-        return;
-      }
-
-      members.forEach(m => {
-        const card = document.createElement("div");
-        card.className = "admin-member-card";
-        card.innerHTML = `
-          <div style="display:flex; justify-content: space-between; align-items:flex-start; margin-bottom: 8px;">
-            <div style="display:flex; gap: 10px; align-items:center;">
-              <img src="${m.avatar || DEFAULT_AVATAR}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 1px solid var(--card-border);">
-              <div>
-                <b style="font-size: 14px;">${m.name}</b>
-                <div style="font-size: 11px; color: var(--primary);">${m.ledgerId}</div>
-                <div style="font-size: 11px; color: var(--text-dim);">${m.email} | ${m.phone}</div>
-              </div>
-            </div>
-            <div>
-              <span class="badge ${m.isBlocked ? 'badge-danger' : 'badge-success'}">${m.isBlocked ? 'BLOCKED' : 'ACTIVE'}</span>
-            </div>
-          </div>
-
-          <div style="display:flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; border-top: 1px solid var(--card-border); padding-top: 10px;">
-            <button type="button" class="btn btn-sm btn-primary" onclick="openAdminLedger('${m.id}')">View / Edit Ledger</button>
-            <button type="button" class="btn btn-sm btn-secondary" onclick="toggleBlock('${m.id}')">${m.isBlocked ? 'Unblock' : 'Block'}</button>
-            <button type="button" class="btn btn-sm btn-secondary" onclick="togglePrivilege('${m.id}')">${m.canEdit ? 'Privilege: Edit' : 'Privilege: ReadOnly'}</button>
-            <button type="button" class="btn btn-sm btn-danger" onclick="deleteUser('${m.id}')">Delete</button>
-          </div>
-        `;
-        container.appendChild(card);
+    function addMasterTx() {
+      const txList = getLedger();
+      txList.unshift({
+        id: "tx_" + Date.now(),
+        date: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit" }),
+        details: "",
+        usd: "",
+        comRate: 1.5,
+        convRate: globalLiveRate,
+        received: "",
+        remarks: ""
       });
+      saveLedger(txList);
+      renderAdminMasterLedger();
+      window.scrollTo({ top: 150, behavior: 'smooth' });
     }
 
-    function toggleBlock(id) {
-      const members = getMembers();
-      const m = members.find(u => u.id === id);
-      if (m) {
-        m.isBlocked = !m.isBlocked;
-        saveMembers(members);
-        renderAdminMembers();
+    function deleteMasterTx(idx) {
+      if (confirm("Permanently delete this entry from the master ledger?")) {
+        const txList = getLedger();
+        txList.splice(idx, 1);
+        saveLedger(txList);
+        renderAdminMasterLedger();
       }
     }
 
-    function togglePrivilege(id) {
-      const members = getMembers();
-      const m = members.find(u => u.id === id);
-      if (m) {
-        m.canEdit = !m.canEdit;
-        saveMembers(members);
-        renderAdminMembers();
-      }
-    }
+    // --- MEMBER PORTAL (READ ONLY LEDGER + PROPOSALS) ---
+    function renderMemberPortal() {
+      if (!currentUser) return;
+      document.getElementById("nav-member-name").textContent = currentUser.name;
+      document.getElementById("nav-member-ledger-id").textContent = currentUser.ledgerId;
+      document.getElementById("member-avatar-display").src = currentUser.avatar || DEFAULT_AVATAR;
 
-    function deleteUser(id) {
-      if (confirm("Delete this member completely?")) {
-        let members = getMembers();
-        members = members.filter(u => u.id !== id);
-        saveMembers(members);
-        renderAdminMembers();
-      }
-    }
-
-    function openAdminLedger(id) {
-      currentAdminEditingMemberId = id;
-      const members = getMembers();
-      const m = members.find(u => u.id === id);
-      document.getElementById("admin-sec-members").classList.add("hidden");
-      document.getElementById("admin-sec-ledger").classList.remove("hidden");
-      document.getElementById("admin-editing-title").textContent = `${m.name} (${m.ledgerId})`;
-      renderAdminMemberTxList();
-    }
-
-    function renderAdminMemberTxList() {
-      const container = document.getElementById("admin-member-tx-list");
-      const members = getMembers();
-      const m = members.find(u => u.id === currentAdminEditingMemberId);
-      if (!m) return;
-
+      const txList = getLedger();
+      const container = document.getElementById("member-tx-list");
       container.innerHTML = "";
-      let runningBal = 0;
 
-      m.transactions.forEach((tx, idx) => {
+      let runningBal = 0;
+      let sumUsd = 0;
+      let sumLkr = 0;
+      let sumRec = 0;
+
+      txList.forEach((tx, idx) => {
         const usd = parseFloat(tx.usd) || 0;
         const comRate = parseFloat(tx.comRate) || 0;
         const convRate = parseFloat(tx.convRate) || globalLiveRate;
@@ -1010,93 +1097,244 @@
         const comQr = convRate > 0 ? (comLkr / convRate) : 0;
         runningBal += comQr - received;
 
+        sumUsd += usd;
+        sumLkr += comLkr;
+        sumRec += received;
+
         const card = document.createElement("div");
         card.className = "tx-card";
         card.innerHTML = `
           <div class="tx-header">
             <span style="font-size: 11px; font-weight: 700; color: var(--accent);">ENTRY #${idx + 1}</span>
-            <button type="button" class="btn-sm btn-danger" onclick="deleteAdminTxEntry(${idx})">Delete</button>
+            <span style="font-size: 11px; color: var(--text-dim);">${tx.date || ''}</span>
           </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Date</label>
-              <input type="date" value="${tx.date || ''}" onchange="updateAdminTxVal(${idx}, 'date', this.value)">
-            </div>
-            <div class="form-group">
-              <label>USD</label>
-              <input type="number" step="any" value="${tx.usd ?? ''}" oninput="updateAdminTxVal(${idx}, 'usd', this.value)">
-            </div>
-          </div>
-
-          <div class="form-group full">
-            <label>Details</label>
-            <input type="text" value="${tx.details || ''}" onchange="updateAdminTxVal(${idx}, 'details', this.value)">
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>COM Rate</label>
-              <input type="number" step="any" value="${tx.comRate ?? 1.5}" oninput="updateAdminTxVal(${idx}, 'comRate', this.value)">
-            </div>
-            <div class="form-group">
-              <label>Conv Rate</label>
-              <input type="number" step="any" value="${tx.convRate ?? globalLiveRate}" oninput="updateAdminTxVal(${idx}, 'convRate', this.value)">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Received (QR)</label>
-              <input type="number" step="any" value="${tx.received ?? ''}" oninput="updateAdminTxVal(${idx}, 'received', this.value)">
-            </div>
-            <div class="form-group">
-              <label>Remarks</label>
-              <input type="text" value="${tx.remarks || ''}" onchange="updateAdminTxVal(${idx}, 'remarks', this.value)">
-            </div>
-          </div>
-
+          <div style="font-size: 14px; font-weight: 600; margin-bottom: 6px;">${tx.details || 'General Entry'}</div>
+          
           <div class="calc-box">
+            <div class="calc-item">
+              <span class="c-label">USD Amount</span>
+              <span class="c-val">${usd ? '$' + fmt(usd) : '$0.00'}</span>
+            </div>
             <div class="calc-item">
               <span class="c-label">Commission (LKR)</span>
               <span class="c-val">${fmt(comLkr)}</span>
+            </div>
+            <div class="calc-item">
+              <span class="c-label">Received (QR)</span>
+              <span class="c-val" style="color: var(--danger);">${received ? fmt(received) + ' QR' : '-'}</span>
             </div>
             <div class="calc-item">
               <span class="c-label">Commission (QR)</span>
               <span class="c-val">${fmt(comQr)}</span>
             </div>
             <div class="calc-item bal">
-              <span class="c-label">Balance</span>
+              <span class="c-label">Running Balance</span>
               <span class="c-val">${fmt(runningBal)} QR</span>
             </div>
+          </div>
+          ${tx.remarks ? `<div style="font-size: 11px; color: var(--text-dim); margin-top: 6px;">Remarks: ${tx.remarks}</div>` : ''}
+        `;
+        container.appendChild(card);
+      });
+
+      document.getElementById("member-stat-usd").textContent = "$" + fmt(sumUsd);
+      document.getElementById("member-stat-lkr").textContent = fmt(sumLkr) + " LKR";
+      document.getElementById("member-stat-rec").textContent = fmt(sumRec) + " QR";
+      document.getElementById("member-stat-bal").textContent = fmt(runningBal) + " QR";
+    }
+
+    // Member Propose Entry Action
+    function submitMemberProposal() {
+      const date = document.getElementById("prop-date").value || new Date().toISOString().slice(0,10);
+      const usd = parseFloat(document.getElementById("prop-usd").value) || 0;
+      const details = document.getElementById("prop-details").value.trim();
+      const comRate = parseFloat(document.getElementById("prop-comRate").value) || 1.5;
+      const convRate = parseFloat(document.getElementById("prop-convRate").value) || globalLiveRate;
+      const received = parseFloat(document.getElementById("prop-received").value) || 0;
+      const remarks = document.getElementById("prop-remarks").value.trim();
+
+      if (!details && usd === 0 && received === 0) {
+        alert("Please enter transaction details or an amount.");
+        return;
+      }
+
+      const proposals = getProposals();
+      proposals.unshift({
+        id: "prop_" + Date.now(),
+        memberId: currentUser.id,
+        memberName: currentUser.name,
+        ledgerId: currentUser.ledgerId,
+        date: date,
+        usd: usd,
+        details: details,
+        comRate: comRate,
+        convRate: convRate,
+        received: received,
+        remarks: remarks,
+        submittedAt: new Date().toLocaleString()
+      });
+      saveProposals(proposals);
+
+      document.getElementById("member-propose-modal").classList.add("hidden");
+      alert("Proposal submitted successfully! It will appear on the ledger once approved by Admin.");
+      // Reset form
+      document.getElementById("prop-usd").value = "";
+      document.getElementById("prop-details").value = "";
+      document.getElementById("prop-received").value = "";
+      document.getElementById("prop-remarks").value = "";
+    }
+
+    // --- ADMIN APPROVALS / ACCEPT OR DENY FLOW ---
+    function updatePendingBadges() {
+      const proposals = getProposals();
+      const badge = document.getElementById("badge-pending-count");
+      if (proposals.length > 0) {
+        badge.textContent = proposals.length;
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+    }
+
+    function renderAdminApprovals() {
+      const container = document.getElementById("admin-approvals-list");
+      const proposals = getProposals();
+      container.innerHTML = "";
+
+      if (proposals.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim);">No pending edit proposals.</div>`;
+        return;
+      }
+
+      proposals.forEach((p, idx) => {
+        const comLkr = (p.usd || 0) * (p.comRate || 1.5);
+        const comQr = p.convRate > 0 ? (comLkr / p.convRate) : 0;
+
+        const card = document.createElement("div");
+        card.className = "tx-card";
+        card.innerHTML = `
+          <div class="tx-header">
+            <span style="font-size: 11px; font-weight: 700; color: var(--warning);">PENDING FROM ${p.memberName} (${p.ledgerId})</span>
+            <span style="font-size: 11px; color: var(--text-dim);">${p.submittedAt}</span>
+          </div>
+          <div style="margin-bottom: 6px;"><b>${p.details || 'No Details'}</b> (${p.date})</div>
+          <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">
+            USD: $${fmt(p.usd)} | COM: ${p.comRate} | LKR: ${fmt(comLkr)} | Conv: ${p.convRate} | QR: ${fmt(comQr)} | Rec: ${fmt(p.received)} QR
+          </div>
+          ${p.remarks ? `<div style="font-size: 11px; color: var(--text-dim); margin-bottom: 10px;">Remarks: ${p.remarks}</div>` : ''}
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn btn-sm btn-success" style="flex:1;" onclick="acceptProposal(${idx})">✓ Accept & Amend Ledger</button>
+            <button type="button" class="btn btn-sm btn-danger" style="flex:1;" onclick="denyProposal(${idx})">✕ Deny</button>
           </div>
         `;
         container.appendChild(card);
       });
     }
 
-    function updateAdminTxVal(idx, key, val) {
-      const members = getMembers();
-      const m = members.find(u => u.id === currentAdminEditingMemberId);
-      if (!m) return;
+    function acceptProposal(idx) {
+      const proposals = getProposals();
+      const p = proposals[idx];
+      if (!p) return;
 
-      if (['usd', 'comRate', 'convRate', 'received'].includes(key)) {
-        m.transactions[idx][key] = val === '' ? '' : parseFloat(val);
-      } else {
-        m.transactions[idx][key] = val;
-      }
-      saveMembers(members);
-      renderAdminMemberTxList();
+      // Add to Master Ledger
+      const txList = getLedger();
+      txList.unshift({
+        id: "tx_" + Date.now(),
+        date: p.date,
+        details: p.details + ` [By ${p.ledgerId}]`,
+        usd: p.usd,
+        comRate: p.comRate,
+        convRate: p.convRate,
+        received: p.received,
+        remarks: p.remarks
+      });
+      saveLedger(txList);
+
+      // Remove from pending
+      proposals.splice(idx, 1);
+      saveProposals(proposals);
+
+      alert("Proposal accepted and successfully added to the Master Ledger!");
+      updatePendingBadges();
+      renderAdminApprovals();
+      renderAdminMasterLedger();
     }
 
-    function deleteAdminTxEntry(idx) {
-      const members = getMembers();
-      const m = members.find(u => u.id === currentAdminEditingMemberId);
-      if (!m) return;
+    function denyProposal(idx) {
+      if (confirm("Deny and reject this proposal?")) {
+        const proposals = getProposals();
+        proposals.splice(idx, 1);
+        saveProposals(proposals);
+        updatePendingBadges();
+        renderAdminApprovals();
+      }
+    }
 
-      m.transactions.splice(idx, 1);
-      saveMembers(members);
-      renderAdminMemberTxList();
+    // --- ADMIN MEMBERS & LOGS ---
+    function setAdminSubTab(tab) {
+      const tabs = ['ledger', 'approvals', 'members', 'logs'];
+      tabs.forEach(t => {
+        document.getElementById(`btn-admin-tab-${t}`).classList.toggle('active', t === tab);
+        document.getElementById(`admin-sec-${t}`).classList.toggle('hidden', t !== tab);
+      });
+
+      if (tab === 'ledger') renderAdminMasterLedger();
+      if (tab === 'approvals') renderAdminApprovals();
+      if (tab === 'members') renderAdminMembers();
+      if (tab === 'logs') renderAdminLogs();
+    }
+
+    function renderAdminMembers() {
+      const container = document.getElementById("admin-members-list");
+      const members = getMembers();
+      container.innerHTML = "";
+
+      if (members.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim);">No registered members yet.</div>`;
+        return;
+      }
+
+      members.forEach(m => {
+        const card = document.createElement("div");
+        card.className = "tx-card";
+        card.innerHTML = `
+          <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 8px;">
+            <div style="display:flex; gap: 10px; align-items:center;">
+              <img src="${m.avatar || DEFAULT_AVATAR}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1px solid var(--card-border);">
+              <div>
+                <b>${m.name}</b>
+                <div style="font-size: 11px; color: var(--primary);">${m.ledgerId}</div>
+                <div style="font-size: 11px; color: var(--text-dim);">${m.email} | ${m.phone}</div>
+              </div>
+            </div>
+            <span class="badge ${m.isBlocked ? 'badge-danger' : 'badge-success'}">${m.isBlocked ? 'BLOCKED' : 'ACTIVE'}</span>
+          </div>
+          <div style="display:flex; gap: 8px; margin-top: 8px;">
+            <button type="button" class="btn btn-sm btn-secondary" onclick="toggleBlockUser('${m.id}')">${m.isBlocked ? 'Unblock' : 'Block'}</button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="deleteUser('${m.id}')">Delete</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleBlockUser(id) {
+      const members = getMembers();
+      const m = members.find(u => u.id === id);
+      if (m) {
+        m.isBlocked = !m.isBlocked;
+        saveMembers(members);
+        renderAdminMembers();
+      }
+    }
+
+    function deleteUser(id) {
+      if (confirm("Delete this member?")) {
+        let members = getMembers();
+        members = members.filter(u => u.id !== id);
+        saveMembers(members);
+        renderAdminMembers();
+      }
     }
 
     function renderAdminLogs() {
@@ -1105,7 +1343,7 @@
       container.innerHTML = "";
 
       if (logs.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim);">No audit logs yet.</div>`;
+        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim);">No device logs captured yet.</div>`;
         return;
       }
 
@@ -1125,20 +1363,45 @@
       });
     }
 
+    // CSV Export
+    function exportLedgerCSV() {
+      const txList = getLedger();
+      let csv = "Date,Details,USD,COM Rate,TOTAL COM IN LKR,CONVERSION RATE,TOTAL COMMISSION IN QR,RECEIVED,TOTAL IN QR,REMARKS\n";
+      let runningBal = 0;
+      txList.forEach(t => {
+        const comLkr = (t.usd || 0) * (t.comRate || 1.5);
+        const comQr = t.convRate ? (comLkr / t.convRate) : 0;
+        runningBal += comQr - (t.received || 0);
+        csv += `"${t.date}","${t.details}",${t.usd || 0},${t.comRate || 1.5},${comLkr.toFixed(2)},${t.convRate || globalLiveRate},${comQr.toFixed(2)},${t.received || 0},${runningBal.toFixed(2)},"${t.remarks || ''}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `iMk_Black_Market_Ledger_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
     // Attach Event Listeners on DOM Ready
     window.addEventListener("DOMContentLoaded", () => {
+      // Top Navigation Switchers
       document.getElementById("btn-tab-admin").addEventListener("click", () => setAuthTab('admin'));
       document.getElementById("btn-tab-member").addEventListener("click", () => setAuthTab('member'));
       document.getElementById("btn-sub-login").addEventListener("click", () => setMemberSubTab('login'));
       document.getElementById("btn-sub-signup").addEventListener("click", () => setMemberSubTab('signup'));
 
-      document.getElementById("btn-do-admin-login").addEventListener("click", executeAdminLogin);
-      document.getElementById("btn-do-member-login").addEventListener("click", executeMemberLogin);
-      document.getElementById("btn-do-member-signup").addEventListener("click", executeMemberSignup);
+      // Auth Buttons
+      document.getElementById("btn-do-admin-login").addEventListener("click", doAdminLogin);
+      document.getElementById("btn-do-member-login").addEventListener("click", doMemberLogin);
+      document.getElementById("btn-do-member-signup").addEventListener("click", doMemberSignup);
+      document.getElementById("btn-member-logout").addEventListener("click", doLogout);
+      document.getElementById("btn-admin-logout").addEventListener("click", doLogout);
 
+      // Consent Modal Buttons
       document.getElementById("btn-consent-allow").addEventListener("click", () => handleConsentResponse(true));
       document.getElementById("btn-consent-decline").addEventListener("click", () => handleConsentResponse(false));
 
+      // Photo Upload
       document.getElementById("member-avatar-display").addEventListener("click", () => {
         document.getElementById("photo-consent-modal").classList.remove("hidden");
       });
@@ -1152,72 +1415,43 @@
         const r = new FileReader();
         r.onload = (evt) => {
           currentUser.avatar = evt.target.result;
-          saveCurrentMember();
-          renderMemberDashboard();
+          const members = getMembers();
+          const idx = members.findIndex(u => u.id === currentUser.id);
+          if (idx !== -1) {
+            members[idx].avatar = currentUser.avatar;
+            saveMembers(members);
+          }
+          renderMemberPortal();
         };
         r.readAsDataURL(file);
       });
 
-      document.getElementById("member-add-btn").addEventListener("click", () => {
-        if (!currentUser.canEdit) return;
-        currentUser.transactions.unshift({
-          date: new Date().toISOString().slice(0,10),
-          details: "",
-          usd: "",
-          comRate: 1.5,
-          convRate: globalLiveRate,
-          received: "",
-          remarks: ""
-        });
-        saveCurrentMember();
-        renderMemberDashboard();
+      // Member Proposals
+      document.getElementById("btn-open-propose").addEventListener("click", () => {
+        document.getElementById("prop-date").value = new Date().toISOString().slice(0,10);
+        document.getElementById("prop-convRate").value = globalLiveRate;
+        document.getElementById("member-propose-modal").classList.remove("hidden");
       });
-      document.getElementById("member-export-btn").addEventListener("click", () => {
-        let csv = "Date,Details,USD,COM Rate,Conversion Rate,Received QR,Remarks\n";
-        currentUser.transactions.forEach(t => {
-          csv += `"${t.date}","${t.details}",${t.usd || 0},${t.comRate || 1.5},${t.convRate || globalLiveRate},${t.received || 0},"${t.remarks || ''}"\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${currentUser.ledgerId}_ledger.csv`;
-        a.click();
-      });
-      document.getElementById("btn-member-logout").addEventListener("click", doLogout);
-      document.getElementById("btn-refresh-rate").addEventListener("click", fetchLiveRate);
+      document.getElementById("btn-submit-proposal").addEventListener("click", submitMemberProposal);
+      document.getElementById("member-export-btn").addEventListener("click", exportLedgerCSV);
 
-      document.getElementById("btn-admin-tab-members").addEventListener("click", () => setAdminTab('members'));
-      document.getElementById("btn-admin-tab-logs").addEventListener("click", () => setAdminTab('logs'));
-      document.getElementById("btn-admin-logout").addEventListener("click", doLogout);
-      document.getElementById("btn-admin-back-members").addEventListener("click", () => {
-        document.getElementById("admin-sec-ledger").classList.add("hidden");
-        document.getElementById("admin-sec-members").classList.remove("hidden");
-        renderAdminMembers();
-      });
-      document.getElementById("btn-admin-add-tx").addEventListener("click", () => {
-        const members = getMembers();
-        const m = members.find(u => u.id === currentAdminEditingMemberId);
-        if (!m) return;
-        m.transactions.unshift({
-          date: new Date().toISOString().slice(0,10),
-          details: "",
-          usd: "",
-          comRate: 1.5,
-          convRate: globalLiveRate,
-          received: "",
-          remarks: ""
-        });
-        saveMembers(members);
-        renderAdminMemberTxList();
-      });
+      // Admin Controls
+      document.getElementById("btn-admin-tab-ledger").addEventListener("click", () => setAdminSubTab('ledger'));
+      document.getElementById("btn-admin-tab-approvals").addEventListener("click", () => setAdminSubTab('approvals'));
+      document.getElementById("btn-admin-tab-members").addEventListener("click", () => setAdminSubTab('members'));
+      document.getElementById("btn-admin-tab-logs").addEventListener("click", () => setAdminSubTab('logs'));
+      document.getElementById("btn-admin-add-entry").addEventListener("click", addMasterTx);
+      document.getElementById("btn-admin-export").addEventListener("click", exportLedgerCSV);
+      document.getElementById("btn-refresh-rate-admin").addEventListener("click", fetchLiveRate);
+      document.getElementById("btn-refresh-rate-member").addEventListener("click", fetchLiveRate);
       document.getElementById("btn-clear-logs").addEventListener("click", () => {
         if (confirm("Clear all logs?")) {
-          localStorage.removeItem(STORAGE_KEY_LOGS);
+          localStorage.removeItem(KEY_LOGS);
           renderAdminLogs();
         }
       });
 
+      // Fetch live rate on boot
       fetchLiveRate();
     });
   </script>
