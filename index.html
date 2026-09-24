@@ -1,73 +1,491 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TT Accounts & Commission Ledger</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>TT Accounts Mobile</title>
   <style>
-    :root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--panel2:#111c2e;--line:#334155;--text:#f8fafc;--muted:#94a3b8;--accent:#38bdf8;--accent2:#0ea5e9;--danger:#f87171}
-    *{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--text);font:14px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.container{max-width:1450px;margin:auto}
-    header{margin-bottom:24px}h1{margin:0;color:var(--accent);font-size:clamp(20px,3vw,28px)}header p{margin:6px 0 0;color:var(--muted)}
-    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}.card,.table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:10px}.card{padding:16px}.label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}.value{font-size:21px;font-weight:700;margin-top:5px}.received{color:var(--danger)}.balance{color:var(--accent)}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}button,.file-label{border:0;border-radius:6px;padding:9px 14px;background:var(--accent);color:#082f49;font-weight:700;cursor:pointer}button:hover,.file-label:hover{background:var(--accent2);color:#fff}.secondary,.file-label{background:var(--panel);border:1px solid var(--line);color:var(--text)}.file-label{display:inline-flex;align-items:center}.file-label input{display:none}
-    .table-wrap{overflow:auto}table{width:100%;min-width:1120px;border-collapse:collapse;text-align:left;font-size:13px}th{background:var(--panel2);color:var(--muted);font-weight:600;white-space:nowrap}th,td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}tr:last-child td{border-bottom:0}input{width:100%;min-width:70px;padding:7px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--text);font:inherit}input:focus{outline:2px solid var(--accent);outline-offset:-1px}.num{text-align:right}.readonly{color:var(--muted);font-weight:600;white-space:nowrap}.running{color:var(--accent);font-weight:700;white-space:nowrap}.delete{padding:4px 8px;background:transparent;color:var(--danger)}.delete:hover{background:#451a1a;color:#fecaca}.empty{text-align:center;color:var(--muted);padding:28px}
-    @media(max-width:800px){body{padding:14px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{padding:12px}.value{font-size:17px}header{margin-bottom:16px}}
-    @media(max-width:430px){.stats{grid-template-columns:1fr 1fr}.toolbar>*{flex:1;text-align:center;justify-content:center}}
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --card-border: #222f4c;
+      --primary: #38bdf8;
+      --accent: #818cf8;
+      --text: #f8fafc;
+      --text-dim: #94a3b8;
+      --success: #34d399;
+      --danger: #f87171;
+      --input-bg: #0b1120;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 12px;
+      padding-bottom: 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    /* Live Rate Bar */
+    .rate-banner {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .rate-banner span {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .rate-banner b {
+      color: var(--success);
+      font-size: 15px;
+    }
+
+    .btn-refresh {
+      background: var(--primary);
+      border: none;
+      color: #0b0f19;
+      font-weight: bold;
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Top Summary Cards */
+    .stats-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 12px;
+      border-radius: 10px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .stat-val {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* Action Buttons */
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-add {
+      background: var(--primary);
+      color: #0b0f19;
+    }
+
+    .btn-export {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+
+    /* Vertical Cards */
+    .tx-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    .tx-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .tx-index {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .btn-del {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 18px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group.full {
+      grid-column: span 2;
+    }
+
+    label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    input {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 9px 10px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    /* Read-Only Calculation Box */
+    .calc-box {
+      background: rgba(56, 189, 248, 0.05);
+      border: 1px dashed rgba(56, 189, 248, 0.3);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .calc-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .calc-item .c-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .calc-item .c-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .calc-item.bal {
+      grid-column: span 2;
+      border-top: 1px solid var(--card-border);
+      padding-top: 6px;
+      margin-top: 2px;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .calc-item.bal .c-val {
+      font-size: 16px;
+      color: var(--primary);
+    }
   </style>
 </head>
 <body>
-  <main class="container">
-    <header><h1>TT Accounts & Commission Ledger</h1><p>Real-time commission conversion and running balance tracking</p></header>
-    <section class="stats" aria-label="Ledger summary">
-      <div class="card"><div class="label">Total Turnover (USD)</div><div id="totalUsd" class="value">$0.00</div></div>
-      <div class="card"><div class="label">Total Commission (LKR)</div><div id="totalLkr" class="value">0.00 LKR</div></div>
-      <div class="card"><div class="label">Total Received (QR)</div><div id="totalReceived" class="value received">0.00 QR</div></div>
-      <div class="card"><div class="label">Net Outstanding Balance (QR)</div><div id="totalBalance" class="value balance">0.00 QR</div></div>
-    </section>
-    <div class="toolbar">
-      <button id="addRow" type="button">+ Add New Row</button>
-      <button id="exportCsv" class="secondary" type="button">Export CSV</button>
-      <label class="file-label">Import CSV<input id="importCsv" type="file" accept=".csv,text/csv"></label>
+
+  <header>
+    <h1>TT Accounts Ledger</h1>
+    <p style="font-size: 12px; color: var(--text-dim);">Live Currency & Touch Friendly</p>
+  </header>
+
+  <!-- Live Rate Indicator -->
+  <div class="rate-banner">
+    <div>
+      <span>Live Market Rate (QAR $\rightarrow$ LKR):</span><br/>
+      1 QAR = <b id="market-rate-text">Fetching...</b>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Date</th><th>Details / Counterparty</th><th class="num">USD Amount</th><th class="num">COM Rate</th><th class="num">TOTAL COM IN LKR</th><th class="num">Conversion Rate</th><th class="num">Commission in QR</th><th class="num">Received in QR</th><th class="num">Running Balance QR</th><th>Remarks</th><th aria-label="Actions"></th></tr></thead>
-        <tbody id="ledgerBody"></tbody>
-      </table>
+    <button class="btn-refresh" onclick="fetchLiveRate()">⟳ Refresh</button>
+  </div>
+
+  <!-- Summary Dashboard -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-label">Total Turnover</div>
+      <div class="stat-val" id="stat-usd">$0.00</div>
     </div>
-  </main>
-<script>
-  const seed=[
-    {date:'11/08',details:'THUAN DAO',usd:16000,comRate:1.5,conversionRate:83,received:0,remarks:''},
-    {date:'20/08',details:'AADIL GLOBAL PTE LTD',usd:18000,comRate:1.5,conversionRate:83,received:0,remarks:''},
-    {date:'04/09',details:'AADIL GLOBAL PTE LTD',usd:24600,comRate:1.5,conversionRate:83,received:0,remarks:''},
-    {date:'21/09/2025',details:'Received frm Thami',usd:0,comRate:1.5,conversionRate:83,received:510,remarks:'ABDULLAH'}
-  ];
-  let rows=seed.map(x=>({...x}));
-  const body=document.getElementById('ledgerBody');
-  const n=v=>{const x=Number.parseFloat(v);return Number.isFinite(x)?x:0};
-  const money=(v,d=2)=>n(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
-  const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function recalculate(){
-    let balance=0,usdTotal=0,lkrTotal=0,receivedTotal=0; body.innerHTML='';
-    rows.forEach((r,i)=>{
-      const usd=n(r.usd), rate=n(r.comRate), conversion=n(r.conversionRate)||1, received=n(r.received);
-      const lkr=usd*rate, commission=conversion>0?lkr/conversion:0; balance+=commission-received; usdTotal+=usd; lkrTotal+=lkr; receivedTotal+=received;
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td><input data-i="${i}" data-field="date" type="text" value="${escapeHtml(r.date)}"></td><td><input data-i="${i}" data-field="details" type="text" value="${escapeHtml(r.details)}"></td><td><input data-i="${i}" data-field="usd" class="num" type="number" step="any" value="${r.usd}"></td><td><input data-i="${i}" data-field="comRate" class="num" type="number" step="any" value="${r.comRate}"></td><td class="num readonly">${money(lkr)}</td><td><input data-i="${i}" data-field="conversionRate" class="num" type="number" step="any" value="${r.conversionRate}"></td><td class="num readonly">${money(commission)}</td><td><input data-i="${i}" data-field="received" class="num" type="number" step="any" value="${r.received}"></td><td class="num running">${money(balance)}</td><td><input data-i="${i}" data-field="remarks" type="text" value="${escapeHtml(r.remarks)}"></td><td><button class="delete" data-delete="${i}" type="button" title="Delete row">✕</button></td>`;
-      body.appendChild(tr);
-    });
-    if(!rows.length) body.innerHTML='<tr><td class="empty" colspan="11">No ledger rows. Select “Add New Row” to begin.</td></tr>';
-    document.getElementById('totalUsd').textContent='$'+money(usdTotal); document.getElementById('totalLkr').textContent=money(lkrTotal)+' LKR'; document.getElementById('totalReceived').textContent=money(receivedTotal)+' QR'; document.getElementById('totalBalance').textContent=money(balance)+' QR';
-  }
-  body.addEventListener('input',e=>{const el=e.target;if(!el.dataset.field)return;const i=Number(el.dataset.i);rows[i][el.dataset.field]=el.type==='number'?n(el.value):el.value;recalculate();const inputs=body.querySelectorAll(`[data-i="${i}"]`);const focus=[...inputs].find(x=>x.dataset.field===el.dataset.field);if(focus){focus.focus();focus.setSelectionRange?.(focus.value.length,focus.value.length)}});
-  body.addEventListener('click',e=>{const button=e.target.closest('[data-delete]');if(button){rows.splice(Number(button.dataset.delete),1);recalculate()}});
-  document.getElementById('addRow').addEventListener('click',()=>{rows.push({date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit'}),details:'',usd:0,comRate:1.5,conversionRate:83,received:0,remarks:''});recalculate()});
-  function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
-  document.getElementById('exportCsv').addEventListener('click',()=>{let balance=0;const out=[['Date','Details / Counterparty','USD Amount','COM Rate','TOTAL COM IN LKR','Conversion Rate','Commission in QR','Received in QR','Running Balance QR','Remarks'].map(csvCell).join(',')];rows.forEach(r=>{const usd=n(r.usd),rate=n(r.comRate),conversion=n(r.conversionRate)||1,received=n(r.received),lkr=usd*rate,commission=conversion>0?lkr/conversion:0;balance+=commission-received;out.push([r.date,r.details,usd,rate,lkr.toFixed(2),conversion,commission.toFixed(2),received,balance.toFixed(2),r.remarks].map(csvCell).join(','))});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out.join('\n')],{type:'text/csv;charset=utf-8'}));a.download='TT_Accounts_Export.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0)});
-  function parseCsv(line){const result=[];let value='',quoted=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'&&line[i+1]==='"'&&quoted){value+='"';i++}else if(c==='"'){quoted=!quoted}else if(c===','&&!quoted){result.push(value);value=''}else value+=c}result.push(value);return result}
-  document.getElementById('importCsv').addEventListener('change',e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const lines=String(reader.result).split(/\r?\n/).filter(x=>x.trim());const imported=lines.slice(1).map(parseCsv).filter(c=>c.length>=8).map(c=>({date:c[0],details:c[1],usd:n(c[2]),comRate:n(c[3])||1.5,conversionRate:n(c[5])||83,received:n(c[7]),remarks:c[9]||''}));if(imported.length){rows=imported;recalculate()}e.target.value=''};reader.readAsText(file)});
-  recalculate();
-</script>
+    <div class="stat-card">
+      <div class="stat-label">Commission (LKR)</div>
+      <div class="stat-val" id="stat-lkr" style="color: var(--accent);">0.00</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Received</div>
+      <div class="stat-val" id="stat-rec" style="color: var(--danger);">0.00 QR</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Balance Due</div>
+      <div class="stat-val" id="stat-bal" style="color: var(--primary);">0.00 QR</div>
+    </div>
+  </div>
+
+  <!-- Action Controls -->
+  <div class="actions">
+    <button class="btn btn-add" onclick="addNewEntry()">+ New Entry</button>
+    <button class="btn btn-export" onclick="exportData()">Export CSV</button>
+  </div>
+
+  <!-- Vertical Cards Container -->
+  <div id="tx-list"></div>
+
+  <script>
+    let globalLiveRate = 83.00; // default fallback
+
+    // Default Seed Data
+    let defaultData = [
+      { date: "2026-08-11", details: "THUAN DAO", usd: 16000, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { date: "2026-08-20", details: "AADIL GLOBAL PTE LTD", usd: 18000, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { date: "2026-09-04", details: "AADIL GLOBAL PTE LTD", usd: 24600, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
+      { date: "2026-09-21", details: "Received frm Thami", usd: 0, comRate: 1.5, convRate: 83.0, received: 510, remarks: "ABDULLAH" }
+    ];
+
+    let transactions = JSON.parse(localStorage.getItem("tt_data")) || defaultData;
+
+    // Fetch Live Rate from public API
+    async function fetchLiveRate() {
+      const textElem = document.getElementById("market-rate-text");
+      textElem.textContent = "Updating...";
+      try {
+        const res = await fetch("https://open.er-api.com/v6/latest/QAR");
+        const data = await res.json();
+        if (data && data.rates && data.rates.LKR) {
+          globalLiveRate = parseFloat(data.rates.LKR.toFixed(2));
+          textElem.textContent = globalLiveRate + " LKR";
+        } else {
+          throw new Error("Invalid format");
+        }
+      } catch (err) {
+        globalLiveRate = 83.00;
+        textElem.textContent = "83.00 LKR (Offline)";
+      }
+    }
+
+    function fmt(n) {
+      return (Number(n) || 0).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function saveAndRender() {
+      localStorage.setItem("tt_data", JSON.stringify(transactions));
+      renderList();
+    }
+
+    function renderList() {
+      const container = document.getElementById("tx-list");
+      container.innerHTML = "";
+
+      let runningBal = 0;
+      let totalUsd = 0;
+      let totalLkr = 0;
+      let totalRec = 0;
+
+      transactions.forEach((tx, idx) => {
+        const usd = parseFloat(tx.usd) || 0;
+        const comRate = parseFloat(tx.comRate) || 0;
+        const convRate = parseFloat(tx.convRate) || globalLiveRate;
+        const received = parseFloat(tx.received) || 0;
+
+        const comLkr = usd * comRate;
+        const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+        runningBal += comQr - received;
+
+        totalUsd += usd;
+        totalLkr += comLkr;
+        totalRec += received;
+
+        const card = document.createElement("div");
+        card.className = "tx-card";
+        card.innerHTML = `
+          <div class="tx-header">
+            <span class="tx-index">#${idx + 1} TRANSACTION</span>
+            <button class="btn-del" onclick="deleteEntry(${idx})">✕</button>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" value="${tx.date || ''}" onchange="updateVal(${idx}, 'date', this.value)">
+            </div>
+            <div class="form-group">
+              <label>USD Amount</label>
+              <input type="number" step="any" value="${tx.usd ?? ''}" placeholder="0.00" oninput="updateVal(${idx}, 'usd', this.value)">
+            </div>
+          </div>
+
+          <div class="form-group full" style="margin-bottom: 8px;">
+            <label>Details / Counterparty</label>
+            <input type="text" value="${tx.details || ''}" placeholder="Client or company name" onchange="updateVal(${idx}, 'details', this.value)">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>COM Rate</label>
+              <input type="number" step="any" value="${tx.comRate ?? 1.5}" oninput="updateVal(${idx}, 'comRate', this.value)">
+            </div>
+            <div class="form-group">
+              <label>Conv. Rate (LKR/QR)</label>
+              <input type="number" step="any" value="${tx.convRate ?? globalLiveRate}" oninput="updateVal(${idx}, 'convRate', this.value)">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Received (QR)</label>
+              <input type="number" step="any" value="${tx.received ?? ''}" placeholder="0.00" oninput="updateVal(${idx}, 'received', this.value)">
+            </div>
+            <div class="form-group">
+              <label>Remarks</label>
+              <input type="text" value="${tx.remarks || ''}" placeholder="Notes" onchange="updateVal(${idx}, 'remarks', this.value)">
+            </div>
+          </div>
+
+          <div class="calc-box">
+            <div class="calc-item">
+              <span class="c-label">Commission (LKR)</span>
+              <span class="c-val">${fmt(comLkr)}</span>
+            </div>
+            <div class="calc-item">
+              <span class="c-label">Commission (QR)</span>
+              <span class="c-val">${fmt(comQr)}</span>
+            </div>
+            <div class="calc-item bal">
+              <span class="c-label">Balance After Row</span>
+              <span class="c-val">${fmt(runningBal)} QR</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      document.getElementById("stat-usd").textContent = "$" + fmt(totalUsd);
+      document.getElementById("stat-lkr").textContent = fmt(totalLkr);
+      document.getElementById("stat-rec").textContent = fmt(totalRec) + " QR";
+      document.getElementById("stat-bal").textContent = fmt(runningBal) + " QR";
+    }
+
+    function updateVal(index, field, value) {
+      if (['usd', 'comRate', 'convRate', 'received'].includes(field)) {
+        transactions[index][field] = value === '' ? '' : parseFloat(value);
+      } else {
+        transactions[index][field] = value;
+      }
+      saveAndRender();
+    }
+
+    function addNewEntry() {
+      const today = new Date().toISOString().split("T")[0];
+      transactions.unshift({
+        date: today,
+        details: "",
+        usd: "",
+        comRate: 1.5,
+        convRate: globalLiveRate,
+        received: "",
+        remarks: ""
+      });
+      saveAndRender();
+      window.scrollTo({ top: 180, behavior: 'smooth' });
+    }
+
+    function deleteEntry(index) {
+      if (confirm("Delete this entry?")) {
+        transactions.splice(index, 1);
+        saveAndRender();
+      }
+    }
+
+    function exportData() {
+      let csv = "Date,Details,USD,COM Rate,LKR Rate,Received QR,Remarks\n";
+      transactions.forEach(t => {
+        csv += `"${t.date}","${t.details}",${t.usd || 0},${t.comRate || 1.5},${t.convRate || globalLiveRate},${t.received || 0},"${t.remarks || ''}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `TT_Accounts_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
+    // Init
+    (async () => {
+      await fetchLiveRate();
+      renderList();
+    })();
+  </script>
 </body>
 </html>
