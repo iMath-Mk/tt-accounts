@@ -3,62 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Enterprise Ledger Portal</title>
+  <title>iMk BLACK MARKET LEDGER - Enterprise Edition</title>
   <style>
     :root {
-      --bg-main: #0a0e17;
-      --card-bg: #121824;
+      --bg: #070a12;
+      --card-bg: #0f172a;
       --card-border: #1e293b;
-      --primary: #0ea5e9;
-      --primary-focus: #0284c7;
-      --accent: #6366f1;
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --accent: #818cf8;
       --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --input-bg: #0b111e;
+      --text-dim: #94a3b8;
+      --success: #34d399;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --input-bg: #0b1120;
+      --dup-red: rgba(239, 68, 68, 0.2);
+      --dup-red-border: #ef4444;
+      --dup-yellow: rgba(245, 158, 11, 0.2);
+      --dup-yellow-border: #f59e0b;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
     }
 
     [data-theme="light"] {
-      --bg-main: #f8fafc;
+      --bg: #f8fafc;
       --card-bg: #ffffff;
-      --card-border: #e2e8f0;
+      --card-border: #cbd5e1;
       --primary: #0284c7;
-      --primary-focus: #0369a1;
-      --accent: #4f46e5;
+      --primary-hover: #0369a1;
+      --accent: #6366f1;
       --text: #0f172a;
-      --text-muted: #64748b;
+      --text-dim: #64748b;
       --success: #059669;
       --danger: #dc2626;
       --warning: #d97706;
       --input-bg: #f1f5f9;
+      --dup-red: #fee2e2;
+      --dup-red-border: #ef4444;
+      --dup-yellow: #fef3c7;
+      --dup-yellow-border: #f59e0b;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background-color: var(--bg-main);
+      background-color: var(--bg);
       color: var(--text);
       padding: 12px;
-      padding-bottom: 90px;
+      padding-bottom: 95px;
       min-height: 100vh;
-      transition: background-color 0.2s, color 0.2s;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-    /* Modals & Slide-out Panels */
+    /* Modals & Overlays */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -68,33 +78,35 @@
     .modal-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: 16px;
+      padding: 22px;
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
 
+    /* Side Drawer Navigation */
     .drawer {
       position: fixed;
-      top: 0; left: -300px;
-      width: 280px;
+      top: 0; left: -310px;
+      width: 290px;
       height: 100%;
       background: var(--card-bg);
       border-right: 1px solid var(--card-border);
       z-index: 10000;
-      transition: left 0.25s ease-in-out;
+      transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
       padding: 20px 16px;
+      box-shadow: 6px 0 30px rgba(0,0,0,0.6);
     }
     .drawer.open { left: 0; }
     .drawer-backdrop {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.65);
       z-index: 9998;
       display: none;
     }
@@ -103,46 +115,118 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 12px;
+      padding-bottom: 14px;
       border-bottom: 1px solid var(--card-border);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .drawer-nav-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       padding: 12px 14px;
-      border-radius: 8px;
+      border-radius: 10px;
       color: var(--text);
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       margin-bottom: 4px;
+      transition: background 0.15s ease, color 0.15s ease;
     }
-    .drawer-nav-item.active {
-      background: rgba(14, 165, 233, 0.15);
+    .drawer-nav-item:hover, .drawer-nav-item.active {
+      background: rgba(56, 189, 248, 0.12);
       color: var(--primary);
     }
 
-    /* App Nav */
+    /* Corporate Nav Bar */
     .app-nav {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px 14px;
+      border-radius: 14px;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
+      box-shadow: var(--shadow);
     }
     .brand-title {
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--primary);
       letter-spacing: 0.5px;
     }
 
-    /* Cards & Stats */
+    /* Toolbars */
+    .history-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 8px 12px;
+      border-radius: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Month Selector Pill Bar */
+    .month-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .month-bar::-webkit-scrollbar { display: none; }
+    .month-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-dim);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 15px;
+      border-radius: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .month-pill.active {
+      background: var(--primary);
+      color: #070a12;
+      border-color: var(--primary);
+      font-weight: 800;
+    }
+
+    /* Company Dropdown Bar */
+    .company-bar {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .company-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .company-logo-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+    }
+
+    /* Summary Stats Grid */
     .stats-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -152,22 +236,24 @@
     .stat-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      padding: 12px;
-      border-radius: 10px;
+      padding: 14px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
     }
     .stat-label {
       font-size: 10px;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: var(--text-dim);
       margin-bottom: 4px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
     .stat-val {
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 800;
     }
 
-    /* Form Fields */
+    /* Forms & Inputs */
     .form-group {
       display: flex;
       flex-direction: column;
@@ -183,9 +269,10 @@
     .form-group.full { grid-column: span 2; }
     label {
       font-size: 11px;
-      color: var(--text-muted);
+      color: var(--text-dim);
       text-transform: uppercase;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.3px;
     }
     input, select, textarea {
       background: var(--input-bg);
@@ -196,60 +283,166 @@
       font-size: 14px;
       outline: none;
       width: 100%;
+      transition: border-color 0.2s;
     }
     input:focus, select:focus, textarea:focus {
       border-color: var(--primary);
     }
 
-    /* Badges & Buttons */
+    /* Ledger Transaction Cards */
+    .tx-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      transition: border 0.2s, background 0.2s;
+      box-shadow: var(--shadow);
+    }
+    .tx-card.dup-full {
+      border: 2px solid var(--dup-red-border) !important;
+      background: var(--dup-red) !important;
+    }
+    .tx-card.dup-amt {
+      border: 2px solid var(--dup-yellow-border) !important;
+      background: var(--dup-yellow) !important;
+    }
+    .tx-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .calc-box {
+      background: rgba(56, 189, 248, 0.04);
+      border: 1px dashed rgba(56, 189, 248, 0.35);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .calc-item { display: flex; flex-direction: column; }
+    .calc-item .c-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
+    .calc-item .c-val { font-size: 13px; font-weight: 700; }
+    .calc-item.bal {
+      grid-column: span 2;
+      border-top: 1px solid var(--card-border);
+      padding-top: 8px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .calc-item.bal .c-val { font-size: 16px; color: var(--primary); font-weight: 800; }
+
+    /* Badges */
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 3px 8px;
+      padding: 4px 8px;
       font-size: 10px;
-      font-weight: 700;
-      border-radius: 4px;
+      font-weight: 800;
+      border-radius: 6px;
+      letter-spacing: 0.3px;
     }
-    .badge-success { background: var(--success); color: #fff; }
-    .badge-warning { background: var(--warning); color: #000; }
     .badge-danger { background: var(--danger); color: #fff; }
+    .badge-warning { background: var(--warning); color: #000; }
+    .badge-success { background: var(--success); color: #000; }
+    .badge-verified { background: #059669; color: #fff; }
 
+    /* Buttons */
     .btn {
       width: 100%;
-      padding: 10px 14px;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: 10px;
       border: none;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 13px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      touch-action: manipulation;
     }
-    .btn-primary { background: var(--primary); color: #0a0e17; }
+    .btn:active { opacity: 0.85; }
+    .btn-primary { background: var(--primary); color: #070a12; }
     .btn-secondary { background: var(--card-bg); color: var(--text); border: 1px solid var(--card-border); }
+    .btn-ai { background: linear-gradient(135deg, #6366f1, #38bdf8); color: #fff; font-weight: 800; }
     .btn-danger { background: var(--danger); color: #fff; }
-    .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 6px; width: auto; }
+    .btn-success { background: var(--success); color: #070a12; }
+    .btn-sm { padding: 6px 10px; font-size: 11px; border-radius: 6px; width: auto; font-weight: 700; }
 
-    /* Gallery Attachment Preview Box */
-    .attachment-preview {
+    /* Auth Box */
+    .auth-container {
+      max-width: 420px;
+      margin: 24px auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .auth-toggle {
       display: flex;
-      gap: 8px;
-      align-items: center;
       background: var(--input-bg);
-      border: 1px dashed var(--card-border);
-      padding: 8px;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+    .auth-toggle button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 13px;
+      font-weight: 700;
       border-radius: 8px;
+      cursor: pointer;
+    }
+    .auth-toggle button.active { background: var(--primary); color: #070a12; }
+
+    /* Proof Image Preview */
+    .proof-preview-box {
+      border: 1px dashed var(--card-border);
+      border-radius: 8px;
+      padding: 8px;
+      background: var(--input-bg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
       margin-top: 6px;
     }
-    .attachment-thumb {
-      width: 48px;
-      height: 48px;
-      border-radius: 4px;
+    .proof-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
       object-fit: cover;
       cursor: pointer;
+      border: 1px solid var(--card-border);
+    }
+
+    /* Print Template */
+    @media print {
+      body * { visibility: hidden; }
+      #printable-letterhead, #printable-letterhead * { visibility: visible; }
+      #printable-letterhead {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        color: #000 !important;
+        background: #fff !important;
+        padding: 20px;
+        display: block !important;
+      }
     }
 
     .hidden { display: none !important; }
@@ -257,242 +450,604 @@
 </head>
 <body>
 
-  <!-- Menu Drawer -->
+  <!-- ==================== DRAWER NAVIGATION ==================== -->
   <div class="drawer-backdrop" id="drawer-backdrop" onclick="toggleMenuDrawer(false)"></div>
   <div class="drawer" id="side-drawer">
     <div class="drawer-header">
       <div>
-        <div style="font-weight: 700; color: var(--primary); font-size: 15px;">Enterprise Portal</div>
-        <div style="font-size: 11px; color: var(--text-muted);" id="drawer-user-info">Logged In</div>
+        <div style="font-weight: 800; color: var(--primary); font-size: 16px;">iMk LEDGER</div>
+        <div style="font-size: 11px; color: var(--text-dim);" id="drawer-user-info">Logged In</div>
       </div>
       <button type="button" class="btn-sm btn-secondary" onclick="toggleMenuDrawer(false)">✕</button>
     </div>
+
     <div style="flex: 1; overflow-y: auto;">
       <div class="drawer-nav-item active" onclick="switchView('ledger')">📊 Live Ledger</div>
-      <div class="drawer-nav-item" onclick="switchView('profile')">👤 Profile & KYC</div>
-      <div class="drawer-nav-item" id="menu-user-access" onclick="switchView('access')">🛡️ Verification & Gallery Vault</div>
-      <div class="drawer-nav-item" onclick="switchView('settings')">📜 Audit Logs</div>
+      <div class="drawer-nav-item" onclick="switchView('companies')">🏢 Companies Manager</div>
+      <div class="drawer-nav-item" onclick="switchView('profile')">👤 My Profile & KYC</div>
+      <div class="drawer-nav-item" id="menu-user-access" onclick="switchView('access')">🛡️ User Access & Verify</div>
+      <div class="drawer-nav-item" onclick="switchView('support')">💬 Support & Help</div>
+      <div class="drawer-nav-item" onclick="switchView('settings')">⚙️ Settings & System</div>
     </div>
+
     <div style="padding-top: 12px; border-top: 1px solid var(--card-border);">
       <button type="button" class="btn btn-danger btn-sm" style="width: 100%;" onclick="doLogout()">Log Out</button>
     </div>
   </div>
 
-  <!-- Document Viewer Modal -->
-  <div id="viewer-modal" class="modal-overlay hidden">
+  <!-- ==================== DOCUMENT INSPECTION MODAL ==================== -->
+  <div id="document-viewer-modal" class="modal-overlay hidden">
     <div class="modal-card" style="text-align: center;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <b style="font-size:13px;" id="viewer-title">Document Inspection</b>
-        <button type="button" class="btn-sm btn-secondary" onclick="document.getElementById('viewer-modal').classList.add('hidden')">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <b style="font-size:14px; color:var(--primary);" id="doc-viewer-title">Document Inspection</b>
+        <button type="button" class="btn-sm btn-secondary" onclick="document.getElementById('document-viewer-modal').classList.add('hidden')">✕</button>
       </div>
-      <img id="viewer-img" src="" style="max-width:100%; max-height:65vh; object-fit:contain; border-radius:6px; border:1px solid var(--card-border);" />
-      <div style="margin-top:12px; display:flex; gap:8px;">
-        <a id="viewer-download" href="" download="verified_document" class="btn btn-primary btn-sm" style="flex:1; text-decoration:none;">Download Original</a>
+      <img id="doc-viewer-img" src="" style="max-width:100%; max-height:65vh; object-fit:contain; border-radius:8px; border:1px solid var(--card-border);" />
+      <div style="margin-top:14px; display:flex; gap:8px;">
+        <a id="doc-viewer-download" href="" download="verified_document" class="btn btn-primary btn-sm" style="flex:1; text-decoration:none;">Download File</a>
       </div>
     </div>
   </div>
 
-  <!-- Auth View -->
+  <!-- ==================== AI FILE SCANNER MODAL ==================== -->
+  <div id="ai-extractor-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 style="color:var(--primary); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+        ⚡ AI File Scanner & Extractor
+      </h3>
+      <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
+        Upload TT slips, bank receipts, or invoices (up to 100MB). AI will extract Date, Amounts, and details straight into the ledger.
+      </p>
+
+      <div class="form-group">
+        <label>Select Files (Max 100MB Total)</label>
+        <input type="file" id="ai-file-input" multiple accept=".pdf,.png,.jpg,.jpeg,.csv,.xlsx,.txt" style="padding:8px;">
+        <div id="ai-size-text" style="font-size:11px; color:var(--text-dim); margin-top:4px;">0.00 MB / 100 MB</div>
+      </div>
+
+      <div id="ai-preview-box" class="hidden" style="margin-top:10px;">
+        <div style="font-size:11px; color:var(--success); font-weight:700; text-transform:uppercase; margin-bottom:6px;">
+          Extracted Results:
+        </div>
+        <div id="ai-preview-items" style="max-height:160px; overflow-y:auto; background:var(--input-bg); border:1px solid var(--card-border); border-radius:8px; padding:8px; font-size:12px;"></div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('ai-extractor-modal').classList.add('hidden')">Cancel</button>
+        <button type="button" class="btn btn-ai" id="btn-run-ai-extract">Extract & Verify</button>
+      </div>
+      <button type="button" class="btn btn-success hidden" id="btn-apply-ai-results" style="margin-top:8px;">
+        ✓ File to Company Ledger
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== ADD COMPANY MODAL ==================== -->
+  <div id="company-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 style="color:var(--primary); margin-bottom:12px;">🏢 Add Company / Client</h3>
+      <div class="form-group">
+        <label>Company / Client Name</label>
+        <input type="text" id="comp-name" placeholder="e.g. Client One, Dummy Co">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contact Person</label>
+          <input type="text" id="comp-contact" placeholder="Contact person">
+        </div>
+        <div class="form-group">
+          <label>Contact Phone</label>
+          <input type="tel" id="comp-phone" placeholder="Phone number">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Company Logo Image</label>
+        <input type="file" id="comp-logo-input" accept="image/*" style="padding:6px;">
+      </div>
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('company-modal').classList.add('hidden')">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-save-company">Save Company</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PRINT LETTERHEAD TEMPLATE ==================== -->
+  <div id="printable-letterhead" class="hidden" style="background:#fff; color:#000; padding:25px; position:relative; min-height:1000px; font-size:12px;">
+    <div id="watermark-logo-container" style="position:absolute; top:35%; left:50%; transform:translate(-50%, -50%); opacity:0.07; z-index:0; pointer-events:none; text-align:center;">
+      <img id="watermark-logo-img" src="" style="max-width:340px; max-height:340px; filter: grayscale(100%);">
+      <h1 style="font-size: 40px; letter-spacing: 2px; margin-top:10px;">iMk LEDGER</h1>
+    </div>
+
+    <div style="position:relative; z-index:1;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #000; padding-bottom:12px; margin-bottom:14px;">
+        <div style="display:flex; gap:12px; align-items:center;">
+          <img id="print-company-logo" src="" style="width:55px; height:55px; object-fit:contain; border-radius:4px;">
+          <div>
+            <h2 id="print-company-name" style="font-size:18px; text-transform:uppercase; margin-bottom:2px;">COMPANY NAME</h2>
+            <div id="print-company-contact" style="color:#555; font-size:11px;">Attn: Contact Name | Phone: 00000000</div>
+            <div style="font-size:10px; color:#777;">Official Statement - Financial Year 2026</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <h3 style="font-size:14px; color:#0284c7; margin-bottom:2px;">MONTHLY STATEMENT</h3>
+          <div id="print-statement-month" style="font-weight:bold; font-size:13px;">Month: ALL</div>
+          <div id="print-timestamp" style="font-size:10px; color:#666; margin-top:2px;">Generated: 2026-01-01</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; margin-bottom:15px; text-align:center;">
+        <div style="border:1px solid #ccc; padding:8px; border-radius:4px; background:#f9f9f9;">
+          <div style="font-size:9px; color:#666; text-transform:uppercase;">Turnover USD</div>
+          <b id="print-stat-usd" style="font-size:13px;">$0.00</b>
+        </div>
+        <div style="border:1px solid #ccc; padding:8px; border-radius:4px; background:#f9f9f9;">
+          <div style="font-size:9px; color:#666; text-transform:uppercase;">COM in LKR</div>
+          <b id="print-stat-lkr" style="font-size:13px;">0.00</b>
+        </div>
+        <div style="border:1px solid #ccc; padding:8px; border-radius:4px; background:#f9f9f9;">
+          <div style="font-size:9px; color:#666; text-transform:uppercase;">Received QR</div>
+          <b id="print-stat-rec" style="font-size:13px; color:#b91c1c;">0.00</b>
+        </div>
+        <div style="border:1px solid #0284c7; padding:8px; border-radius:4px; background:#e0f2fe;">
+          <div style="font-size:9px; color:#0369a1; text-transform:uppercase; font-weight:bold;">Net Due QR</div>
+          <b id="print-stat-bal" style="font-size:14px; color:#0369a1;">0.00</b>
+        </div>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; font-size:10px; margin-bottom:25px;" id="print-table">
+        <thead>
+          <tr style="background:#0f172a; color:#fff;">
+            <th style="border:1px solid #334155; padding:6px 4px;">Tx #</th>
+            <th style="border:1px solid #334155; padding:6px 4px;">Date</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:left;">Details / Client</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">USD</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">Rate</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">COM (LKR)</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">Conv.</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">COM (QR)</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">Rec (QR)</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">Balance (QR)</th>
+          </tr>
+        </thead>
+        <tbody id="print-table-body"></tbody>
+      </table>
+
+      <div style="position:relative; margin-top:30px; border-top:1px dashed #999; padding-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:10px; color:#555;">
+        <div><b>Notice:</b> Computer generated statement. No physical signature required.</div>
+        <div><b>iMk BLACK MARKET LEDGER</b> | info@ideas.limited</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== AUTHENTICATION VIEW ==================== -->
   <div id="view-auth">
-    <div style="max-width: 400px; margin: 30px auto; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px;">
-      <div style="text-align: center; margin-bottom: 16px;">
-        <h2 style="color: var(--primary); font-size: 18px;">Enterprise Ledger Portal</h2>
-        <p style="font-size: 12px; color: var(--text-muted);">Sign in to access corporate accounting</p>
+    <div class="auth-container">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div style="font-size:18px; font-weight:800; color:var(--primary);">iMk LEDGER</div>
+        <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓 Theme</button>
       </div>
 
-      <div class="form-group">
-        <label>Account ID / Email</label>
-        <input type="text" id="login-username" placeholder="Username or Email" />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="login-password" placeholder="Password" />
+      <div class="auth-toggle">
+        <button type="button" id="btn-tab-admin" class="active">Admin Login</button>
+        <button type="button" id="btn-tab-member">Members Login</button>
       </div>
 
-      <button type="button" class="btn btn-primary" id="btn-login" style="margin-top: 10px;">Sign In</button>
+      <!-- Admin Login Form -->
+      <div id="admin-login-form">
+        <div class="form-group">
+          <label>Admin Username</label>
+          <input type="text" id="admin-email" placeholder="admin@1994.info" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="admin-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-do-admin-login" style="margin-top:10px;">Secure Admin Login</button>
+      </div>
+
+      <!-- Member Portal Form -->
+      <div id="member-portal-form" class="hidden">
+        <div style="display:flex; gap:8px; margin-bottom:14px;">
+          <button type="button" id="btn-sub-login" class="btn btn-sm btn-primary" style="flex:1;">Sign In</button>
+          <button type="button" id="btn-sub-signup" class="btn btn-sm btn-secondary" style="flex:1;">Sign Up</button>
+        </div>
+
+        <div id="member-login-box">
+          <div class="form-group">
+            <label>Email or Mobile</label>
+            <input type="text" id="member-login-id" placeholder="Enter email or mobile">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="member-login-pass" placeholder="Enter password">
+          </div>
+          <button type="button" class="btn btn-primary" id="btn-do-member-login" style="margin-top:8px;">Sign In</button>
+        </div>
+
+        <div id="member-signup-box" class="hidden">
+          <div class="form-group">
+            <label>Full Legal Name</label>
+            <input type="text" id="signup-name" placeholder="Full name">
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="signup-email" placeholder="Email address">
+          </div>
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" id="signup-phone" placeholder="Mobile with country code">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="signup-pass" placeholder="Create password">
+          </div>
+          <button type="button" class="btn btn-primary" id="btn-do-member-signup" style="margin-top:8px;">Register Account</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Main Portal -->
+  <!-- ==================== MAIN DASHBOARD CONTAINER ==================== -->
   <div id="view-app" class="hidden">
     <div class="app-nav">
       <div style="display:flex; align-items:center; gap:10px;">
-        <button type="button" class="btn-sm btn-secondary" onclick="toggleMenuDrawer(true)">☰ Menu</button>
+        <button type="button" class="btn-sm btn-secondary" onclick="toggleMenuDrawer(true)" style="font-size:15px; padding:6px 12px;">☰ Menu</button>
         <div>
-          <div class="brand-title">CORPORATE LEDGER</div>
-          <div style="font-size: 10px; color: var(--text-muted);" id="user-role-badge">Corporate User</div>
+          <div class="brand-title">iMk BLACK MARKET LEDGER</div>
+          <div style="font-size:10px; color:var(--text-dim);" id="app-user-role-badge">Admin Portal</div>
         </div>
       </div>
-      <button type="button" class="btn-sm btn-secondary" onclick="cycleTheme()">🌓 Theme</button>
+      <div class="nav-actions">
+        <button type="button" class="btn-sm btn-ai" onclick="openAiExtractor()">⚡ AI Upload</button>
+        <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓</button>
+      </div>
     </div>
 
-    <!-- Section 1: Live Ledger -->
+    <!-- ================= VIEW 1: LIVE LEDGER ================= -->
     <div id="section-ledger">
+      <div class="history-toolbar">
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn-sm btn-secondary" id="btn-undo">⤺ Undo</button>
+          <button type="button" class="btn-sm btn-secondary" id="btn-redo">⤻ Forward</button>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);" id="history-status">Ready</div>
+      </div>
+
+      <div class="company-bar">
+        <div class="company-meta">
+          <img id="active-company-logo" class="company-logo-img" src="" alt="logo">
+          <div>
+            <select id="select-company" style="padding:6px 10px; font-weight:700; font-size:13px; max-width:180px;"></select>
+            <div style="font-size:10px; color:var(--text-dim);" id="active-company-contact">Attn: Contact</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn-sm btn-secondary" id="btn-print-letterhead">📄 Print Letterhead</button>
+        </div>
+      </div>
+
+      <!-- Month Selector (2026) -->
+      <div class="month-bar" id="month-pill-container">
+        <div class="month-pill active" data-month="all">All Months 2026</div>
+        <div class="month-pill" data-month="1">Jan 2026</div>
+        <div class="month-pill" data-month="2">Feb 2026</div>
+        <div class="month-pill" data-month="3">Mar 2026</div>
+        <div class="month-pill" data-month="4">Apr 2026</div>
+        <div class="month-pill" data-month="5">May 2026</div>
+        <div class="month-pill" data-month="6">Jun 2026</div>
+        <div class="month-pill" data-month="7">Jul 2026</div>
+        <div class="month-pill" data-month="8">Aug 2026</div>
+        <div class="month-pill" data-month="9">Sep 2026</div>
+        <div class="month-pill" data-month="10">Oct 2026</div>
+        <div class="month-pill" data-month="11">Nov 2026</div>
+        <div class="month-pill" data-month="12">Dec 2026</div>
+      </div>
+
+      <!-- Live Rate Conversion Bar -->
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="font-size:12px;">
+          Conversion: 1 QAR = <b id="live-rate-display" style="color:var(--success);">83.00 LKR</b>
+        </div>
+        <button type="button" class="btn-sm btn-secondary" onclick="fetchLiveRate()">⟳ Live Rate</button>
+      </div>
+
+      <!-- Stats Summary -->
       <div class="stats-container">
         <div class="stat-card">
-          <div class="stat-label">Total Turnover (USD)</div>
+          <div class="stat-label">Turnover (USD)</div>
           <div class="stat-val" id="stat-usd">$0.00</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Total Balance (QR)</div>
+          <div class="stat-label">Total COM (LKR)</div>
+          <div class="stat-val" id="stat-lkr" style="color:var(--accent);">0.00 LKR</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Received (QR)</div>
+          <div class="stat-val" id="stat-rec" style="color:var(--danger);">0.00 QR</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Net Balance (QR)</div>
           <div class="stat-val" id="stat-bal" style="color:var(--primary);">0.00 QR</div>
         </div>
       </div>
 
-      <div style="margin-bottom: 12px;">
-        <button type="button" class="btn btn-primary" id="btn-add-record">+ Add Ledger Record</button>
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <button type="button" class="btn btn-primary" id="btn-add-entry" style="flex:2;">+ New Entry</button>
+        <button type="button" class="btn btn-secondary" id="btn-export-csv" style="flex:1;">CSV Export</button>
       </div>
 
-      <div id="records-list"></div>
+      <div id="tx-cards-list"></div>
     </div>
 
-    <!-- Section 2: User Profile & KYC with Citizenship & Gallery Consent -->
+    <!-- ================= VIEW 2: COMPANIES MANAGER ================= -->
+    <div id="section-companies" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="font-size:16px; color:var(--primary);">🏢 Registered Companies</h3>
+        <button type="button" class="btn-sm btn-primary" id="btn-add-comp-trigger">+ Add Company</button>
+      </div>
+      <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
+        Only Administrator has permission to delete or amend registered companies and records.
+      </p>
+      <div id="companies-list-container"></div>
+    </div>
+
+    <!-- ================= VIEW 3: USER PROFILE & KYC ================= -->
     <div id="section-profile" class="hidden">
-      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
           <div>
-            <h3 style="font-size:15px; color:var(--primary);">Corporate Member Profile & KYC</h3>
-            <div style="font-size:11px; color:var(--text-muted);">Please provide accurate details for compliance verification.</div>
+            <h3 style="color:var(--primary); font-size:16px;">👤 User Profile & KYC Verification</h3>
+            <p style="font-size:11px; color:var(--text-dim);">Fill all fields to request Verified Member status.</p>
           </div>
-          <span id="kyc-badge" class="badge badge-warning">Pending Submission</span>
+          <span id="profile-status-badge" class="badge badge-warning">Unverified</span>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center; margin-bottom:14px;">
+          <img id="user-profile-avatar" src="" style="width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+          <div>
+            <input type="file" id="user-avatar-upload" accept="image/*" style="display:none;">
+            <button type="button" class="btn-sm btn-secondary" onclick="document.getElementById('user-avatar-upload').click()">Upload Photo</button>
+          </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Full Legal Name</label>
-            <input type="text" id="kyc-name" placeholder="Full legal name" />
+            <input type="text" id="prof-name" placeholder="Full name">
           </div>
           <div class="form-group">
             <label>Citizenship</label>
-            <input type="text" id="kyc-citizenship" placeholder="Country of Citizenship" />
+            <input type="text" id="prof-citizenship" placeholder="e.g. Sri Lankan, Qatari">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Date of Birth</label>
-            <input type="date" id="kyc-dob" />
+            <input type="date" id="prof-dob">
           </div>
           <div class="form-group">
             <label>Country of Birth</label>
-            <input type="text" id="kyc-cob" placeholder="Country of birth" />
+            <input type="text" id="prof-cob" placeholder="e.g. Sri Lanka">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Passport / National ID</label>
-            <input type="text" id="kyc-passport" placeholder="ID / Passport Number" />
+            <label>Passport / ID Number</label>
+            <input type="text" id="prof-passport" placeholder="Passport number">
           </div>
           <div class="form-group">
             <label>Profession / Title</label>
-            <input type="text" id="kyc-profession" placeholder="Corporate Title" />
+            <input type="text" id="prof-profession" placeholder="e.g. Broker, Merchant">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" id="prof-phone" placeholder="Mobile with country code">
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="prof-email" placeholder="Email address">
           </div>
         </div>
 
         <div class="form-group">
-          <label>Residential Address</label>
-          <input type="text" id="kyc-address" placeholder="Full residential street address" />
+          <label>Current Residence / City</label>
+          <input type="text" id="prof-residence" placeholder="City, Country">
         </div>
 
-        <!-- Explicit Gallery Upload with Confirmation -->
-        <div style="margin-top: 10px; border-top: 1px solid var(--card-border); padding-top: 10px;">
-          <label>Identity Document & Profile Proof (From Device Gallery)</label>
-          <p style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">
-            By selecting files below, you explicitly authorize uploading the designated documents to the administrator ledger vault.
-          </p>
-          <input type="file" id="kyc-gallery-input" accept="image/*" />
-          <div id="kyc-attachment-container" class="hidden attachment-preview">
-            <img id="kyc-thumb" class="attachment-thumb" src="" onclick="openViewer(this.src, 'Identity Document')" />
-            <div style="font-size:11px; color:var(--text-muted);">Uploaded and secured in vault. Tap image to inspect.</div>
+        <div class="form-group">
+          <label>Permanent Residential Address</label>
+          <textarea id="prof-address" rows="2" placeholder="Full residential street address"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Social Media Links (WhatsApp, Telegram, LinkedIn, X)</label>
+          <input type="text" id="prof-social" placeholder="e.g. t.me/username, linkedin.com/in/username">
+        </div>
+
+        <div style="margin-top:12px; border-top:1px solid var(--card-border); padding-top:12px;">
+          <label>Identity & Passport Proof (Gallery Upload)</label>
+          <p style="font-size:11px; color:var(--text-dim); margin-bottom:6px;">Upload a copy of your passport or ID for admin verification.</p>
+          <input type="file" id="prof-id-proof-upload" accept="image/*">
+          <div id="prof-proof-box" class="hidden proof-preview-box">
+            <img id="prof-proof-thumb" class="proof-thumb" src="" onclick="openDocumentModal(this.src, 'Passport / ID Proof')">
+            <div style="font-size:11px; color:var(--text-dim);">Document uploaded. Tap thumbnail to inspect.</div>
           </div>
         </div>
 
-        <button type="button" class="btn btn-primary" id="btn-save-kyc" style="margin-top:14px;">Save & Submit KYC</button>
+        <button type="button" class="btn btn-primary" id="btn-save-profile" style="margin-top:14px;">
+          💾 Save & Submit KYC for Verification
+        </button>
       </div>
     </div>
 
-    <!-- Section 3: Admin User Access & Gallery Vault Inspection -->
+    <!-- ================= VIEW 4: USER ACCESS & APPROVAL (ADMIN) ================= -->
     <div id="section-access" class="hidden">
-      <h3 style="font-size:15px; color:var(--primary); margin-bottom:6px;">Verification Console & Gallery Vault</h3>
-      <p style="font-size:11px; color:var(--text-muted); margin-bottom:12px;">
-        Review member submitted proofs, consent audits, and grant Verified Status.
+      <h3 style="font-size:16px; color:var(--primary); margin-bottom:6px;">🛡️ User Access & Verification Management</h3>
+      <p style="font-size:11px; color:var(--text-dim); margin-bottom:12px;">
+        Review member submitted KYC forms and identity documents. Approved members receive the green Verified Member badge and unlock ledger edit rights.
       </p>
-      <div id="admin-user-list"></div>
+      <div id="access-members-container"></div>
     </div>
 
-    <!-- Section 4: Audit Logs -->
-    <div id="section-settings" class="hidden">
-      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; padding:16px;">
-        <h3 style="font-size:15px; color:var(--primary); margin-bottom:8px;">System Audit & Access Logs</h3>
-        <div id="logs-container" style="max-height:300px; overflow-y:auto; font-size:11px; color:var(--text-muted);"></div>
+    <!-- ================= VIEW 5: SUPPORT & CONTACT ================= -->
+    <div id="section-support" class="hidden">
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:18px;">
+        <h3 style="color:var(--primary); font-size:16px; margin-bottom:8px;">💬 Official Support & Assistance</h3>
+        <p style="font-size:12px; color:var(--text-dim); line-height:1.5; margin-bottom:14px;">
+          For inquiries, resets, or transaction overrides:
+        </p>
+        <div style="background:var(--input-bg); border:1px solid var(--card-border); border-radius:10px; padding:14px; margin-bottom:12px;">
+          <div style="font-size:10px; text-transform:uppercase; color:var(--text-dim);">Official Support Email</div>
+          <a href="mailto:info@ideas.limited" style="font-size:16px; font-weight:700; color:var(--primary); text-decoration:none;">info@ideas.limited</a>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);">
+          Portal maintained by <b>iMk Solutions</b>.
+        </div>
       </div>
     </div>
+
+    <!-- ================= VIEW 6: SETTINGS & LOGS ================= -->
+    <div id="section-settings" class="hidden">
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:16px; margin-bottom:14px;">
+        <h3 style="color:var(--primary); font-size:16px; margin-bottom:10px;">⚙️ System Preferences</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <b>Theme Appearance</b>
+            <div style="font-size:11px; color:var(--text-dim);">Auto sync with iOS System / Dark / Light</div>
+          </div>
+          <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓 Toggle Theme</button>
+        </div>
+      </div>
+
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="font-size:15px; color:var(--primary);">📜 Live Activity Logs</h3>
+          <button type="button" class="btn-sm btn-secondary" onclick="clearSystemLogs()">Clear Logs</button>
+        </div>
+        <div id="system-logs-container" style="max-height:260px; overflow-y:auto; font-size:11px;"></div>
+      </div>
+    </div>
+
   </div>
 
+  <!-- ==================== CORE JAVASCRIPT ==================== -->
   <script>
-    const STORAGE_LEDGER = "corp_ledger_data_v1";
-    const STORAGE_USERS = "corp_users_data_v1";
-    const STORAGE_LOGS = "corp_audit_logs_v1";
+    const KEY_COMPANIES = "imk_companies_db_v6";
+    const KEY_LEDGER = "imk_ledger_db_v6";
+    const KEY_MEMBERS = "imk_members_db_v6";
+    const KEY_THEME = "imk_preferred_theme";
+    const KEY_LOGS = "imk_activity_logs_v6";
+    const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
 
+    let globalLiveRate = 83.00;
     let currentUser = null;
-    let selectedTheme = localStorage.getItem("corp_theme") || "dark";
+    let selectedMonth = 'all';
+    let currentCompanyId = "comp_default";
+    let extractedTempEntries = [];
+    let undoStack = [];
+    let redoStack = [];
 
-    // Initialize Default State
-    function initData() {
-      if (!localStorage.getItem(STORAGE_USERS)) {
-        const defaultUsers = [
-          {
-            id: "user_admin",
-            username: "admin@1994.info",
-            password: "071",
-            role: "admin",
-            name: "Master Compliance Admin",
-            citizenship: "Corporate Admin",
-            verified: true,
-            attachment: null
-          },
-          {
-            id: "user_101",
-            username: "member1",
-            password: "123",
-            role: "member",
-            name: "Thami Abdullah",
-            citizenship: "Sri Lankan",
-            dob: "1992-05-14",
-            cob: "Sri Lanka",
-            passport: "N8892102",
-            profession: "Senior Broker",
-            address: "42 Financial District",
-            verified: false,
-            attachment: null
-          }
-        ];
-        localStorage.setItem(STORAGE_USERS, JSON.stringify(defaultUsers));
-      }
+    const DEFAULT_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z'/%3E%3C/svg%3E";
+    const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
-      if (!localStorage.getItem(STORAGE_LEDGER)) {
-        const seedLedger = [
-          { id: "tx_1", txNum: "TX-2026-101", date: "2026-01-11", details: "THUAN DAO SETTLEMENT", usd: 16000, comRate: 1.5, convRate: 83.0, received: 0 },
-          { id: "tx_2", txNum: "TX-2026-102", date: "2026-02-20", details: "AADIL GLOBAL SHIPMENT", usd: 18000, comRate: 1.5, convRate: 83.0, received: 500 }
-        ];
-        localStorage.setItem(STORAGE_LEDGER, JSON.stringify(seedLedger));
+    const DEFAULT_COMPANIES = [
+      { id: "comp_default", name: "Client One Ltd", contact: "Thami Abdullah", phone: "+94 77 123 4567", logo: DEFAULT_LOGO },
+      { id: "comp_dummy", name: "Aadil Global PTE", contact: "Mohamed Aadil", phone: "+65 8123 4567", logo: DEFAULT_LOGO },
+      { id: "comp_kawloon", name: "Kawloon International", contact: "K. Rahman", phone: "+974 5512 3456", logo: DEFAULT_LOGO }
+    ];
+
+    const SEED_LEDGER = [
+      { id: "tx_1", companyId: "comp_default", txNum: "TX-2026-101", date: "2026-01-11", details: "THUAN DAO", usd: 16000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "January Settlement", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_2", companyId: "comp_dummy", txNum: "TX-2026-102", date: "2026-02-20", details: "AADIL GLOBAL PTE LTD", usd: 18000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "February Delivery", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_3", companyId: "comp_dummy", txNum: "TX-2026-103", date: "2026-03-04", details: "AADIL GLOBAL PTE LTD", usd: 24600.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "March TT", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_4", companyId: "comp_kawloon", txNum: "TX-2026-104", date: "2026-04-07", details: "KAWLOON INTERNATIO", usd: 27000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "April Batch", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_5", companyId: "comp_kawloon", txNum: "TX-2026-105", date: "2026-05-08", details: "KAWLOON INTERNATIO", usd: 15900.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "May TT", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_6", companyId: "comp_default", txNum: "TX-2026-106", date: "2026-06-09", details: "SINFINI MA", usd: 20000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "June Clearance", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_7", companyId: "comp_default", txNum: "TX-2026-107", date: "2026-07-11", details: "MAS BUSINESS PROTECTI", usd: 13094.39, comRate: 1.5, convRate: 83.0, received: 0, remarks: "July Batch", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_8", companyId: "comp_default", txNum: "TX-2026-108", date: "2026-08-15", details: "SINFINI MA", usd: 22959.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "August Batch", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_9", companyId: "comp_dummy", txNum: "TX-2026-109", date: "2026-09-16", details: "AADIL GLOBAL PTE LTD", usd: 27360.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "September Shipment", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_10", companyId: "comp_default", txNum: "TX-2026-110", date: "2026-10-29", details: "EXPO LANKA M/", usd: 16805.75, comRate: 1.5, convRate: 83.0, received: 0, remarks: "October Invoice", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_11", companyId: "comp_default", txNum: "TX-2026-111", date: "2026-09-21", details: "Received frm Thami", usd: 0, comRate: 1.5, convRate: 83.0, received: 510.0, remarks: "ABDULLAH Settlement", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_12", companyId: "comp_default", txNum: "TX-2026-112", date: "2026-11-05", details: "HSN GOODS", usd: 24900.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "November Orders", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_13", companyId: "comp_dummy", txNum: "TX-2026-113", date: "2026-12-12", details: "TFT TRADIN", usd: 18074.39, comRate: 1.5, convRate: 83.0, received: 0, remarks: "December Closing", saved: true, createdBy: "admin", overrideDup: false }
+    ];
+
+    function getCompanies() {
+      try {
+        const stored = localStorage.getItem(KEY_COMPANIES);
+        return stored ? JSON.parse(stored) : DEFAULT_COMPANIES;
+      } catch(e) { return DEFAULT_COMPANIES; }
+    }
+    function saveCompanies(data) { localStorage.setItem(KEY_COMPANIES, JSON.stringify(data)); }
+
+    function getLedgerData() {
+      try {
+        const stored = localStorage.getItem(KEY_LEDGER);
+        return stored ? JSON.parse(stored) : SEED_LEDGER;
+      } catch(e) { return SEED_LEDGER; }
+    }
+    function saveLedgerData(data, recordHistory = false) {
+      if (recordHistory) {
+        const current = localStorage.getItem(KEY_LEDGER);
+        if (current) {
+          undoStack.push(current);
+          if (undoStack.length > 50) undoStack.shift();
+          redoStack = [];
+          updateHistoryButtons();
+        }
       }
+      localStorage.setItem(KEY_LEDGER, JSON.stringify(data));
     }
 
-    function logEvent(action, details) {
-      const logs = JSON.parse(localStorage.getItem(STORAGE_LOGS) || "[]");
-      const userLabel = currentUser ? `${currentUser.username} (${currentUser.role})` : "Anonymous";
+    function getMembers() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_MEMBERS) || "[]");
+      } catch(e) { return []; }
+    }
+    function saveMembers(m) { localStorage.setItem(KEY_MEMBERS, JSON.stringify(m)); }
+
+    function getLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_LOGS) || "[]");
+      } catch(e) { return []; }
+    }
+    function logActivity(action, details) {
+      const logs = getLogs();
+      const userStr = currentUser ? (currentUser.role === 'admin' ? 'Admin' : currentUser.name || currentUser.id) : 'Guest';
       logs.unshift({
-        timestamp: new Date().toLocaleString(),
-        user: userLabel,
+        time: new Date().toLocaleString(),
+        user: userStr,
         action: action,
         details: details
       });
-      localStorage.setItem(STORAGE_LOGS, JSON.stringify(logs.slice(0, 100)));
+      localStorage.setItem(KEY_LOGS, JSON.stringify(logs.slice(0, 150)));
+      renderLogs();
     }
 
-    // Navigation & Views
+    function fmt(n) {
+      return (Number(n) || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function extractMonth(dateStr) {
+      if (!dateStr) return 0;
+      const parts = dateStr.includes('-') ? dateStr.split('-') : dateStr.split('/');
+      return dateStr.includes('-') ? (parseInt(parts[1]) || 0) : (parseInt(parts[1]) || 0);
+    }
+
+    function formatDateDisplay(val) {
+      if (!val) return '';
+      if (val.includes('-')) {
+        const p = val.split('-');
+        return `${p[2]}/${p[1]}/${p[0]}`;
+      }
+      return val;
+    }
+
     function toggleMenuDrawer(open) {
       document.getElementById("side-drawer").classList.toggle("open", open);
       document.getElementById("drawer-backdrop").classList.toggle("show", open);
@@ -500,221 +1055,684 @@
 
     function switchView(viewName) {
       toggleMenuDrawer(false);
-      ["ledger", "profile", "access", "settings"].forEach(v => {
-        document.getElementById(`section-${v}`).classList.toggle("hidden", v !== viewName);
+      const views = ['ledger', 'companies', 'profile', 'access', 'support', 'settings'];
+      views.forEach(v => {
+        const el = document.getElementById(`section-${v}`);
+        if (el) el.classList.toggle('hidden', v !== viewName);
       });
 
-      if (viewName === "ledger") renderLedger();
-      if (viewName === "profile") loadProfile();
-      if (viewName === "access") renderAdminAccess();
-      if (viewName === "settings") renderLogs();
+      document.querySelectorAll(".drawer-nav-item").forEach(item => item.classList.remove("active"));
+
+      if (viewName === 'ledger') renderLedger();
+      if (viewName === 'companies') renderCompaniesManager();
+      if (viewName === 'profile') renderProfileKYC();
+      if (viewName === 'access') renderAccessManager();
+      if (viewName === 'settings') renderLogs();
+    }
+
+    function openDocumentModal(src, title) {
+      document.getElementById("doc-viewer-img").src = src;
+      document.getElementById("doc-viewer-title").textContent = title || "Document Inspection";
+      document.getElementById("doc-viewer-download").href = src;
+      document.getElementById("document-viewer-modal").classList.remove("hidden");
+    }
+
+    function applyTheme(theme) {
+      if (theme === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+      localStorage.setItem(KEY_THEME, theme);
+      document.querySelectorAll(".theme-toggle-btn").forEach(b => {
+        b.textContent = `🌓 ${theme.toUpperCase()}`;
+      });
     }
 
     function cycleTheme() {
-      selectedTheme = selectedTheme === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", selectedTheme);
-      localStorage.setItem("corp_theme", selectedTheme);
+      const current = localStorage.getItem(KEY_THEME) || 'system';
+      const next = current === 'system' ? 'dark' : current === 'dark' ? 'light' : 'system';
+      applyTheme(next);
     }
 
-    // Image Inspection Viewer
-    function openViewer(src, title) {
-      document.getElementById("viewer-img").src = src;
-      document.getElementById("viewer-title").textContent = title;
-      document.getElementById("viewer-download").href = src;
-      document.getElementById("viewer-modal").classList.remove("hidden");
+    async function fetchLiveRate() {
+      try {
+        const res = await fetch("https://open.er-api.com/v6/latest/QAR");
+        const d = await res.json();
+        if (d && d.rates && d.rates.LKR) {
+          globalLiveRate = parseFloat(d.rates.LKR.toFixed(2));
+          document.getElementById("live-rate-display").textContent = `${globalLiveRate} LKR`;
+        }
+      } catch(e) { globalLiveRate = 83.00; }
     }
 
-    // Ledger Engine
-    function renderLedger() {
-      const data = JSON.parse(localStorage.getItem(STORAGE_LEDGER) || "[]");
-      const list = document.getElementById("records-list");
-      list.innerHTML = "";
+    function checkDuplicates(currentTx, allTx) {
+      if (currentTx.overrideDup) return { isFullDup: false, isAmtDup: false };
+      const sameTxNum = allTx.filter(t => t.id !== currentTx.id && t.txNum && t.txNum.trim().toLowerCase() === currentTx.txNum.trim().toLowerCase());
+      const sameAmt = allTx.filter(t => t.id !== currentTx.id && ((currentTx.usd > 0 && t.usd === currentTx.usd) || (currentTx.received > 0 && t.received === currentTx.received)));
 
-      let totalUsd = 0;
-      let totalBal = 0;
+      const isFullDup = sameTxNum.length > 0 && sameAmt.length > 0;
+      const isAmtDup = !isFullDup && sameAmt.length > 0;
+      return { isFullDup, isAmtDup };
+    }
 
-      data.forEach(item => {
-        const comLkr = item.usd * item.comRate;
-        const comQr = item.convRate > 0 ? comLkr / item.convRate : 0;
-        const bal = comQr - item.received;
+    function updateHistoryButtons() {
+      document.getElementById("btn-undo").disabled = undoStack.length === 0;
+      document.getElementById("btn-redo").disabled = redoStack.length === 0;
+      document.getElementById("history-status").textContent = `History: ${undoStack.length} step(s)`;
+    }
 
-        totalUsd += Number(item.usd);
-        totalBal += bal;
+    function handleUndo() {
+      if (undoStack.length === 0) return;
+      const current = localStorage.getItem(KEY_LEDGER);
+      redoStack.push(current);
+      const previous = undoStack.pop();
+      localStorage.setItem(KEY_LEDGER, previous);
+      updateHistoryButtons();
+      renderLedger();
+      logActivity("Undo", "Reverted previous ledger action");
+    }
 
-        const card = document.createElement("div");
-        card.style.background = "var(--card-bg)";
-        card.style.border = "1px solid var(--card-border)";
-        card.style.borderRadius = "10px";
-        card.style.padding = "12px";
-        card.style.marginBottom = "10px";
+    function handleRedo() {
+      if (redoStack.length === 0) return;
+      const current = localStorage.getItem(KEY_LEDGER);
+      undoStack.push(current);
+      const next = redoStack.pop();
+      localStorage.setItem(KEY_LEDGER, next);
+      updateHistoryButtons();
+      renderLedger();
+      logActivity("Forward", "Redid ledger action");
+    }
 
-        card.innerHTML = `
-          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-            <b>${item.txNum}</b>
-            <span style="font-size:11px; color:var(--text-muted);">${item.date}</span>
-          </div>
-          <div style="font-size:13px; margin-bottom:6px;">${item.details}</div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:11px; color:var(--text-muted);">
-            <div>Amount: <b>$${Number(item.usd).toLocaleString()}</b></div>
-            <div>Commission: <b>${comQr.toFixed(2)} QR</b></div>
-            <div>Received: <b>${Number(item.received).toFixed(2)} QR</b></div>
-            <div>Balance: <b style="color:var(--primary);">${bal.toFixed(2)} QR</b></div>
-          </div>
-        `;
-        list.appendChild(card);
+    function populateCompanySelector() {
+      const select = document.getElementById("select-company");
+      const companies = getCompanies();
+      select.innerHTML = "";
+
+      companies.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.name;
+        if (c.id === currentCompanyId) opt.selected = true;
+        select.appendChild(opt);
       });
 
-      document.getElementById("stat-usd").textContent = `$${totalUsd.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-      document.getElementById("stat-bal").textContent = `${totalBal.toFixed(2)} QR`;
-    }
-
-    // Profile & KYC Logic
-    function loadProfile() {
-      if (!currentUser) return;
-      const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || "[]");
-      const record = users.find(u => u.id === currentUser.id);
-
-      if (record) {
-        document.getElementById("kyc-name").value = record.name || "";
-        document.getElementById("kyc-citizenship").value = record.citizenship || "";
-        document.getElementById("kyc-dob").value = record.dob || "";
-        document.getElementById("kyc-cob").value = record.cob || "";
-        document.getElementById("kyc-passport").value = record.passport || "";
-        document.getElementById("kyc-profession").value = record.profession || "";
-        document.getElementById("kyc-address").value = record.address || "";
-
-        const badge = document.getElementById("kyc-badge");
-        if (record.verified) {
-          badge.className = "badge badge-success";
-          badge.textContent = "✓ Verified Member";
-        } else {
-          badge.className = "badge badge-warning";
-          badge.textContent = "Pending Approval";
-        }
-
-        if (record.attachment) {
-          document.getElementById("kyc-attachment-container").classList.remove("hidden");
-          document.getElementById("kyc-thumb").src = record.attachment;
-        } else {
-          document.getElementById("kyc-attachment-container").classList.add("hidden");
-        }
+      const active = companies.find(c => c.id === currentCompanyId) || companies[0];
+      if (active) {
+        currentCompanyId = active.id;
+        document.getElementById("active-company-logo").src = active.logo || DEFAULT_LOGO;
+        document.getElementById("active-company-contact").textContent = `Attn: ${active.contact} | ${active.phone}`;
       }
     }
 
-    document.getElementById("kyc-gallery-input").addEventListener("change", function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
+    function recalculateCardLive(cardElem, txId) {
+      const ledger = getLedgerData();
+      const tx = ledger.find(t => t.id === txId);
+      if (!tx) return;
 
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const base64Img = evt.target.result;
-        document.getElementById("kyc-thumb").src = base64Img;
-        document.getElementById("kyc-attachment-container").classList.remove("hidden");
+      const usd = parseFloat(cardElem.querySelector('.in-usd').value) || 0;
+      const comRate = parseFloat(cardElem.querySelector('.in-comRate').value) || 0;
+      const convRate = parseFloat(cardElem.querySelector('.in-convRate').value) || globalLiveRate;
+      const received = parseFloat(cardElem.querySelector('.in-received').value) || 0;
 
-        const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || "[]");
-        const idx = users.findIndex(u => u.id === currentUser.id);
-        if (idx !== -1) {
-          users[idx].attachment = base64Img;
-          localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-          logEvent("Gallery File Upload", `User ${currentUser.username} explicitly uploaded ID document.`);
-        }
-      };
-      reader.readAsDataURL(file);
-    });
+      tx.usd = usd;
+      tx.comRate = comRate;
+      tx.convRate = convRate;
+      tx.received = received;
 
-    document.getElementById("btn-save-kyc").addEventListener("click", function() {
-      const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || "[]");
-      const idx = users.findIndex(u => u.id === currentUser.id);
+      saveLedgerData(ledger, false);
 
-      if (idx !== -1) {
-        users[idx].name = document.getElementById("kyc-name").value.trim();
-        users[idx].citizenship = document.getElementById("kyc-citizenship").value.trim();
-        users[idx].dob = document.getElementById("kyc-dob").value;
-        users[idx].cob = document.getElementById("kyc-cob").value.trim();
-        users[idx].passport = document.getElementById("kyc-passport").value.trim();
-        users[idx].profession = document.getElementById("kyc-profession").value.trim();
-        users[idx].address = document.getElementById("kyc-address").value.trim();
+      const comLkr = usd * comRate;
+      const comQr = convRate > 0 ? (comLkr / convRate) : 0;
 
-        localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-        logEvent("KYC Form Update", `Updated details for ${currentUser.username}`);
-        alert("KYC and profile information submitted for compliance review.");
-        loadProfile();
-      }
-    });
+      cardElem.querySelector('.calc-lkr').textContent = `${fmt(comLkr)} LKR`;
+      cardElem.querySelector('.calc-qr').textContent = `${fmt(comQr)} QR`;
 
-    // Admin Verification & Gallery Vault
-    function renderAdminAccess() {
-      const container = document.getElementById("admin-user-list");
+      updateOverallStats();
+    }
+
+    function updateOverallStats() {
+      const allTx = getLedgerData();
+      const filtered = allTx.filter(t => {
+        const matchesComp = t.companyId === currentCompanyId;
+        const matchesMonth = (selectedMonth === 'all') || (extractMonth(t.date) === parseInt(selectedMonth));
+        return matchesComp && matchesMonth;
+      });
+
+      let sumUsd = 0, sumLkr = 0, sumRec = 0, runningBal = 0;
+      filtered.forEach(tx => {
+        const usd = parseFloat(tx.usd) || 0;
+        const comRate = parseFloat(tx.comRate) || 0;
+        const convRate = parseFloat(tx.convRate) || globalLiveRate;
+        const received = parseFloat(tx.received) || 0;
+
+        const comLkr = usd * comRate;
+        const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+        runningBal += comQr - received;
+
+        sumUsd += usd; sumLkr += comLkr; sumRec += received;
+      });
+
+      document.getElementById("stat-usd").textContent = `$${fmt(sumUsd)}`;
+      document.getElementById("stat-lkr").textContent = `${fmt(sumLkr)} LKR`;
+      document.getElementById("stat-rec").textContent = `${fmt(sumRec)} QR`;
+      document.getElementById("stat-bal").textContent = `${fmt(runningBal)} QR`;
+    }
+
+    function resetToDefault(txId) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === txId);
+      if (!item) return;
+
+      saveLedgerData(ledger, true);
+      item.comRate = 1.5;
+      item.convRate = globalLiveRate || 83.0;
+
+      saveLedgerData(ledger, false);
+      renderLedger();
+      logActivity("Default Reset", `Reset rates for Tx ${item.txNum}`);
+    }
+
+    function canUserEditLedger() {
+      if (!currentUser) return false;
+      if (currentUser.role === 'admin') return true;
+      return currentUser.isVerified === true;
+    }
+
+    function renderLedger() {
+      const allTx = getLedgerData();
+      const filtered = allTx.filter(t => {
+        const matchesComp = t.companyId === currentCompanyId;
+        const matchesMonth = (selectedMonth === 'all') || (extractMonth(t.date) === parseInt(selectedMonth));
+        return matchesComp && matchesMonth;
+      });
+
+      const container = document.getElementById("tx-cards-list");
       container.innerHTML = "";
 
-      if (currentUser.role !== "admin") {
-        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Admin privileges required.</div>`;
-        return;
+      let runningBal = 0;
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);">No transactions found for this company and month.</div>`;
       }
 
-      const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || "[]");
+      const userCanEdit = canUserEditLedger();
 
-      users.forEach(u => {
-        if (u.role === "admin") return;
+      filtered.forEach((tx, idx) => {
+        const usd = parseFloat(tx.usd) || 0;
+        const comRate = parseFloat(tx.comRate) || 0;
+        const convRate = parseFloat(tx.convRate) || globalLiveRate;
+        const received = parseFloat(tx.received) || 0;
 
+        const comLkr = usd * comRate;
+        const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+        runningBal += comQr - received;
+
+        const dup = checkDuplicates(tx, allTx);
         const card = document.createElement("div");
-        card.style.background = "var(--card-bg)";
-        card.style.border = "1px solid var(--card-border)";
-        card.style.borderRadius = "10px";
-        card.style.padding = "14px";
-        card.style.marginBottom = "10px";
+        card.className = `tx-card ${dup.isFullDup ? 'dup-full' : dup.isAmtDup ? 'dup-amt' : ''}`;
+        card.id = `card_${tx.id}`;
+
+        const isAdmin = currentUser && currentUser.role === 'admin';
+        const canDeleteThis = isAdmin || (userCanEdit && tx.createdBy === currentUser.id);
 
         card.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+          <div class="tx-header">
             <div>
-              <b style="font-size:14px;">${u.name || u.username}</b>
-              <div style="font-size:11px; color:var(--text-muted);">${u.profession || "No title"} | Citizenship: <b>${u.citizenship || "Not specified"}</b></div>
-              <div style="font-size:11px; color:var(--text-muted);">Passport/ID: ${u.passport || "N/A"}</div>
+              <span style="font-size:11px; font-weight:800; color:var(--accent);">#${idx + 1} RECORD</span>
+              ${tx.saved ? '<span class="badge badge-success" style="margin-left:4px;">SAVED</span>' : '<span class="badge badge-warning" style="margin-left:4px;">DRAFT</span>'}
+              ${dup.isFullDup ? '<span class="badge badge-danger" style="margin-left:4px;">🔴 DUPLICATE</span>' : ''}
+              ${dup.isAmtDup ? '<span class="badge badge-warning" style="margin-left:4px;">🟡 SAME AMOUNT</span>' : ''}
             </div>
-            <div>
-              ${u.verified ? '<span class="badge badge-success">✓ Verified</span>' : '<span class="badge badge-warning">Pending</span>'}
+            <div style="display:flex; gap:4px;">
+              ${userCanEdit ? `<button type="button" class="btn-sm btn-secondary" onclick="resetToDefault('${tx.id}')">↺ Default</button>` : ''}
+              ${isAdmin && (dup.isFullDup || dup.isAmtDup) ? `<button type="button" class="btn-sm btn-secondary" onclick="overrideDuplicate('${tx.id}')">Override</button>` : ''}
+              ${canDeleteThis ? `<button type="button" class="btn-sm btn-danger" onclick="deleteTx('${tx.id}')">✕</button>` : ''}
             </div>
           </div>
 
-          <div style="margin-top:8px;">
-            <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Uploaded Gallery Verification Proof:</div>
-            ${u.attachment 
-              ? `<div class="attachment-preview">
-                   <img src="${u.attachment}" class="attachment-thumb" onclick="openViewer('${u.attachment}', '${u.name} Document')" />
-                   <div style="font-size:11px;">Tap document to expand and inspect full resolution.</div>
-                 </div>`
-              : `<div style="font-size:11px; color:var(--danger);">No gallery document uploaded yet.</div>`
-            }
+          <div class="form-row">
+            <div class="form-group">
+              <label>Transaction No.</label>
+              <input type="text" class="in-txNum" value="${tx.txNum || ''}" placeholder="TX-1001" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" class="in-date" value="${tx.date || ''}" ${userCanEdit ? '' : 'disabled'}>
+            </div>
           </div>
 
-          <div style="display:flex; gap:6px; margin-top:10px;">
-            <button type="button" class="btn btn-sm ${u.verified ? 'btn-secondary' : 'btn-primary'}" onclick="toggleUserVerification('${u.id}')">
-              ${u.verified ? 'Revoke Verification' : 'Verify & Grant Edit Permissions'}
+          <div class="form-group full">
+            <label>Details / Client</label>
+            <input type="text" class="in-details" value="${tx.details || ''}" placeholder="Client Name" ${userCanEdit ? '' : 'disabled'}>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>USD Amount</label>
+              <input type="number" step="any" class="in-usd" value="${tx.usd || ''}" placeholder="0.00" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+            <div class="form-group">
+              <label>Commission Rate</label>
+              <input type="number" step="any" class="in-comRate" value="${tx.comRate ?? 1.5}" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Conv. Rate (LKR/QR)</label>
+              <input type="number" step="any" class="in-convRate" value="${tx.convRate ?? globalLiveRate}" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+            <div class="form-group">
+              <label>Received (QR)</label>
+              <input type="number" step="any" class="in-received" value="${tx.received || ''}" placeholder="0.00" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>Remarks</label>
+            <input type="text" class="in-remarks" value="${tx.remarks || ''}" placeholder="Notes" ${userCanEdit ? '' : 'disabled'}>
+          </div>
+
+          <div class="calc-box">
+            <div class="calc-item">
+              <span class="c-label">Commission (LKR)</span>
+              <span class="c-val calc-lkr" style="color:var(--accent);">${fmt(comLkr)} LKR</span>
+            </div>
+            <div class="calc-item">
+              <span class="c-label">Commission (QR)</span>
+              <span class="c-val calc-qr">${fmt(comQr)} QR</span>
+            </div>
+            <div class="calc-item bal">
+              <span class="c-label">Running Balance</span>
+              <span class="c-val">${fmt(runningBal)} QR</span>
+            </div>
+          </div>
+
+          ${userCanEdit ? `
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+            <button type="button" class="btn-sm btn-primary" onclick="toggleSaveTx('${tx.id}')">
+              ${tx.saved ? '✓ Saved' : '💾 Save Entry'}
             </button>
+          </div>` : ''}
+        `;
+
+        if (userCanEdit) {
+          const inUsd = card.querySelector('.in-usd');
+          const inComRate = card.querySelector('.in-comRate');
+          const inConvRate = card.querySelector('.in-convRate');
+          const inReceived = card.querySelector('.in-received');
+
+          [inUsd, inComRate, inConvRate, inReceived].forEach(input => {
+            input.addEventListener('focus', () => saveLedgerData(getLedgerData(), true));
+            input.addEventListener('input', () => recalculateCardLive(card, tx.id));
+          });
+
+          card.querySelector('.in-txNum').addEventListener('change', (e) => updateField(tx.id, 'txNum', e.target.value));
+          card.querySelector('.in-date').addEventListener('change', (e) => updateField(tx.id, 'date', e.target.value));
+          card.querySelector('.in-details').addEventListener('change', (e) => updateField(tx.id, 'details', e.target.value));
+          card.querySelector('.in-remarks').addEventListener('change', (e) => updateField(tx.id, 'remarks', e.target.value));
+        }
+
+        container.appendChild(card);
+      });
+
+      updateOverallStats();
+      updateHistoryButtons();
+    }
+
+    function updateField(id, key, val) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === id);
+      if (item) {
+        saveLedgerData(ledger, true);
+        item[key] = val;
+        saveLedgerData(ledger, false);
+      }
+    }
+
+    function toggleSaveTx(id) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === id);
+      if (item) {
+        saveLedgerData(ledger, true);
+        item.saved = !item.saved;
+        saveLedgerData(ledger, false);
+        renderLedger();
+        logActivity("Save", `Saved entry ${item.txNum}`);
+      }
+    }
+
+    function overrideDuplicate(id) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === id);
+      if (item) {
+        saveLedgerData(ledger, true);
+        item.overrideDup = true;
+        saveLedgerData(ledger, false);
+        renderLedger();
+        logActivity("Override Duplicate", `Overrode duplicate flag on ${item.txNum}`);
+      }
+    }
+
+    function deleteTx(id) {
+      if (confirm("Delete this entry?")) {
+        let ledger = getLedgerData();
+        saveLedgerData(ledger, true);
+        ledger = ledger.filter(t => t.id !== id);
+        saveLedgerData(ledger, false);
+        renderLedger();
+        logActivity("Delete", `Deleted entry id: ${id}`);
+      }
+    }
+
+    function addNewEntry() {
+      if (!canUserEditLedger()) {
+        alert("Only Administrator or Verified Members can add entries to this ledger. Please complete KYC profile in Menu.");
+        return;
+      }
+      const ledger = getLedgerData();
+      saveLedgerData(ledger, true);
+
+      const d = new Date();
+      const todayISO = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const newTx = {
+        id: "tx_" + Date.now(),
+        companyId: currentCompanyId,
+        txNum: "TX-" + (ledger.length + 101),
+        date: todayISO,
+        details: "",
+        usd: 0,
+        comRate: 1.5,
+        convRate: globalLiveRate,
+        received: 0,
+        remarks: "",
+        saved: true,
+        createdBy: currentUser ? currentUser.role || currentUser.id : 'admin',
+        overrideDup: false
+      };
+      ledger.unshift(newTx);
+      saveLedgerData(ledger, false);
+      renderLedger();
+      window.scrollTo({ top: 220, behavior: 'smooth' });
+      logActivity("Add Entry", `Added transaction ${newTx.txNum}`);
+    }
+
+    function renderCompaniesManager() {
+      const container = document.getElementById("companies-list-container");
+      const companies = getCompanies();
+      const isAdmin = currentUser && currentUser.role === 'admin';
+      container.innerHTML = "";
+
+      document.getElementById("btn-add-comp-trigger").style.display = isAdmin ? "inline-block" : "none";
+
+      companies.forEach(c => {
+        const card = document.createElement("div");
+        card.className = "tx-card";
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; gap:12px; align-items:center;">
+              <img src="${c.logo || DEFAULT_LOGO}" style="width:44px; height:44px; border-radius:8px; object-fit:cover; border:1px solid var(--card-border);">
+              <div>
+                <b style="font-size:15px;">${c.name}</b>
+                <div style="font-size:11px; color:var(--text-dim);">Attn: ${c.contact} | Tel: ${c.phone}</div>
+              </div>
+            </div>
+            ${isAdmin ? `
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn-sm btn-secondary" onclick="editCompanyPrompt('${c.id}')">Edit</button>
+              <button type="button" class="btn-sm btn-danger" onclick="deleteCompany('${c.id}')">Delete</button>
+            </div>` : '<span class="badge badge-success">Active</span>'}
           </div>
         `;
         container.appendChild(card);
       });
     }
 
-    function toggleUserVerification(userId) {
-      const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || "[]");
-      const target = users.find(u => u.id === userId);
-      if (target) {
-        target.verified = !target.verified;
-        localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-        logEvent("Verification Status Changed", `Toggled verification for ${target.username} to ${target.verified}`);
-        renderAdminAccess();
+    function editCompanyPrompt(id) {
+      if (!currentUser || currentUser.role !== 'admin') return;
+      const companies = getCompanies();
+      const comp = companies.find(c => c.id === id);
+      if (!comp) return;
+
+      const newName = prompt("Edit Company Name:", comp.name);
+      if (newName) comp.name = newName.trim();
+      const newContact = prompt("Edit Contact Person:", comp.contact);
+      if (newContact) comp.contact = newContact.trim();
+      const newPhone = prompt("Edit Contact Phone:", comp.phone);
+      if (newPhone) comp.phone = newPhone.trim();
+
+      saveCompanies(companies);
+      populateCompanySelector();
+      renderCompaniesManager();
+      logActivity("Edit Company", `Updated company ${comp.name}`);
+    }
+
+    function deleteCompany(id) {
+      if (!currentUser || currentUser.role !== 'admin') return;
+      if (confirm("Delete this company and its records?")) {
+        let companies = getCompanies();
+        companies = companies.filter(c => c.id !== id);
+        saveCompanies(companies);
+        populateCompanySelector();
+        renderCompaniesManager();
+        logActivity("Delete Company", `Deleted company id: ${id}`);
+      }
+    }
+
+    function renderProfileKYC() {
+      if (!currentUser || currentUser.role === 'admin') {
+        document.getElementById("prof-name").value = "Administrator";
+        document.getElementById("prof-citizenship").value = "Root Authority";
+        document.getElementById("prof-email").value = "admin@1994.info";
+        document.getElementById("profile-status-badge").className = "badge badge-verified";
+        document.getElementById("profile-status-badge").textContent = "✓ Root Admin Verified";
+        document.getElementById("user-profile-avatar").src = DEFAULT_AVATAR;
+        return;
+      }
+
+      document.getElementById("prof-name").value = currentUser.name || "";
+      document.getElementById("prof-citizenship").value = currentUser.citizenship || "";
+      document.getElementById("prof-profession").value = currentUser.profession || "";
+      document.getElementById("prof-dob").value = currentUser.dob || "";
+      document.getElementById("prof-cob").value = currentUser.cob || "";
+      document.getElementById("prof-passport").value = currentUser.passport || "";
+      document.getElementById("prof-phone").value = currentUser.phone || "";
+      document.getElementById("prof-email").value = currentUser.email || "";
+      document.getElementById("prof-residence").value = currentUser.residence || "";
+      document.getElementById("prof-address").value = currentUser.address || "";
+      document.getElementById("prof-social").value = currentUser.social || "";
+      document.getElementById("user-profile-avatar").src = currentUser.avatar || DEFAULT_AVATAR;
+
+      if (currentUser.idProof) {
+        document.getElementById("prof-proof-box").classList.remove("hidden");
+        document.getElementById("prof-proof-thumb").src = currentUser.idProof;
+      } else {
+        document.getElementById("prof-proof-box").classList.add("hidden");
+      }
+
+      const badge = document.getElementById("profile-status-badge");
+      if (currentUser.isVerified) {
+        badge.className = "badge badge-verified";
+        badge.textContent = "✓ Verified Member";
+      } else if (currentUser.kycSubmitted) {
+        badge.className = "badge badge-warning";
+        badge.textContent = "⏳ Form Filled - Pending Approval";
+      } else {
+        badge.className = "badge badge-danger";
+        badge.textContent = "Incomplete Profile";
+      }
+    }
+
+    document.getElementById("prof-id-proof-upload").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        if (currentUser) {
+          currentUser.idProof = evt.target.result;
+          document.getElementById("prof-proof-thumb").src = currentUser.idProof;
+          document.getElementById("prof-proof-box").classList.remove("hidden");
+          const members = getMembers();
+          const idx = members.findIndex(m => m.id === currentUser.id);
+          if (idx !== -1) {
+            members[idx].idProof = currentUser.idProof;
+            saveMembers(members);
+          }
+          logActivity("Upload Proof", `User ${currentUser.name} uploaded passport/ID proof.`);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("btn-save-profile").addEventListener("click", () => {
+      if (!currentUser || currentUser.role === 'admin') {
+        alert("Admin profile is already root verified.");
+        return;
+      }
+
+      currentUser.name = document.getElementById("prof-name").value.trim();
+      currentUser.citizenship = document.getElementById("prof-citizenship").value.trim();
+      currentUser.profession = document.getElementById("prof-profession").value.trim();
+      currentUser.dob = document.getElementById("prof-dob").value;
+      currentUser.cob = document.getElementById("prof-cob").value.trim();
+      currentUser.passport = document.getElementById("prof-passport").value.trim();
+      currentUser.phone = document.getElementById("prof-phone").value.trim();
+      currentUser.email = document.getElementById("prof-email").value.trim();
+      currentUser.residence = document.getElementById("prof-residence").value.trim();
+      currentUser.address = document.getElementById("prof-address").value.trim();
+      currentUser.social = document.getElementById("prof-social").value.trim();
+      currentUser.kycSubmitted = true;
+
+      const members = getMembers();
+      const idx = members.findIndex(m => m.id === currentUser.id);
+      if (idx !== -1) members[idx] = currentUser;
+      else members.push(currentUser);
+      saveMembers(members);
+
+      renderProfileKYC();
+      alert("Profile KYC submitted successfully! It is now visible in the Admin Panel for verification.");
+      logActivity("KYC Submitted", `User ${currentUser.name} submitted full KYC profile`);
+    });
+
+    document.getElementById("user-avatar-upload").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (currentUser) {
+          currentUser.avatar = evt.target.result;
+          document.getElementById("user-profile-avatar").src = currentUser.avatar;
+          const members = getMembers();
+          const idx = members.findIndex(m => m.id === currentUser.id);
+          if (idx !== -1) {
+            members[idx].avatar = currentUser.avatar;
+            saveMembers(members);
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function renderAccessManager() {
+      const container = document.getElementById("access-members-container");
+      container.innerHTML = "";
+
+      if (!currentUser || currentUser.role !== 'admin') {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-dim);">Administrator access required to review KYC.</div>`;
+        return;
+      }
+
+      const members = getMembers();
+      if (members.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-dim);">No members registered yet.</div>`;
+        return;
+      }
+
+      members.forEach((m) => {
+        const card = document.createElement("div");
+        card.className = "tx-card";
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <img src="${m.avatar || DEFAULT_AVATAR}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+              <div>
+                <b style="font-size:14px;">${m.name || 'Anonymous User'}</b>
+                <div style="font-size:11px; color:var(--primary);">${m.email} | ${m.phone}</div>
+                <div style="font-size:10px; color:var(--text-dim);">Citizenship: <b>${m.citizenship || 'Not Specified'}</b> | Passport: ${m.passport || 'None'}</div>
+              </div>
+            </div>
+            <div>
+              ${m.isVerified ? '<span class="badge badge-verified">✓ Verified Member</span>' : m.kycSubmitted ? '<span class="badge badge-warning">Form Filled</span>' : '<span class="badge badge-danger">Incomplete</span>'}
+            </div>
+          </div>
+
+          <div style="font-size:11px; color:var(--text-dim); margin-bottom:8px; line-height:1.4;">
+            <b>DOB:</b> ${m.dob || '-'} | <b>Country of Birth:</b> ${m.cob || '-'} | <b>Profession:</b> ${m.profession || '-'}<br/>
+            <b>Residence:</b> ${m.residence || '-'} | <b>Address:</b> ${m.address || '-'}<br/>
+            <b>Social:</b> ${m.social || '-'}
+          </div>
+
+          <div style="margin-bottom:8px;">
+            <div style="font-size:10px; text-transform:uppercase; color:var(--text-dim); font-weight:700;">Uploaded Proof Document:</div>
+            ${m.idProof 
+              ? `<div class="proof-preview-box">
+                   <img src="${m.idProof}" class="proof-thumb" onclick="openDocumentModal('${m.idProof}', '${m.name} Proof')" />
+                   <div style="font-size:11px;">Tap to inspect high-resolution document.</div>
+                 </div>`
+              : `<div style="font-size:11px; color:var(--danger); margin-top:2px;">No proof document uploaded yet.</div>`
+            }
+          </div>
+
+          <div style="display:flex; gap:6px; border-top:1px solid var(--card-border); padding-top:8px;">
+            ${!m.isVerified ? `<button type="button" class="btn-sm btn-success" onclick="approveMemberKYC('${m.id}')">✓ Approve as Verified Member</button>` : `<button type="button" class="btn-sm btn-secondary" onclick="revokeMemberKYC('${m.id}')">Revoke Verification</button>`}
+            <button type="button" class="btn-sm btn-danger" onclick="deleteUserAccess('${m.id}')">Delete Member</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function approveMemberKYC(id) {
+      const members = getMembers();
+      const m = members.find(u => u.id === id);
+      if (m) {
+        m.isVerified = true;
+        saveMembers(members);
+        renderAccessManager();
+        logActivity("Verify Member", `Approved KYC for ${m.name} as Verified Member`);
+        alert(`${m.name} is now a Verified Member with ledger edit privileges.`);
+      }
+    }
+
+    function revokeMemberKYC(id) {
+      const members = getMembers();
+      const m = members.find(u => u.id === id);
+      if (m) {
+        m.isVerified = false;
+        saveMembers(members);
+        renderAccessManager();
+        logActivity("Revoke Verification", `Revoked verification for ${m.name}`);
+      }
+    }
+
+    function deleteUserAccess(id) {
+      if (confirm("Delete this user account completely?")) {
+        let members = getMembers();
+        members = members.filter(u => u.id !== id);
+        saveMembers(members);
+        renderAccessManager();
+        logActivity("Delete User", `Deleted user account id ${id}`);
       }
     }
 
     function renderLogs() {
-      const logs = JSON.parse(localStorage.getItem(STORAGE_LOGS) || "[]");
-      const container = document.getElementById("logs-container");
+      const container = document.getElementById("system-logs-container");
+      const logs = getLogs();
       container.innerHTML = "";
 
       if (logs.length === 0) {
-        container.innerHTML = "<div>No activity logged yet.</div>";
+        container.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-dim);">No system logs recorded yet.</div>`;
         return;
       }
 
@@ -722,47 +1740,406 @@
         const row = document.createElement("div");
         row.style.padding = "6px 0";
         row.style.borderBottom = "1px solid var(--card-border)";
-        row.innerHTML = `[${l.timestamp}] <b>${l.user}</b> - <i>${l.action}</i>: ${l.details}`;
+        row.innerHTML = `<b>[${l.time}]</b> <span style="color:var(--primary);">${l.user}</span>: <b>${l.action}</b> - ${l.details}`;
         container.appendChild(row);
       });
     }
 
-    // Authentication Handlers
-    document.getElementById("btn-login").addEventListener("click", function() {
-      const u = document.getElementById("login-username").value.trim();
-      const p = document.getElementById("login-password").value.trim();
+    function clearSystemLogs() {
+      if (confirm("Clear all activity logs?")) {
+        localStorage.removeItem(KEY_LOGS);
+        renderLogs();
+      }
+    }
 
-      const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || "[]");
-      const matched = users.find(user => (user.username === u || user.id === u) && user.password === p);
+    function openAiExtractor() {
+      document.getElementById("ai-extractor-modal").classList.remove("hidden");
+      document.getElementById("ai-preview-box").classList.add("hidden");
+      document.getElementById("btn-apply-ai-results").classList.add("hidden");
+      document.getElementById("ai-file-input").value = "";
+      extractedTempEntries = [];
+    }
 
-      if (matched) {
-        currentUser = matched;
-        document.getElementById("view-auth").classList.add("hidden");
-        document.getElementById("view-app").classList.remove("hidden");
-
-        document.getElementById("user-role-badge").textContent = matched.role === "admin" ? "Compliance Administrator" : (matched.verified ? "✓ Verified Member" : "Corporate Member");
-        document.getElementById("drawer-user-info").textContent = `${matched.name || matched.username}`;
-        document.getElementById("menu-user-access").style.display = matched.role === "admin" ? "flex" : "none";
-
-        logEvent("Portal Login", `User ${matched.username} logged into system.`);
-        switchView("ledger");
-      } else {
-        alert("Invalid login credentials.");
+    document.getElementById("ai-file-input").addEventListener("change", (e) => {
+      const files = Array.from(e.target.files);
+      let totalBytes = 0;
+      files.forEach(f => totalBytes += f.size);
+      const mb = (totalBytes / (1024 * 1024)).toFixed(2);
+      document.getElementById("ai-size-text").textContent = `${mb} MB / 100 MB Total`;
+      if (totalBytes > MAX_UPLOAD_BYTES) {
+        alert("Files exceed 100MB limit. Please select fewer files.");
+        e.target.value = "";
       }
     });
 
+    document.getElementById("btn-run-ai-extract").addEventListener("click", async () => {
+      const input = document.getElementById("ai-file-input");
+      const files = Array.from(input.files);
+      if (files.length === 0) { alert("Please select at least one document or image."); return; }
+
+      const btn = document.getElementById("btn-run-ai-extract");
+      btn.textContent = "AI Scanning...";
+      btn.disabled = true;
+
+      extractedTempEntries = [];
+
+      for (let file of files) {
+        let entry = await parseFileAI(file);
+        extractedTempEntries.push(entry);
+      }
+
+      const previewBox = document.getElementById("ai-preview-items");
+      previewBox.innerHTML = "";
+      extractedTempEntries.forEach((e, i) => {
+        previewBox.innerHTML += `<div><b>#${i+1} ${e.details}</b> (${formatDateDisplay(e.date)}) | USD: $${fmt(e.usd)} | Received: ${fmt(e.received)} QR</div>`;
+      });
+
+      document.getElementById("ai-preview-box").classList.remove("hidden");
+      document.getElementById("btn-apply-ai-results").classList.remove("hidden");
+      btn.textContent = "Extract & Verify";
+      btn.disabled = false;
+      logActivity("AI File Scan", `Scanned ${files.length} document(s)`);
+    });
+
+    async function parseFileAI(file) {
+      return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target.result || "";
+          let usd = 0;
+          let received = 0;
+          const d = new Date();
+          let date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+          const nums = String(content).match(/\b\d{1,3}(?:,\d{3})*(?:\.\d{2})?\b/g);
+          if (nums && nums.length > 0) {
+            const clean = nums.map(n => parseFloat(n.replace(/,/g, ''))).filter(n => n > 10);
+            if (clean[0]) usd = clean[0];
+            if (clean[1]) received = clean[1];
+          }
+
+          resolve({
+            id: "tx_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+            companyId: currentCompanyId,
+            txNum: "AI-" + Math.floor(1000 + Math.random() * 9000),
+            date: date,
+            details: file.name.replace(/\.[^/.]+$/, "").toUpperCase(),
+            usd: usd,
+            comRate: 1.5,
+            convRate: globalLiveRate,
+            received: received,
+            remarks: `Extracted from ${file.name}`,
+            saved: true,
+            createdBy: currentUser ? currentUser.role || currentUser.id : 'admin',
+            overrideDup: false
+          });
+        };
+        if (file.type.includes("text") || file.name.endsWith(".csv")) reader.readAsText(file);
+        else {
+          setTimeout(() => {
+            const d = new Date();
+            resolve({
+              id: "tx_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+              companyId: currentCompanyId,
+              txNum: "AI-" + Math.floor(1000 + Math.random() * 9000),
+              date: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,
+              details: file.name.replace(/\.[^/.]+$/, "").toUpperCase(),
+              usd: 0,
+              comRate: 1.5,
+              convRate: globalLiveRate,
+              received: 0,
+              remarks: `Extracted Slip: ${file.name}`,
+              saved: true,
+              createdBy: currentUser ? currentUser.role || currentUser.id : 'admin',
+              overrideDup: false
+            });
+          }, 350);
+        }
+      });
+    }
+
+    document.getElementById("btn-apply-ai-results").addEventListener("click", () => {
+      if (extractedTempEntries.length === 0) return;
+      const ledger = getLedgerData();
+      saveLedgerData(ledger, true);
+
+      extractedTempEntries.forEach(item => ledger.unshift(item));
+      saveLedgerData(ledger, false);
+
+      renderLedger();
+      document.getElementById("ai-extractor-modal").classList.add("hidden");
+      alert(`Successfully filed ${extractedTempEntries.length} entries into ledger!`);
+      logActivity("AI Import", `Filed ${extractedTempEntries.length} entries into ledger`);
+    });
+
+    function generateLetterheadPDF() {
+      const companies = getCompanies();
+      const activeComp = companies.find(c => c.id === currentCompanyId) || companies[0];
+      const allTx = getLedgerData();
+      const filtered = allTx.filter(t => {
+        const matchesComp = t.companyId === currentCompanyId;
+        const matchesMonth = (selectedMonth === 'all') || (extractMonth(t.date) === parseInt(selectedMonth));
+        return matchesComp && matchesMonth;
+      });
+
+      document.getElementById("print-company-logo").src = activeComp.logo || DEFAULT_LOGO;
+      document.getElementById("watermark-logo-img").src = activeComp.logo || DEFAULT_LOGO;
+      document.getElementById("print-company-name").textContent = activeComp.name;
+      document.getElementById("print-company-contact").textContent = `Attn: ${activeComp.contact} | Tel: ${activeComp.phone}`;
+      document.getElementById("print-statement-month").textContent = `Statement: ${selectedMonth === 'all' ? 'All Months 2026' : 'Month ' + selectedMonth + ' / 2026'}`;
+
+      const now = new Date();
+      document.getElementById("print-timestamp").textContent = `Printed: ${formatDateDisplay(now.toISOString().split('T')[0])} ${now.toLocaleTimeString()}`;
+
+      const tbody = document.getElementById("print-table-body");
+      tbody.innerHTML = "";
+      let sumUsd = 0, sumLkr = 0, sumRec = 0, runningBal = 0;
+
+      filtered.forEach((tx) => {
+        const usd = parseFloat(tx.usd) || 0;
+        const comRate = parseFloat(tx.comRate) || 0;
+        const convRate = parseFloat(tx.convRate) || globalLiveRate;
+        const received = parseFloat(tx.received) || 0;
+
+        const comLkr = usd * comRate;
+        const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+        runningBal += comQr - received;
+
+        sumUsd += usd; sumLkr += comLkr; sumRec += received;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td style="border:1px solid #ddd; padding:5px; text-align:center;">${tx.txNum || '-'}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:center;">${formatDateDisplay(tx.date)}</td>
+          <td style="border:1px solid #ddd; padding:5px;"><b>${tx.details || '-'}</b></td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right;">${usd ? '$' + fmt(usd) : '-'}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right;">${comRate}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right;">${fmt(comLkr)}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right;">${convRate}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right;">${fmt(comQr)}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right; color:#b91c1c;">${received ? fmt(received) : '-'}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right; font-weight:bold;">${fmt(runningBal)} QR</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("print-stat-usd").textContent = `$${fmt(sumUsd)}`;
+      document.getElementById("print-stat-lkr").textContent = `${fmt(sumLkr)} LKR`;
+      document.getElementById("print-stat-rec").textContent = `${fmt(sumRec)} QR`;
+      document.getElementById("print-stat-bal").textContent = `${fmt(runningBal)} QR`;
+
+      window.print();
+      logActivity("Print Statement", `Generated PDF letterhead for ${activeComp.name}`);
+    }
+
+    function exportCSV() {
+      const allTx = getLedgerData();
+      const filtered = allTx.filter(t => t.companyId === currentCompanyId);
+      let csv = "Transaction No,Date,Details,USD,COM Rate,TOTAL COM IN LKR,CONVERSION RATE,TOTAL COMMISSION IN QR,RECEIVED,BALANCE IN QR,REMARKS\n";
+      let runningBal = 0;
+
+      filtered.forEach(t => {
+        const comLkr = (t.usd || 0) * (t.comRate || 1.5);
+        const comQr = t.convRate ? (comLkr / t.convRate) : 0;
+        runningBal += comQr - (t.received || 0);
+        csv += `"${t.txNum}","${formatDateDisplay(t.date)}","${t.details}",${t.usd},${t.comRate},${comLkr.toFixed(2)},${t.convRate},${comQr.toFixed(2)},${t.received},${runningBal.toFixed(2)},"${t.remarks}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Ledger_Company_${currentCompanyId}_2026.csv`;
+      a.click();
+    }
+
+    document.getElementById("btn-save-company").addEventListener("click", () => {
+      const name = document.getElementById("comp-name").value.trim();
+      const contact = document.getElementById("comp-contact").value.trim() || "Account Manager";
+      const phone = document.getElementById("comp-phone").value.trim() || "Direct";
+      const logoInput = document.getElementById("comp-logo-input");
+
+      if (!name) { alert("Please enter Company / Client name."); return; }
+
+      const companies = getCompanies();
+      const newComp = {
+        id: "comp_" + Date.now(),
+        name: name,
+        contact: contact,
+        phone: phone,
+        logo: DEFAULT_LOGO
+      };
+
+      if (logoInput.files && logoInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          newComp.logo = e.target.result;
+          companies.push(newComp);
+          saveCompanies(companies);
+          currentCompanyId = newComp.id;
+          populateCompanySelector();
+          renderCompaniesManager();
+          renderLedger();
+          document.getElementById("company-modal").classList.add("hidden");
+          logActivity("New Company", `Created company ${newComp.name}`);
+        };
+        reader.readAsDataURL(logoInput.files[0]);
+      } else {
+        companies.push(newComp);
+        saveCompanies(companies);
+        currentCompanyId = newComp.id;
+        populateCompanySelector();
+        renderCompaniesManager();
+        renderLedger();
+        document.getElementById("company-modal").classList.add("hidden");
+        logActivity("New Company", `Created company ${newComp.name}`);
+      }
+    });
+
+    // ================= CREDENTIAL VALIDATION =================
+    document.getElementById("btn-do-admin-login").addEventListener("click", () => {
+      const u = document.getElementById("admin-email").value.trim().toLowerCase();
+      const p = document.getElementById("admin-password").value.trim();
+
+      // Accepts exact credentials: admin@1994.info or admin with 07107107i
+      if ((u === "admin@1994.info" || u === "admin") && p === "07107107i") {
+        currentUser = { role: "admin", name: "Administrator", isVerified: true };
+        document.getElementById("view-auth").classList.add("hidden");
+        document.getElementById("view-app").classList.remove("hidden");
+        document.getElementById("app-user-role-badge").textContent = "Administrator (Root Verified)";
+        document.getElementById("drawer-user-info").textContent = "Super Admin (Root)";
+        document.getElementById("menu-user-access").style.display = "flex";
+        populateCompanySelector();
+        switchView('ledger');
+        logActivity("Admin Login", "Administrator signed into portal");
+      } else {
+        alert("Invalid Username or Password. Please verify your credentials.");
+      }
+    });
+
+    document.getElementById("btn-do-member-login").addEventListener("click", () => {
+      const u = document.getElementById("member-login-id").value.trim().toLowerCase();
+      const p = document.getElementById("member-login-pass").value.trim();
+      const members = getMembers();
+      const member = members.find(m => (m.email.toLowerCase() === u || m.phone.trim() === u) && m.password === p);
+
+      if (member) {
+        currentUser = member;
+        document.getElementById("view-auth").classList.add("hidden");
+        document.getElementById("view-app").classList.remove("hidden");
+        document.getElementById("app-user-role-badge").textContent = member.isVerified ? "✓ Verified Member" : "Member Portal";
+        document.getElementById("drawer-user-info").textContent = `${member.name || u} (${member.isVerified ? 'Verified' : 'Unverified'})`;
+        document.getElementById("menu-user-access").style.display = "none";
+        populateCompanySelector();
+        switchView('ledger');
+        logActivity("Member Login", `Member ${member.name || u} signed in`);
+      } else {
+        alert("Invalid member credentials. If you haven't created an account yet, tap Sign Up.");
+      }
+    });
+
+    document.getElementById("btn-do-member-signup").addEventListener("click", () => {
+      const name = document.getElementById("signup-name").value.trim();
+      const email = document.getElementById("signup-email").value.trim().toLowerCase();
+      const phone = document.getElementById("signup-phone").value.trim();
+      const pass = document.getElementById("signup-pass").value;
+
+      if (!name || !email || !phone || !pass) { alert("Please complete all registration fields."); return; }
+      const members = getMembers();
+      if (members.some(m => m.email.toLowerCase() === email || m.phone.trim() === phone)) {
+        alert("Account already exists with this email or phone."); return;
+      }
+
+      const newMember = {
+        id: "usr_" + Date.now(),
+        name: name,
+        email: email,
+        phone: phone,
+        password: pass,
+        citizenship: "",
+        avatar: DEFAULT_AVATAR,
+        idProof: null,
+        isVerified: false,
+        kycSubmitted: false
+      };
+      members.push(newMember);
+      saveMembers(members);
+      alert("Account registered successfully! Please sign in with your credentials.");
+      document.getElementById("member-login-id").value = email;
+      document.getElementById("btn-sub-login").click();
+      logActivity("Member Signup", `New member registered: ${email}`);
+    });
+
     function doLogout() {
-      if (currentUser) logEvent("Portal Logout", `User ${currentUser.username} logged out.`);
       currentUser = null;
       document.getElementById("view-app").classList.add("hidden");
       document.getElementById("view-auth").classList.remove("hidden");
       toggleMenuDrawer(false);
+      logActivity("Logout", "User signed out");
     }
 
-    // Startup
+    // Initialize System
     window.addEventListener("DOMContentLoaded", () => {
-      initData();
-      document.documentElement.setAttribute("data-theme", selectedTheme);
+      const savedTheme = localStorage.getItem(KEY_THEME) || 'system';
+      applyTheme(savedTheme);
+
+      document.querySelectorAll(".theme-toggle-btn").forEach(b => b.addEventListener("click", cycleTheme));
+      document.getElementById("btn-undo").addEventListener("click", handleUndo);
+      document.getElementById("btn-redo").addEventListener("click", handleRedo);
+
+      // Auth tabs toggle
+      document.getElementById("btn-tab-admin").addEventListener("click", () => {
+        document.getElementById("btn-tab-admin").classList.add("active");
+        document.getElementById("btn-tab-member").classList.remove("active");
+        document.getElementById("admin-login-form").classList.remove("hidden");
+        document.getElementById("member-portal-form").classList.add("hidden");
+      });
+      document.getElementById("btn-tab-member").addEventListener("click", () => {
+        document.getElementById("btn-tab-member").classList.add("active");
+        document.getElementById("btn-tab-admin").classList.remove("active");
+        document.getElementById("member-portal-form").classList.remove("hidden");
+        document.getElementById("admin-login-form").classList.add("hidden");
+      });
+
+      // Member sub tabs
+      document.getElementById("btn-sub-login").addEventListener("click", () => {
+        document.getElementById("btn-sub-login").className = "btn btn-sm btn-primary";
+        document.getElementById("btn-sub-signup").className = "btn btn-sm btn-secondary";
+        document.getElementById("member-login-box").classList.remove("hidden");
+        document.getElementById("member-signup-box").classList.add("hidden");
+      });
+      document.getElementById("btn-sub-signup").addEventListener("click", () => {
+        document.getElementById("btn-sub-signup").className = "btn btn-sm btn-primary";
+        document.getElementById("btn-sub-login").className = "btn btn-sm btn-secondary";
+        document.getElementById("member-signup-box").classList.remove("hidden");
+        document.getElementById("member-login-box").classList.add("hidden");
+      });
+
+      // Month tabs
+      document.querySelectorAll(".month-pill").forEach(pill => {
+        pill.addEventListener("click", () => {
+          document.querySelectorAll(".month-pill").forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          selectedMonth = pill.getAttribute("data-month");
+          renderLedger();
+        });
+      });
+
+      document.getElementById("select-company").addEventListener("change", (e) => {
+        currentCompanyId = e.target.value;
+        populateCompanySelector();
+        renderLedger();
+      });
+
+      document.getElementById("btn-add-comp-trigger").addEventListener("click", () => {
+        document.getElementById("company-modal").classList.remove("hidden");
+      });
+
+      document.getElementById("btn-add-entry").addEventListener("click", addNewEntry);
+      document.getElementById("btn-print-letterhead").addEventListener("click", generateLetterheadPDF);
+      document.getElementById("btn-export-csv").addEventListener("click", exportCSV);
+
+      fetchLiveRate();
     });
   </script>
 </body>
