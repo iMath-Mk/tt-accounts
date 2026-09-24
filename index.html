@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>iMk BLACK MARKET LEDGER</title>
   <style>
+    /* Theme Variables */
     :root {
       --bg: #090d16;
       --card-bg: #131b2e;
@@ -18,6 +19,30 @@
       --danger: #f87171;
       --warning: #fbbf24;
       --input-bg: #0b1120;
+      --dup-red: rgba(239, 68, 68, 0.18);
+      --dup-red-border: #ef4444;
+      --dup-yellow: rgba(245, 158, 11, 0.18);
+      --dup-yellow-border: #f59e0b;
+    }
+
+    /* Light Theme Palette */
+    [data-theme="light"] {
+      --bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --card-border: #cbd5e1;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --accent: #6366f1;
+      --text: #0f172a;
+      --text-dim: #64748b;
+      --success: #059669;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --input-bg: #f8fafc;
+      --dup-red: #fee2e2;
+      --dup-red-border: #ef4444;
+      --dup-yellow: #fef3c7;
+      --dup-yellow-border: #f59e0b;
     }
 
     * {
@@ -34,6 +59,7 @@
       padding: 12px;
       padding-bottom: 90px;
       min-height: 100vh;
+      transition: background-color 0.2s, color 0.2s;
     }
 
     /* Modals */
@@ -61,6 +87,226 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
 
+    /* Header Nav */
+    .app-nav {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Month Selector Bar */
+    .month-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .month-bar::-webkit-scrollbar { display: none; }
+    .month-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-dim);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .month-pill.active {
+      background: var(--primary);
+      color: #0b0f19;
+      border-color: var(--primary);
+    }
+
+    /* Company Dropdown / Bar */
+    .company-bar {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .company-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .company-logo-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+    }
+
+    /* Dashboard Stats */
+    .stats-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 12px;
+      border-radius: 10px;
+    }
+    .stat-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .stat-val {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    /* Form Fields */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .form-group.full { grid-column: span 2; }
+    label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    input, select, textarea {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+    }
+
+    /* Vertical Cards */
+    .tx-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      transition: border 0.2s;
+    }
+    .tx-card.dup-full {
+      border: 2px solid var(--dup-red-border) !important;
+      background: var(--dup-red) !important;
+    }
+    .tx-card.dup-amt {
+      border: 2px solid var(--dup-yellow-border) !important;
+      background: var(--dup-yellow) !important;
+    }
+
+    .tx-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .calc-box {
+      background: rgba(56, 189, 248, 0.05);
+      border: 1px dashed rgba(56, 189, 248, 0.3);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .calc-item { display: flex; flex-direction: column; }
+    .calc-item .c-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
+    .calc-item .c-val { font-size: 13px; font-weight: 700; }
+    .calc-item.bal {
+      grid-column: span 2;
+      border-top: 1px solid var(--card-border);
+      padding-top: 6px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .calc-item.bal .c-val { font-size: 16px; color: var(--primary); }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 4px;
+    }
+    .badge-danger { background: var(--danger); color: #fff; }
+    .badge-warning { background: var(--warning); color: #000; }
+    .badge-success { background: var(--success); color: #000; }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      touch-action: manipulation;
+    }
+    .btn-primary { background: var(--primary); color: #090d16; }
+    .btn-secondary { background: var(--card-bg); color: var(--text); border: 1px solid var(--card-border); }
+    .btn-ai { background: linear-gradient(135deg, #6366f1, #38bdf8); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 6px; width: auto; }
+
     /* Auth Box */
     .auth-container {
       max-width: 420px;
@@ -71,21 +317,6 @@
       padding: 22px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.5);
     }
-    .auth-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .auth-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--primary);
-    }
-    .auth-sub {
-      font-size: 13px;
-      color: var(--text-dim);
-      margin-top: 4px;
-    }
-
     .auth-toggle {
       display: flex;
       background: var(--input-bg);
@@ -104,255 +335,24 @@
       font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
-      touch-action: manipulation;
     }
-    .auth-toggle button.active {
-      background: var(--primary);
-      color: #0b0f19;
-    }
+    .auth-toggle button.active { background: var(--primary); color: #0b0f19; }
 
-    /* Fields */
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .form-group.full {
-      grid-column: span 2;
-    }
-    label {
-      font-size: 11px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-    }
-    input, select, textarea {
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 11px 12px;
-      color: #fff;
-      font-size: 15px;
-      outline: none;
-      width: 100%;
-      -webkit-appearance: none;
-    }
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--primary);
-    }
-
-    /* Filter Checkbox Grid */
-    .filter-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-      background: var(--input-bg);
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-    }
-    .filter-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--text);
-      cursor: pointer;
-    }
-    .filter-item input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--primary);
-      cursor: pointer;
-    }
-
-    /* Buttons */
-    .btn {
-      width: 100%;
-      padding: 13px;
-      border-radius: 10px;
-      border: none;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      touch-action: manipulation;
-    }
-    .btn-primary { background: var(--primary); color: #090d16; }
-    .btn-primary:active { background: var(--primary-hover); }
-    .btn-secondary { background: var(--card-bg); color: var(--text); border: 1px solid var(--card-border); }
-    .btn-ai {
-      background: linear-gradient(135deg, #6366f1, #38bdf8);
-      color: #fff;
-      font-weight: 700;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-    }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-success { background: var(--success); color: #090d16; }
-    .btn-sm {
-      padding: 7px 12px;
-      font-size: 12px;
-      border-radius: 6px;
-      width: auto;
-    }
-
-    /* App Nav */
-    .app-nav {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-    .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .avatar-img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #1e293b;
-      border: 2px solid var(--primary);
-    }
-
-    /* Live Rate Bar */
-    .rate-banner {
-      background: #172033;
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 10px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    /* Dashboard Stats */
-    .stats-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 12px;
-      border-radius: 10px;
-    }
-    .stat-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 4px;
-    }
-    .stat-val {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    /* Vertical Cards */
-    .tx-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-    .tx-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--card-border);
-    }
-    .calc-box {
-      background: rgba(56, 189, 248, 0.05);
-      border: 1px dashed rgba(56, 189, 248, 0.3);
-      border-radius: 8px;
-      padding: 10px;
-      margin-top: 10px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .calc-item {
-      display: flex;
-      flex-direction: column;
-    }
-    .calc-item .c-label {
-      font-size: 10px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-    }
-    .calc-item .c-val {
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .calc-item.bal {
-      grid-column: span 2;
-      border-top: 1px solid var(--card-border);
-      padding-top: 6px;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .calc-item.bal .c-val {
-      font-size: 16px;
-      color: var(--primary);
-    }
-
-    /* Badges */
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      font-size: 11px;
-      font-weight: 700;
-      border-radius: 4px;
-    }
-    .badge-success { background: rgba(52, 211, 153, 0.2); color: var(--success); }
-    .badge-danger { background: rgba(248, 113, 113, 0.2); color: var(--danger); }
-    .badge-warning { background: rgba(251, 191, 36, 0.2); color: var(--warning); }
-
-    .help-link {
-      font-size: 13px;
-      color: var(--primary);
-      text-align: center;
-      display: block;
-      margin-top: 14px;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .warning-box {
-      background: rgba(248, 113, 113, 0.15);
-      border: 1px solid var(--danger);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 12px;
-      color: #fca5a5;
-      line-height: 1.4;
-      margin-bottom: 12px;
+    /* Print / PDF Letterhead Styling */
+    @media print {
+      body * { visibility: hidden; }
+      #printable-letterhead, #printable-letterhead * { visibility: visible; }
+      #printable-letterhead {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        color: #000 !important;
+        background: #fff !important;
+        padding: 20px;
+        display: block !important;
+      }
+      .no-print { display: none !important; }
     }
 
     .hidden { display: none !important; }
@@ -360,183 +360,126 @@
 </head>
 <body>
 
-  <!-- ==================== AI FILE UPLOAD & EXTRACTION MODAL ==================== -->
-  <div id="ai-extractor-modal" class="modal-overlay hidden">
+  <!-- ==================== PRINT / PDF LETTERHEAD (OFFICIAL TEMPLATE) ==================== -->
+  <div id="printable-letterhead" class="hidden" style="background:#fff; color:#000; padding:25px; position:relative; min-height:1000px; font-size:12px;">
+    <!-- Background Central Watermark Logo -->
+    <div id="watermark-logo-container" style="position:absolute; top:35%; left:50%; transform:translate(-50%, -50%); opacity:0.07; z-index:0; pointer-events:none; text-align:center;">
+      <img id="watermark-logo-img" src="" style="max-width:340px; max-height:340px; filter: grayscale(100%);">
+      <h1 style="font-size: 40px; letter-spacing: 2px; margin-top:10px;">iMk LEDGER</h1>
+    </div>
+
+    <div style="position:relative; z-index:1;">
+      <!-- Letterhead Header -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #000; padding-bottom:12px; margin-bottom:14px;">
+        <div style="display:flex; gap:12px; align-items:center;">
+          <img id="print-company-logo" src="" style="width:55px; height:55px; object-fit:contain; border-radius:4px;">
+          <div>
+            <h2 id="print-company-name" style="font-size:18px; text-transform:uppercase; margin-bottom:2px;">COMPANY NAME</h2>
+            <div id="print-company-contact" style="color:#555; font-size:11px;">Attn: Contact Name | Phone: 00000000</div>
+            <div style="font-size:10px; color:#777;">Official Client Statement - 2026 Financial Year</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <h3 style="font-size:14px; color:#0284c7; margin-bottom:2px;">MONTHLY STATEMENT</h3>
+          <div id="print-statement-month" style="font-weight:bold; font-size:13px;">Month: ALL</div>
+          <div id="print-timestamp" style="font-size:10px; color:#666; margin-top:2px;">Generated: DD/MM/YYYY HH:MM:SS</div>
+        </div>
+      </div>
+
+      <!-- Financial Summary Cards on Print -->
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; margin-bottom:15px; text-align:center;">
+        <div style="border:1px solid #ccc; padding:8px; border-radius:4px; background:#f9f9f9;">
+          <div style="font-size:9px; color:#666; text-transform:uppercase;">Turnover USD</div>
+          <b id="print-stat-usd" style="font-size:13px;">$0.00</b>
+        </div>
+        <div style="border:1px solid #ccc; padding:8px; border-radius:4px; background:#f9f9f9;">
+          <div style="font-size:9px; color:#666; text-transform:uppercase;">COM in LKR</div>
+          <b id="print-stat-lkr" style="font-size:13px;">0.00</b>
+        </div>
+        <div style="border:1px solid #ccc; padding:8px; border-radius:4px; background:#f9f9f9;">
+          <div style="font-size:9px; color:#666; text-transform:uppercase;">Received QR</div>
+          <b id="print-stat-rec" style="font-size:13px; color:#b91c1c;">0.00</b>
+        </div>
+        <div style="border:1px solid #0284c7; padding:8px; border-radius:4px; background:#e0f2fe;">
+          <div style="font-size:9px; color:#0369a1; text-transform:uppercase; font-weight:bold;">Net Due QR</div>
+          <b id="print-stat-bal" style="font-size:14px; color:#0369a1;">0.00</b>
+        </div>
+      </div>
+
+      <!-- Main Ledger Table -->
+      <table style="width:100%; border-collapse:collapse; font-size:10px; margin-bottom:25px;" id="print-table">
+        <thead>
+          <tr style="background:#0f172a; color:#fff;">
+            <th style="border:1px solid #334155; padding:6px 4px;">Tx #</th>
+            <th style="border:1px solid #334155; padding:6px 4px;">Date</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:left;">Details / Client</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">USD</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">Rate</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">COM (LKR)</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">Conv.</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">COM (QR)</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">Rec (QR)</th>
+            <th style="border:1px solid #334155; padding:6px 4px; text-align:right;">Balance (QR)</th>
+          </tr>
+        </thead>
+        <tbody id="print-table-body"></tbody>
+      </table>
+
+      <!-- Statement Footer Notice -->
+      <div style="position:relative; margin-top:30px; border-top:1px dashed #999; padding-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:10px; color:#555;">
+        <div>
+          <b>Security Notice:</b> This is a computer-generated statement. No physical signature is required.
+        </div>
+        <div>
+          <b>iMk BLACK MARKET LEDGER PORTAL</b> | info@ideas.limited
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ADD COMPANY MODAL ==================== -->
+  <div id="company-modal" class="modal-overlay hidden">
     <div class="modal-card">
-      <h3 style="color: var(--primary); margin-bottom: 4px; display: flex; align-items:center; gap:6px;">
-        ⚡ AI File Extraction & Scanner
-      </h3>
-      <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">
-        Upload invoices, TT receipts, images or documents (up to 100MB per turn). All dates will be formatted as DD/MM/YYYY.
-      </p>
-
-      <div id="ai-warning-container" class="warning-box hidden"></div>
-
-      <div style="font-size: 11px; color: var(--primary); font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">
-        Select Columns to Extract:
-      </div>
-      <div class="filter-grid">
-        <label class="filter-item">
-          <input type="checkbox" id="ext-opt-debit" checked>
-          <span>Debit / USD Turnover</span>
-        </label>
-        <label class="filter-item">
-          <input type="checkbox" id="ext-opt-credit" checked>
-          <span>Credit / Received (QR)</span>
-        </label>
-        <label class="filter-item">
-          <input type="checkbox" id="ext-opt-deduct" checked>
-          <span>Deductions / COM Rate</span>
-        </label>
-        <label class="filter-item">
-          <input type="checkbox" id="ext-opt-date" checked>
-          <span>Date (DD/MM/YYYY) & Details</span>
-        </label>
-      </div>
-
+      <h3 style="color:var(--primary); margin-bottom:10px;">🏢 Add / Edit Company</h3>
       <div class="form-group">
-        <label>Upload Documents / Slips (Max 100MB Total)</label>
-        <input type="file" id="ai-file-input" multiple accept=".pdf,.png,.jpg,.jpeg,.csv,.xlsx,.txt" style="padding: 8px;">
-        <div id="file-size-indicator" style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">
-          Total Selected Size: 0.00 MB / 100 MB
-        </div>
+        <label>Company / Client Name</label>
+        <input type="text" id="comp-name" placeholder="e.g. Client One, Dummy Co">
       </div>
-
-      <div class="form-group" style="margin-bottom: 10px;">
-        <label>Gemini API Key (Optional for Multimodal OCR)</label>
-        <input type="password" id="gemini-api-key" placeholder="Enter Gemini API key or leave blank for auto parser">
-      </div>
-
-      <div id="ai-preview-section" class="hidden" style="margin-top: 10px;">
-        <div style="font-size: 11px; color: var(--success); font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">
-          Extracted Results Preview:
-        </div>
-        <div id="ai-preview-list" style="max-height: 180px; overflow-y: auto; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 8px; font-size: 12px;"></div>
-      </div>
-
-      <div style="display: flex; gap: 8px; margin-top: 14px;">
-        <button type="button" class="btn btn-secondary" onclick="closeAiModal()">Cancel</button>
-        <button type="button" class="btn btn-ai" id="btn-run-ai-extract">Extract & Verify</button>
-      </div>
-      <button type="button" class="btn btn-success hidden" id="btn-apply-ai-results" style="margin-top: 8px;">
-        ✓ File & Commit to Ledger
-      </button>
-    </div>
-  </div>
-
-  <!-- ==================== MEMBER PROPOSAL MODAL ==================== -->
-  <div id="member-propose-modal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <h3 style="color: var(--primary); margin-bottom: 6px;">Propose Ledger Entry</h3>
-      <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 14px;">
-        Members cannot edit the live ledger directly. Your entry will be submitted to the Admin for approval.
-      </p>
-      
       <div class="form-row">
         <div class="form-group">
-          <label>Date (DD/MM/YYYY)</label>
-          <input type="text" id="prop-date" placeholder="DD/MM/YYYY">
+          <label>Contact Person Name</label>
+          <input type="text" id="comp-contact" placeholder="Contact person">
         </div>
         <div class="form-group">
-          <label>USD Amount</label>
-          <input type="number" step="any" id="prop-usd" placeholder="0.00">
+          <label>Contact Mobile / Phone</label>
+          <input type="tel" id="comp-phone" placeholder="Phone number">
         </div>
       </div>
-
-      <div class="form-group full">
-        <label>Details / Counterparty</label>
-        <input type="text" id="prop-details" placeholder="Counterparty / Client">
+      <div class="form-group">
+        <label>Company Logo Image</label>
+        <input type="file" id="comp-logo-input" accept="image/*" style="padding:6px;">
       </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>COM Rate</label>
-          <input type="number" step="any" id="prop-comRate" value="1.5">
-        </div>
-        <div class="form-group">
-          <label>Conv Rate</label>
-          <input type="number" step="any" id="prop-convRate" value="83.0">
-        </div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('company-modal').classList.add('hidden')">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-save-company">Save Company</button>
       </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Received (QR)</label>
-          <input type="number" step="any" id="prop-received" placeholder="0.00">
-        </div>
-        <div class="form-group">
-          <label>Remarks</label>
-          <input type="text" id="prop-remarks" placeholder="Optional notes">
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 10px; margin-top: 10px;">
-        <button type="button" class="btn btn-secondary" onclick="document.getElementById('member-propose-modal').classList.add('hidden')">Cancel</button>
-        <button type="button" class="btn btn-primary" id="btn-submit-proposal">Submit For Approval</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== CONSENT MODAL ==================== -->
-  <div id="consent-modal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <h3 style="color: var(--primary); margin-bottom: 8px;">Activity & Device Transparency</h3>
-      <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px;">
-        Your login time, IP address, and browser info will be shared with the Administrator management logs.
-        <br/><br/>
-        Do you consent to allowing activity tracking on this device?
-      </p>
-      <div style="display: flex; gap: 10px;">
-        <button type="button" class="btn btn-secondary" id="btn-consent-decline">Decline</button>
-        <button type="button" class="btn btn-primary" id="btn-consent-allow">Allow & Proceed</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== PHOTO CONSENT MODAL ==================== -->
-  <div id="photo-consent-modal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <h3 style="color: var(--primary); margin-bottom: 8px;">Profile Photo Access</h3>
-      <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px;">
-        Do you allow access to upload your profile photo? The Administrator will also have access to view this photo inside the management panel.
-      </p>
-      <div style="display: flex; gap: 10px;">
-        <button type="button" class="btn btn-secondary" onclick="document.getElementById('photo-consent-modal').classList.add('hidden')">Cancel</button>
-        <button type="button" class="btn btn-primary" id="btn-photo-agree">I Agree, Choose Photo</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== CONTACT MODAL ==================== -->
-  <div id="contact-modal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <h3 style="color: var(--primary); margin-bottom: 8px;">Support & Password Reset</h3>
-      <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 12px;">
-        For password resets or account inquiries, please contact our support desk:
-      </p>
-      <div style="background: var(--input-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 16px;">
-        <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Official Support Email</div>
-        <a href="mailto:info@ideas.limited" style="color: var(--primary); font-size: 16px; font-weight: bold; text-decoration: none;">info@ideas.limited</a>
-      </div>
-      <button type="button" class="btn btn-primary" onclick="document.getElementById('contact-modal').classList.add('hidden')">Close</button>
     </div>
   </div>
 
   <!-- ==================== LANDING / AUTH VIEW ==================== -->
   <div id="view-auth">
     <div class="auth-container">
-      <div class="auth-header">
-        <div class="auth-title">iMk BLACK MARKET LEDGER</div>
-        <div class="auth-sub">Select portal to proceed</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <div style="font-size:18px; font-weight:700; color:var(--primary);">iMk LEDGER</div>
+        <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓 Theme: Auto</button>
       </div>
 
-      <!-- Top Switch: Admin vs Member -->
       <div class="auth-toggle">
         <button type="button" id="btn-tab-admin" class="active">Admin Login</button>
         <button type="button" id="btn-tab-member">Members Login</button>
       </div>
 
-      <!-- ADMIN LOGIN -->
+      <!-- Admin Form -->
       <div id="admin-login-form">
         <div class="form-group">
           <label>Username</label>
@@ -546,20 +489,19 @@
           <label>Password</label>
           <input type="password" id="admin-password" placeholder="Write your Password" autocomplete="current-password">
         </div>
-        <button type="button" class="btn btn-primary" id="btn-do-admin-login" style="margin-top: 8px;">Secure Admin Login</button>
+        <button type="button" class="btn btn-primary" id="btn-do-admin-login" style="margin-top:8px;">Secure Admin Login</button>
       </div>
 
-      <!-- MEMBER PORTAL -->
+      <!-- Member Form -->
       <div id="member-portal-form" class="hidden">
-        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
           <button type="button" id="btn-sub-login" class="btn btn-sm btn-primary" style="flex:1;">Sign In</button>
           <button type="button" id="btn-sub-signup" class="btn btn-sm btn-secondary" style="flex:1;">Sign Up</button>
         </div>
 
-        <!-- Member Sign In -->
         <div id="member-login-box">
           <div class="form-group">
-            <label>Email or Mobile Number</label>
+            <label>Email or Mobile</label>
             <input type="text" id="member-login-id" placeholder="Write Your username or mobile">
           </div>
           <div class="form-group">
@@ -569,14 +511,13 @@
           <button type="button" class="btn btn-primary" id="btn-do-member-login">Sign In</button>
         </div>
 
-        <!-- Member Sign Up -->
         <div id="member-signup-box" class="hidden">
           <div class="form-group">
             <label>Full Name</label>
             <input type="text" id="signup-name" placeholder="Full name">
           </div>
           <div class="form-group">
-            <label>Email Address</label>
+            <label>Email</label>
             <input type="email" id="signup-email" placeholder="Email address">
           </div>
           <div class="form-group">
@@ -584,502 +525,288 @@
             <input type="tel" id="signup-phone" placeholder="Mobile number">
           </div>
           <div class="form-group">
-            <label>Create Password</label>
+            <label>Password</label>
             <input type="password" id="signup-pass" placeholder="Write your Password">
           </div>
-          <button type="button" class="btn btn-primary" id="btn-do-member-signup">Create Account & Get Ledger ID</button>
+          <button type="button" class="btn btn-primary" id="btn-do-member-signup">Register & Get ID</button>
         </div>
       </div>
-
-      <a class="help-link" onclick="document.getElementById('contact-modal').classList.remove('hidden')">
-        Forgot password or need help? Contact us
-      </a>
     </div>
   </div>
 
-  <!-- ==================== MEMBER PORTAL VIEW ==================== -->
-  <div id="view-member" class="hidden">
+  <!-- ==================== MAIN LEDGER APPLICATION VIEW ==================== -->
+  <div id="view-app" class="hidden">
+    <!-- Top Navigation -->
     <div class="app-nav">
-      <div class="user-pill">
-        <input type="file" id="member-avatar-input" accept="image/*" class="hidden">
-        <img id="member-avatar-display" class="avatar-img" src="" title="Tap to change photo">
+      <div>
+        <div class="brand-title">iMk BLACK MARKET LEDGER</div>
+        <div style="font-size:11px; color:var(--text-dim);" id="app-user-role-badge">Admin Portal</div>
+      </div>
+      <div class="nav-actions">
+        <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓 Theme</button>
+        <button type="button" class="btn-sm btn-danger" id="btn-app-logout">Exit</button>
+      </div>
+    </div>
+
+    <!-- Company Selector & Manager Bar -->
+    <div class="company-bar">
+      <div class="company-meta">
+        <img id="active-company-logo" class="company-logo-img" src="" alt="logo">
         <div>
-          <div style="font-weight: 700; font-size: 14px;" id="nav-member-name">Member Name</div>
-          <div style="font-size: 11px; color: var(--primary); font-weight: 600;" id="nav-member-ledger-id">LEDGER #</div>
+          <select id="select-company" style="padding:6px 10px; font-weight:700; font-size:13px; max-width:180px;"></select>
+          <div style="font-size:10px; color:var(--text-dim);" id="active-company-contact">Attn: Contact</div>
         </div>
       </div>
-      <button type="button" class="btn btn-secondary btn-sm" id="btn-member-logout">Sign Out</button>
+      <div style="display:flex; gap:6px;">
+        <button type="button" class="btn-sm btn-primary" id="btn-add-company-modal">+ Add Company</button>
+        <button type="button" class="btn-sm btn-secondary" id="btn-print-letterhead" title="Share Professional PDF Statement">📄 Print Letterhead</button>
+      </div>
+    </div>
+
+    <!-- Horizontal Month Filter (January to December 2026) -->
+    <div class="month-bar" id="month-pill-container">
+      <div class="month-pill active" data-month="all">All Months 2026</div>
+      <div class="month-pill" data-month="1">Jan 2026</div>
+      <div class="month-pill" data-month="2">Feb 2026</div>
+      <div class="month-pill" data-month="3">Mar 2026</div>
+      <div class="month-pill" data-month="4">Apr 2026</div>
+      <div class="month-pill" data-month="5">May 2026</div>
+      <div class="month-pill" data-month="6">Jun 2026</div>
+      <div class="month-pill" data-month="7">Jul 2026</div>
+      <div class="month-pill" data-month="8">Aug 2026</div>
+      <div class="month-pill" data-month="9">Sep 2026</div>
+      <div class="month-pill" data-month="10">Oct 2026</div>
+      <div class="month-pill" data-month="11">Nov 2026</div>
+      <div class="month-pill" data-month="12">Dec 2026</div>
     </div>
 
     <!-- Live Rate Banner -->
-    <div class="rate-banner">
-      <div>
-        <span style="font-size: 11px; color: var(--text-dim);">LIVE MARKET CONVERSION</span><br/>
-        1 QAR = <b id="member-market-rate" style="color: var(--success);">83.00 LKR</b>
+    <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div style="font-size:12px;">
+        Live Conversion: 1 QAR = <b id="live-rate-display" style="color:var(--success);">83.00 LKR</b>
       </div>
-      <button type="button" class="btn btn-sm btn-primary" id="btn-refresh-rate-member">⟳ Live Rate</button>
+      <button type="button" class="btn-sm btn-secondary" onclick="fetchLiveRate()">⟳ Refresh Rate</button>
     </div>
 
-    <!-- Dashboard Summary -->
+    <!-- Monthly / Filtered Overview Dashboard -->
     <div class="stats-container">
       <div class="stat-card">
-        <div class="stat-label">Total Turnover</div>
-        <div class="stat-val" id="member-stat-usd">$0.00</div>
+        <div class="stat-label">Turnover (USD)</div>
+        <div class="stat-val" id="stat-usd">$0.00</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Commission (LKR)</div>
-        <div class="stat-val" id="member-stat-lkr" style="color: var(--accent);">0.00</div>
+        <div class="stat-label">Total COM (LKR)</div>
+        <div class="stat-val" id="stat-lkr" style="color:var(--accent);">0.00 LKR</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Total Received</div>
-        <div class="stat-val" id="member-stat-rec" style="color: var(--danger);">0.00 QR</div>
+        <div class="stat-label">Total Received (QR)</div>
+        <div class="stat-val" id="stat-rec" style="color:var(--danger);">0.00 QR</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Balance Due</div>
-        <div class="stat-val" id="member-stat-bal" style="color: var(--primary);">0.00 QR</div>
+        <div class="stat-label">Net Balance (QR)</div>
+        <div class="stat-val" id="stat-bal" style="color:var(--primary);">0.00 QR</div>
       </div>
     </div>
 
-    <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
-      <button type="button" id="btn-open-propose" class="btn btn-primary" style="flex: 1; min-width: 140px;">+ Propose Entry</button>
-      <button type="button" class="btn btn-ai btn-trigger-ai" style="flex: 1; min-width: 140px;">⚡ AI Upload & Extract</button>
-      <button type="button" id="member-export-btn" class="btn btn-secondary" style="flex: 1; min-width: 100px;">Export CSV</button>
+    <!-- Actions Bar -->
+    <div style="display:flex; gap:8px; margin-bottom:12px;">
+      <button type="button" class="btn btn-primary" id="btn-add-entry" style="flex:2;">+ New Entry</button>
+      <button type="button" class="btn btn-secondary" id="btn-export-csv" style="flex:1;">CSV Export</button>
     </div>
 
-    <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; font-weight: bold;">
-      Master Ledger Entries (Read-Only)
-    </div>
-    <div id="member-tx-list"></div>
+    <!-- Ledger Transaction Cards Container -->
+    <div id="tx-cards-list"></div>
   </div>
 
-  <!-- ==================== ADMIN PORTAL VIEW ==================== -->
-  <div id="view-admin" class="hidden">
-    <div class="app-nav">
-      <div>
-        <div style="font-weight: 700; color: var(--primary); font-size: 16px;">iMk BLACK MARKET LEDGER</div>
-        <div style="font-size: 11px; color: var(--text-dim);">Administrator Console</div>
-      </div>
-      <button type="button" class="btn btn-secondary btn-sm" id="btn-admin-logout">Sign Out</button>
-    </div>
-
-    <!-- Admin Section Tabs -->
-    <div class="auth-toggle" style="margin-bottom: 14px;">
-      <button type="button" id="btn-admin-tab-ledger" class="active">Master Ledger</button>
-      <button type="button" id="btn-admin-tab-approvals">Approvals <span id="badge-pending-count" class="badge badge-warning hidden">0</span></button>
-      <button type="button" id="btn-admin-tab-members">Members</button>
-      <button type="button" id="btn-admin-tab-logs">Device Logs</button>
-    </div>
-
-    <!-- SECTION 1: MASTER LEDGER -->
-    <div id="admin-sec-ledger">
-      <div class="rate-banner">
-        <div>
-          <span style="font-size: 11px; color: var(--text-dim);">LIVE MARKET CONVERSION</span><br/>
-          1 QAR = <b id="admin-market-rate" style="color: var(--success);">83.00 LKR</b>
-        </div>
-        <button type="button" class="btn btn-sm btn-primary" id="btn-refresh-rate-admin">⟳ Live Rate</button>
-      </div>
-
-      <div class="stats-container">
-        <div class="stat-card">
-          <div class="stat-label">Total Turnover</div>
-          <div class="stat-val" id="admin-stat-usd">$0.00</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Commission (LKR)</div>
-          <div class="stat-val" id="admin-stat-lkr" style="color: var(--accent);">0.00</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Received</div>
-          <div class="stat-val" id="admin-stat-rec" style="color: var(--danger);">0.00 QR</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Balance Due</div>
-          <div class="stat-val" id="admin-stat-bal" style="color: var(--primary);">0.00 QR</div>
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
-        <button type="button" id="btn-admin-add-entry" class="btn btn-primary" style="flex: 1; min-width: 140px;">+ Add New Entry</button>
-        <button type="button" class="btn btn-ai btn-trigger-ai" style="flex: 1; min-width: 140px;">⚡ AI Upload & Extract</button>
-        <button type="button" id="btn-admin-export" class="btn btn-secondary" style="flex: 1; min-width: 100px;">Export CSV</button>
-      </div>
-
-      <div id="admin-tx-list"></div>
-    </div>
-
-    <!-- SECTION 2: PENDING MEMBER PROPOSALS -->
-    <div id="admin-sec-approvals" class="hidden">
-      <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 10px;">
-        Member submitted entries awaiting administrator acceptance:
-      </div>
-      <div id="admin-approvals-list"></div>
-    </div>
-
-    <!-- SECTION 3: MEMBERS LIST -->
-    <div id="admin-sec-members" class="hidden">
-      <div id="admin-members-list"></div>
-    </div>
-
-    <!-- SECTION 4: AUDIT LOGS -->
-    <div id="admin-sec-logs" class="hidden">
-      <div style="display: flex; justify-content: space-between; align-items:center; margin-bottom: 10px;">
-        <span style="font-size: 12px; color: var(--text-dim);">Member device and consent records</span>
-        <button type="button" class="btn btn-sm btn-secondary" id="btn-clear-logs">Clear Logs</button>
-      </div>
-      <div id="admin-logs-list"></div>
-    </div>
-  </div>
-
-  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
   <script>
-    const KEY_MASTER_LEDGER = "tt_master_ledger_data";
-    const KEY_MEMBERS = "tt_members_database";
-    const KEY_PROPOSALS = "tt_pending_proposals";
-    const KEY_LOGS = "tt_audit_logs_v2";
+    // Storage Keys
+    const KEY_COMPANIES = "imk_companies_db_v3";
+    const KEY_LEDGER = "imk_ledger_db_v3";
+    const KEY_THEME = "imk_preferred_theme";
+    const INACTIVITY_LIMIT_MS = 3 * 60 * 60 * 1000; // 3 Hours
 
     let globalLiveRate = 83.00;
-    let currentUser = null;
-    let pendingLoginUser = null;
+    let currentUser = null; // { role: 'admin' } or member object
+    let selectedMonth = 'all'; // 'all' or '1'...'12'
+    let currentCompanyId = "comp_default";
     let autoLogoutTimer = null;
-    let extractedTempEntries = [];
-    const INACTIVITY_LIMIT_MS = 3 * 60 * 60 * 1000; // 3 Hours
-    const MAX_UPLOAD_BYTES = 100 * 1024 * 1024; // 100 MB Limit
 
-    const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+    const DEFAULT_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z'/%3E%3C/svg%3E";
 
-    // Standardized DD/MM/YYYY Helper
+    // Seed Companies
+    const DEFAULT_COMPANIES = [
+      { id: "comp_default", name: "Client One Ltd", contact: "Thami Abdullah", phone: "+94 77 123 4567", logo: DEFAULT_LOGO },
+      { id: "comp_dummy", name: "Aadil Global PTE", contact: "Mohamed Aadil", phone: "+65 8123 4567", logo: DEFAULT_LOGO },
+      { id: "comp_kawloon", name: "Kawloon International", contact: "K. Rahman", phone: "+974 5512 3456", logo: DEFAULT_LOGO }
+    ];
+
+    // Seed Ledger (January to December 2026 data structured with Transaction Numbers)
+    const SEED_LEDGER = [
+      { id: "tx_1", companyId: "comp_default", txNum: "TX-2026-101", date: "11/01/2026", details: "THUAN DAO", usd: 16000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "January Settlement", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_2", companyId: "comp_dummy", txNum: "TX-2026-102", date: "20/02/2026", details: "AADIL GLOBAL PTE LTD", usd: 18000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "February Delivery", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_3", companyId: "comp_dummy", txNum: "TX-2026-103", date: "04/03/2026", details: "AADIL GLOBAL PTE LTD", usd: 24600.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "March TT", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_4", companyId: "comp_kawloon", txNum: "TX-2026-104", date: "07/04/2026", details: "KAWLOON INTERNATIO", usd: 27000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "April Batch", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_5", companyId: "comp_kawloon", txNum: "TX-2026-105", date: "08/05/2026", details: "KAWLOON INTERNATIO", usd: 15900.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "May TT", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_6", companyId: "comp_default", txNum: "TX-2026-106", date: "09/06/2026", details: "SINFINI MA", usd: 20000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "June Clearance", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_7", companyId: "comp_default", txNum: "TX-2026-107", date: "11/07/2026", details: "MAS BUSINESS PROTECTI", usd: 13094.39, comRate: 1.5, convRate: 83.0, received: 0, remarks: "July Batch", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_8", companyId: "comp_default", txNum: "TX-2026-108", date: "15/08/2026", details: "SINFINI MA", usd: 22959.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "August Batch", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_9", companyId: "comp_dummy", txNum: "TX-2026-109", date: "16/09/2026", details: "AADIL GLOBAL PTE LTD", usd: 27360.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "September Shipment", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_10", companyId: "comp_default", txNum: "TX-2026-110", date: "29/10/2026", details: "EXPO LANKA M/", usd: 16805.75, comRate: 1.5, convRate: 83.0, received: 0, remarks: "October Invoice", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_11", companyId: "comp_default", txNum: "TX-2026-111", date: "21/09/2026", details: "Received frm Thami", usd: 0, comRate: 1.5, convRate: 83.0, received: 510.0, remarks: "ABDULLAH Settlement", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_12", companyId: "comp_default", txNum: "TX-2026-112", date: "05/11/2026", details: "HSN GOODS", usd: 24900.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "November Orders", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_13", companyId: "comp_dummy", txNum: "TX-2026-113", date: "12/12/2026", details: "TFT TRADIN", usd: 18074.39, comRate: 1.5, convRate: 83.0, received: 0, remarks: "December Closing", saved: true, createdBy: "admin", overrideDup: false }
+    ];
+
+    // Storage access
+    function getCompanies() {
+      try {
+        const stored = localStorage.getItem(KEY_COMPANIES);
+        return stored ? JSON.parse(stored) : DEFAULT_COMPANIES;
+      } catch(e) { return DEFAULT_COMPANIES; }
+    }
+    function saveCompanies(data) { localStorage.setItem(KEY_COMPANIES, JSON.stringify(data)); }
+
+    function getLedgerData() {
+      try {
+        const stored = localStorage.getItem(KEY_LEDGER);
+        return stored ? JSON.parse(stored) : SEED_LEDGER;
+      } catch(e) { return SEED_LEDGER; }
+    }
+    function saveLedgerData(data) { localStorage.setItem(KEY_LEDGER, JSON.stringify(data)); }
+
+    function fmt(n) {
+      return (Number(n) || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Standardize to DD/MM/YYYY
     function formatToDDMMYYYY(val) {
       if (!val) {
         const d = new Date();
-        const dd = String(d.getDate()).padStart(2, '0');
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const yyyy = d.getFullYear();
-        return `${dd}/${mm}/${yyyy}`;
+        return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/2026`;
       }
       const str = String(val).trim().replace(/-/g, '/').replace(/^\./, '');
       const parts = str.split('/');
       if (parts.length === 2) {
-        const dd = String(parseInt(parts[0]) || 1).padStart(2, '0');
-        const mm = String(parseInt(parts[1]) || 1).padStart(2, '0');
-        return `${dd}/${mm}/2026`;
+        return `${String(parseInt(parts[0])||1).padStart(2,'0')}/${String(parseInt(parts[1])||1).padStart(2,'0')}/2026`;
       } else if (parts.length === 3) {
-        if (parts[0].length === 4) { // YYYY/MM/DD
-          const dd = String(parseInt(parts[2]) || 1).padStart(2, '0');
-          const mm = String(parseInt(parts[1]) || 1).padStart(2, '0');
-          return `${dd}/${mm}/${parts[0]}`;
-        } else { // DD/MM/YYYY
-          const dd = String(parseInt(parts[0]) || 1).padStart(2, '0');
-          const mm = String(parseInt(parts[1]) || 1).padStart(2, '0');
-          let yyyy = parts[2];
-          if (yyyy.length === 2) yyyy = "20" + yyyy;
-          return `${dd}/${mm}/${yyyy}`;
+        if (parts[0].length === 4) {
+          return `${String(parseInt(parts[2])||1).padStart(2,'0')}/${String(parseInt(parts[1])||1).padStart(2,'0')}/${parts[0]}`;
+        } else {
+          let y = parts[2];
+          if (y.length === 2) y = "20" + y;
+          return `${String(parseInt(parts[0])||1).padStart(2,'0')}/${String(parseInt(parts[1])||1).padStart(2,'0')}/${y}`;
         }
       }
       return str;
     }
 
-    // Historical Seed Transactions (Formatted strictly in DD/MM/YYYY)
-    const SEED_TRANSACTIONS = [
-      { id: "tx_1", date: "11/08/2026", details: "THUAN DAO", usd: 16000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_2", date: "20/08/2026", details: "AADIL GLOBAL PTE LTD", usd: 18000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_3", date: "04/09/2026", details: "AADIL GLOBAL PTE LTD", usd: 24600.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_4", date: "07/09/2026", details: "KAWLOON INTERNATIO", usd: 27000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_5", date: "08/09/2026", details: "KAWLOON INTERNATIO", usd: 15900.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_6", date: "09/09/2026", details: "SINFINI MA", usd: 20000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_7", date: "11/09/2026", details: "MAS BUSINESS PROTECTI", usd: 13094.39, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_8", date: "15/09/2026", details: "SINFINI MA", usd: 22959.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_9", date: "16/09/2026", details: "AADIL GLOBAL PTE LTD", usd: 27360.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_10", date: "29/10/2026", details: "EXPO LANKA M/", usd: 16805.75, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_11", date: "21/09/2025", details: "Received frm Thami", usd: 0, comRate: 1.5, convRate: 83.0, received: 510.0, remarks: "ABDULLAH" },
-      { id: "tx_12", date: "05/11/2026", details: "HSN GOODS", usd: 24900.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_13", date: "05/11/2026", details: "TFT TRADIN", usd: 18074.39, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_14", date: "06/11/2026", details: "TFT TRADIN", usd: 19900.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_15", date: "09/11/2026", details: "STAR BIT T", usd: 27149.86, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_16", date: "09/11/2026", details: "TFT TRADIN", usd: 24600.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_17", date: "10/11/2026", details: "AADIL GLOBAL PTE LTD", usd: 23200.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_18", date: "11/11/2026", details: "HSN GOODS", usd: 25125.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_19", date: "10/11/2026", details: "RECEIVED BY DT 611*3.7", usd: 0, comRate: 1.5, convRate: 83.0, received: 2260.0, remarks: "ABDULLAH" },
-      { id: "tx_20", date: "03/11/2026", details: "AADIL GLOBAL PTE LTD", usd: 25975.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" },
-      { id: "tx_21", date: "08/11/2026", details: "RECEIVED BY QR", usd: 0, comRate: 1.5, convRate: 83.0, received: 3000.0, remarks: "HUZAIFA" },
-      { id: "tx_22", date: "13/11/2026", details: "TFT TRADIN", usd: 13560.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "" }
-    ];
-
-    function getLedger() {
-      try {
-        const stored = localStorage.getItem(KEY_MASTER_LEDGER);
-        if (stored) {
-          const arr = JSON.parse(stored);
-          return arr.map(item => {
-            item.date = formatToDDMMYYYY(item.date);
-            return item;
-          });
-        }
-        return SEED_TRANSACTIONS;
-      } catch (e) {
-        return SEED_TRANSACTIONS;
-      }
-    }
-    function saveLedger(data) {
-      localStorage.setItem(KEY_MASTER_LEDGER, JSON.stringify(data));
-    }
-    function getMembers() {
-      try {
-        return JSON.parse(localStorage.getItem(KEY_MEMBERS) || "[]");
-      } catch (e) {
-        return [];
-      }
-    }
-    function saveMembers(m) {
-      localStorage.setItem(KEY_MEMBERS, JSON.stringify(m));
-    }
-    function getProposals() {
-      try {
-        return JSON.parse(localStorage.getItem(KEY_PROPOSALS) || "[]");
-      } catch (e) {
-        return [];
-      }
-    }
-    function saveProposals(p) {
-      localStorage.setItem(KEY_PROPOSALS, JSON.stringify(p));
-    }
-    function getLogs() {
-      try {
-        return JSON.parse(localStorage.getItem(KEY_LOGS) || "[]");
-      } catch (e) {
-        return [];
-      }
-    }
-    function addLog(entry) {
-      const logs = getLogs();
-      logs.unshift(entry);
-      localStorage.setItem(KEY_LOGS, JSON.stringify(logs.slice(0, 150)));
+    // Extract month number (1 - 12) from DD/MM/YYYY string
+    function extractMonth(dateStr) {
+      const parts = dateStr.split('/');
+      return parts.length >= 2 ? parseInt(parts[1]) || 0 : 0;
     }
 
-    function fmt(n) {
-      return (Number(n) || 0).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+    // Theme Management (System / Dark / Light)
+    function applyTheme(theme) {
+      if (theme === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+      localStorage.setItem(KEY_THEME, theme);
+      document.querySelectorAll(".theme-toggle-btn").forEach(b => {
+        b.textContent = `🌓 Theme: ${theme.toUpperCase()}`;
       });
     }
 
-    // --- Silent 3-Hour Inactivity Auto Logout ---
-    function resetInactivityTimer() {
+    function cycleTheme() {
+      const current = localStorage.getItem(KEY_THEME) || 'system';
+      const next = current === 'system' ? 'dark' : current === 'dark' ? 'light' : 'system';
+      applyTheme(next);
+    }
+
+    // Silent Inactivity Timer
+    function resetInactivity() {
       if (autoLogoutTimer) clearTimeout(autoLogoutTimer);
       if (currentUser) {
         autoLogoutTimer = setTimeout(() => {
-          triggerAutoLogout();
+          currentUser = null;
+          document.getElementById("view-app").classList.add("hidden");
+          document.getElementById("view-auth").classList.remove("hidden");
+          alert("Session timed out due to 3 hours of inactivity. Please sign in again.");
         }, INACTIVITY_LIMIT_MS);
       }
     }
+    ['touchstart', 'mousedown', 'keydown', 'scroll'].forEach(e => window.addEventListener(e, resetInactivity, { passive: true }));
 
-    function triggerAutoLogout() {
-      currentUser = null;
-      if (autoLogoutTimer) clearTimeout(autoLogoutTimer);
-      document.getElementById("view-member").classList.add("hidden");
-      document.getElementById("view-admin").classList.add("hidden");
-      document.getElementById("view-auth").classList.remove("hidden");
-      alert("Session expired due to inactivity (> 3 hours). Please enter your username and password again to log in.");
-    }
-
-    ['mousedown', 'mousemove', 'keydown', 'touchstart', 'scroll'].forEach(evt => {
-      window.addEventListener(evt, resetInactivityTimer, { passive: true });
-    });
-
-    async function captureDeviceInfo() {
-      let ip = "Direct/Cellular";
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000);
-        const res = await fetch("https://api.ipify.org?format=json", { signal: controller.signal });
-        clearTimeout(timeoutId);
-        const d = await res.json();
-        if (d && d.ip) ip = d.ip;
-      } catch (e) {
-        ip = "Mobile Network";
-      }
-
-      return {
-        ip: ip,
-        userAgent: navigator.userAgent || "iOS Device",
-        time: new Date().toLocaleString()
-      };
-    }
-
+    // Currency API
     async function fetchLiveRate() {
       try {
         const res = await fetch("https://open.er-api.com/v6/latest/QAR");
-        const data = await res.json();
-        if (data && data.rates && data.rates.LKR) {
-          globalLiveRate = parseFloat(data.rates.LKR.toFixed(2));
-          const el1 = document.getElementById("admin-market-rate");
-          const el2 = document.getElementById("member-market-rate");
-          if (el1) el1.textContent = `${globalLiveRate} LKR`;
-          if (el2) el2.textContent = `${globalLiveRate} LKR`;
+        const d = await res.json();
+        if (d && d.rates && d.rates.LKR) {
+          globalLiveRate = parseFloat(d.rates.LKR.toFixed(2));
+          document.getElementById("live-rate-display").textContent = `${globalLiveRate} LKR`;
         }
-      } catch (e) {
-        globalLiveRate = 83.00;
-      }
+      } catch(e) { globalLiveRate = 83.00; }
     }
 
-    function setAuthTab(tab) {
-      const btnAdmin = document.getElementById("btn-tab-admin");
-      const btnMember = document.getElementById("btn-tab-member");
-      const adminForm = document.getElementById("admin-login-form");
-      const memberForm = document.getElementById("member-portal-form");
+    // Duplicate Detection Logic
+    function checkDuplicates(currentTx, allTx) {
+      if (currentTx.overrideDup) return { isFullDup: false, isAmtDup: false };
 
-      if (tab === 'admin') {
-        btnAdmin.classList.add("active");
-        btnMember.classList.remove("active");
-        adminForm.classList.remove("hidden");
-        memberForm.classList.add("hidden");
-      } else {
-        btnMember.classList.add("active");
-        btnAdmin.classList.remove("active");
-        memberForm.classList.remove("hidden");
-        adminForm.classList.add("hidden");
-      }
+      const sameTxNum = allTx.filter(t => t.id !== currentTx.id && t.txNum && t.txNum.trim().toLowerCase() === currentTx.txNum.trim().toLowerCase());
+      const sameAmt = allTx.filter(t => t.id !== currentTx.id && ((currentTx.usd > 0 && t.usd === currentTx.usd) || (currentTx.received > 0 && t.received === currentTx.received)));
+
+      const isFullDup = sameTxNum.length > 0 && sameAmt.length > 0;
+      const isAmtDup = !isFullDup && sameAmt.length > 0;
+
+      return { isFullDup, isAmtDup, countAmt: sameAmt.length };
     }
 
-    function setMemberSubTab(sub) {
-      const btnLogin = document.getElementById("btn-sub-login");
-      const btnSignup = document.getElementById("btn-sub-signup");
-      const boxLogin = document.getElementById("member-login-box");
-      const boxSignup = document.getElementById("member-signup-box");
+    // Render Company Dropdown & Metadata
+    function populateCompanySelector() {
+      const select = document.getElementById("select-company");
+      const companies = getCompanies();
+      select.innerHTML = "";
 
-      if (sub === 'login') {
-        btnLogin.className = "btn btn-sm btn-primary";
-        btnSignup.className = "btn btn-sm btn-secondary";
-        boxLogin.classList.remove("hidden");
-        boxSignup.classList.add("hidden");
-      } else {
-        btnSignup.className = "btn btn-sm btn-primary";
-        btnLogin.className = "btn btn-sm btn-secondary";
-        boxSignup.classList.remove("hidden");
-        boxLogin.classList.add("hidden");
-      }
-    }
-
-    function doAdminLogin() {
-      const u = document.getElementById("admin-email").value.trim();
-      const p = document.getElementById("admin-password").value.trim();
-
-      if (u === "admin@1994.info" && p === "07107107i") {
-        currentUser = { role: "admin" };
-        resetInactivityTimer();
-        document.getElementById("view-auth").classList.add("hidden");
-        document.getElementById("view-admin").classList.remove("hidden");
-        setAdminSubTab('ledger');
-        renderAdminMasterLedger();
-        updatePendingBadges();
-      } else {
-        alert("Invalid Username or Password.");
-      }
-    }
-
-    function doMemberSignup() {
-      const name = document.getElementById("signup-name").value.trim();
-      const email = document.getElementById("signup-email").value.trim().toLowerCase();
-      const phone = document.getElementById("signup-phone").value.trim();
-      const pass = document.getElementById("signup-pass").value;
-
-      if (!name || !email || !phone || !pass) {
-        alert("Please complete all registration fields.");
-        return;
-      }
-
-      const members = getMembers();
-      if (members.some(m => m.email === email || m.phone === phone)) {
-        alert("You already have an account with us. Please sign in or contact info@ideas.limited to reset.");
-        return;
-      }
-
-      const ledgerId = "iMk-" + (1000 + members.length + 1);
-      const newMember = {
-        id: "usr_" + Date.now(),
-        name: name,
-        email: email,
-        phone: phone,
-        password: pass,
-        ledgerId: ledgerId,
-        avatar: "",
-        isBlocked: false,
-        createdAt: new Date().toISOString()
-      };
-
-      members.push(newMember);
-      saveMembers(members);
-      alert(`Account created! Your unique Ledger ID is: ${ledgerId}`);
-      setMemberSubTab('login');
-      document.getElementById("member-login-id").value = email;
-    }
-
-    function doMemberLogin() {
-      const loginId = document.getElementById("member-login-id").value.trim().toLowerCase();
-      const pass = document.getElementById("member-login-pass").value;
-
-      const members = getMembers();
-      const member = members.find(m => (m.email === loginId || m.phone === loginId) && m.password === pass);
-
-      if (!member) {
-        alert("Invalid username or password. For help contact info@ideas.limited");
-        return;
-      }
-
-      if (member.isBlocked) {
-        alert("You are blocked by the admin. Please contact info@ideas.limited for more details.");
-        return;
-      }
-
-      pendingLoginUser = member;
-      document.getElementById("consent-modal").classList.remove("hidden");
-    }
-
-    async function handleConsentResponse(allowed) {
-      document.getElementById("consent-modal").classList.add("hidden");
-      const devInfo = await captureDeviceInfo();
-
-      addLog({
-        userId: pendingLoginUser.id,
-        userName: pendingLoginUser.name,
-        ledgerId: pendingLoginUser.ledgerId,
-        email: pendingLoginUser.email,
-        phone: pendingLoginUser.phone,
-        time: devInfo.time,
-        ip: devInfo.ip,
-        device: devInfo.userAgent,
-        consentGranted: allowed
+      companies.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.name;
+        if (c.id === currentCompanyId) opt.selected = true;
+        select.appendChild(opt);
       });
 
-      currentUser = pendingLoginUser;
-      pendingLoginUser = null;
-      resetInactivityTimer();
-
-      document.getElementById("view-auth").classList.add("hidden");
-      document.getElementById("view-member").classList.remove("hidden");
-      renderMemberPortal();
+      const active = companies.find(c => c.id === currentCompanyId) || companies[0];
+      if (active) {
+        currentCompanyId = active.id;
+        document.getElementById("active-company-logo").src = active.logo || DEFAULT_LOGO;
+        document.getElementById("active-company-contact").textContent = `Attn: ${active.contact} | ${active.phone}`;
+      }
     }
 
-    function doLogout() {
-      currentUser = null;
-      if (autoLogoutTimer) clearTimeout(autoLogoutTimer);
-      document.getElementById("view-member").classList.add("hidden");
-      document.getElementById("view-admin").classList.add("hidden");
-      document.getElementById("view-auth").classList.remove("hidden");
-    }
+    // Render Transactions & Live Recalculations
+    function renderLedger() {
+      const allTx = getLedgerData();
+      const filtered = allTx.filter(t => {
+        const matchesComp = t.companyId === currentCompanyId;
+        const matchesMonth = (selectedMonth === 'all') || (extractMonth(t.date) === parseInt(selectedMonth));
+        return matchesComp && matchesMonth;
+      });
 
-    // --- RENDER MASTER LEDGER (DD/MM/YYYY) ---
-    function renderAdminMasterLedger() {
-      const txList = getLedger();
-      const container = document.getElementById("admin-tx-list");
+      const container = document.getElementById("tx-cards-list");
       container.innerHTML = "";
 
-      let runningBal = 0;
-      let sumUsd = 0;
-      let sumLkr = 0;
-      let sumRec = 0;
+      let sumUsd = 0, sumLkr = 0, sumRec = 0, runningBal = 0;
 
-      txList.forEach((tx, idx) => {
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);">No transactions found for this company and month.</div>`;
+      }
+
+      filtered.forEach((tx, idx) => {
         const usd = parseFloat(tx.usd) || 0;
         const comRate = parseFloat(tx.comRate) || 0;
         const convRate = parseFloat(tx.convRate) || globalLiveRate;
@@ -1093,769 +820,394 @@
         sumLkr += comLkr;
         sumRec += received;
 
-        const displayDate = formatToDDMMYYYY(tx.date);
-
+        const dup = checkDuplicates(tx, allTx);
         const card = document.createElement("div");
-        card.className = "tx-card";
+        card.className = `tx-card ${dup.isFullDup ? 'dup-full' : dup.isAmtDup ? 'dup-amt' : ''}`;
+
+        const isAdmin = currentUser && currentUser.role === 'admin';
+        const canEdit = isAdmin || (tx.createdBy === currentUser.id);
+
         card.innerHTML = `
           <div class="tx-header">
-            <span style="font-size: 11px; font-weight: 700; color: var(--accent);">ENTRY #${idx + 1}</span>
-            <button type="button" class="btn-sm btn-danger" onclick="deleteMasterTx(${idx})">Delete</button>
+            <div>
+              <span style="font-size:11px; font-weight:700; color:var(--accent);">#${idx + 1} RECORD</span>
+              ${tx.saved ? '<span class="badge badge-success" style="margin-left:4px;">SAVED</span>' : '<span class="badge badge-warning" style="margin-left:4px;">DRAFT</span>'}
+              ${dup.isFullDup ? '<span class="badge badge-danger" style="margin-left:4px;">🔴 DUPLICATE TRANSACTION</span>' : ''}
+              ${dup.isAmtDup ? '<span class="badge badge-warning" style="margin-left:4px;">🟡 SAME AMOUNT DETECTED</span>' : ''}
+            </div>
+            <div style="display:flex; gap:4px;">
+              ${isAdmin && (dup.isFullDup || dup.isAmtDup) ? `<button type="button" class="btn-sm btn-secondary" onclick="overrideDuplicate('${tx.id}')">Override</button>` : ''}
+              ${canEdit ? `<button type="button" class="btn-sm btn-danger" onclick="deleteTx('${tx.id}')">✕</button>` : ''}
+            </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Date (DD/MM/YYYY)</label>
-              <input type="text" value="${displayDate}" placeholder="DD/MM/YYYY" onchange="updateMasterTx(${idx}, 'date', this.value)">
+              <label>Transaction No.</label>
+              <input type="text" value="${tx.txNum || ''}" placeholder="TX-1001" ${canEdit ? '' : 'disabled'} onchange="updateTxVal('${tx.id}', 'txNum', this.value)">
             </div>
             <div class="form-group">
-              <label>USD Amount</label>
-              <input type="number" step="any" value="${tx.usd ?? ''}" placeholder="0.00" oninput="updateMasterTx(${idx}, 'usd', this.value)">
+              <label>Date (DD/MM/YYYY)</label>
+              <input type="text" value="${tx.date}" placeholder="DD/MM/YYYY" ${canEdit ? '' : 'disabled'} onchange="updateTxVal('${tx.id}', 'date', this.value)">
             </div>
           </div>
 
           <div class="form-group full">
-            <label>Details / Counterparty</label>
-            <input type="text" value="${tx.details || ''}" placeholder="Counterparty name" onchange="updateMasterTx(${idx}, 'details', this.value)">
+            <label>Details / Client</label>
+            <input type="text" value="${tx.details || ''}" placeholder="Client Name" ${canEdit ? '' : 'disabled'} onchange="updateTxVal('${tx.id}', 'details', this.value)">
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>COM Rate</label>
-              <input type="number" step="any" value="${tx.comRate ?? 1.5}" oninput="updateMasterTx(${idx}, 'comRate', this.value)">
+              <label>USD Amount</label>
+              <input type="number" step="any" value="${tx.usd ?? ''}" placeholder="0.00" ${canEdit ? '' : 'disabled'} oninput="updateTxVal('${tx.id}', 'usd', this.value)">
             </div>
             <div class="form-group">
-              <label>Conv Rate</label>
-              <input type="number" step="any" value="${tx.convRate ?? globalLiveRate}" oninput="updateMasterTx(${idx}, 'convRate', this.value)">
+              <label>Commission Rate</label>
+              <input type="number" step="any" value="${tx.comRate ?? 1.5}" ${canEdit ? '' : 'disabled'} oninput="updateTxVal('${tx.id}', 'comRate', this.value)">
             </div>
           </div>
 
           <div class="form-row">
+            <div class="form-group">
+              <label>Conv. Rate (LKR/QR)</label>
+              <input type="number" step="any" value="${tx.convRate ?? globalLiveRate}" ${canEdit ? '' : 'disabled'} oninput="updateTxVal('${tx.id}', 'convRate', this.value)">
+            </div>
             <div class="form-group">
               <label>Received (QR)</label>
-              <input type="number" step="any" value="${tx.received ?? ''}" placeholder="0.00" oninput="updateMasterTx(${idx}, 'received', this.value)">
-            </div>
-            <div class="form-group">
-              <label>Remarks</label>
-              <input type="text" value="${tx.remarks || ''}" placeholder="Notes" onchange="updateMasterTx(${idx}, 'remarks', this.value)">
+              <input type="number" step="any" value="${tx.received ?? ''}" placeholder="0.00" ${canEdit ? '' : 'disabled'} oninput="updateTxVal('${tx.id}', 'received', this.value)">
             </div>
           </div>
 
+          <div class="form-group full">
+            <label>Remarks</label>
+            <input type="text" value="${tx.remarks || ''}" placeholder="Notes" ${canEdit ? '' : 'disabled'} onchange="updateTxVal('${tx.id}', 'remarks', this.value)">
+          </div>
+
+          <!-- Live Commission Dual-Display Box -->
           <div class="calc-box">
             <div class="calc-item">
               <span class="c-label">Commission (LKR)</span>
-              <span class="c-val">${fmt(comLkr)}</span>
+              <span class="c-val" style="color:var(--accent);">${fmt(comLkr)} LKR</span>
             </div>
             <div class="calc-item">
               <span class="c-label">Commission (QR)</span>
-              <span class="c-val">${fmt(comQr)}</span>
-            </div>
-            <div class="calc-item bal">
-              <span class="c-label">Balance After Row</span>
-              <span class="c-val">${fmt(runningBal)} QR</span>
-            </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-
-      document.getElementById("admin-stat-usd").textContent = "$" + fmt(sumUsd);
-      document.getElementById("admin-stat-lkr").textContent = fmt(sumLkr) + " LKR";
-      document.getElementById("admin-stat-rec").textContent = fmt(sumRec) + " QR";
-      document.getElementById("admin-stat-bal").textContent = fmt(runningBal) + " QR";
-    }
-
-    function updateMasterTx(idx, key, val) {
-      const txList = getLedger();
-      if (key === 'date') {
-        txList[idx][key] = formatToDDMMYYYY(val);
-      } else if (['usd', 'comRate', 'convRate', 'received'].includes(key)) {
-        txList[idx][key] = val === '' ? '' : parseFloat(val);
-      } else {
-        txList[idx][key] = val;
-      }
-      saveLedger(txList);
-      renderAdminMasterLedger();
-    }
-
-    function addMasterTx() {
-      const txList = getLedger();
-      txList.unshift({
-        id: "tx_" + Date.now(),
-        date: formatToDDMMYYYY(null),
-        details: "",
-        usd: "",
-        comRate: 1.5,
-        convRate: globalLiveRate,
-        received: "",
-        remarks: ""
-      });
-      saveLedger(txList);
-      renderAdminMasterLedger();
-      window.scrollTo({ top: 150, behavior: 'smooth' });
-    }
-
-    function deleteMasterTx(idx) {
-      if (confirm("Permanently delete this entry from the master ledger?")) {
-        const txList = getLedger();
-        txList.splice(idx, 1);
-        saveLedger(txList);
-        renderAdminMasterLedger();
-      }
-    }
-
-    // --- MEMBER PORTAL (READ ONLY) ---
-    function renderMemberPortal() {
-      if (!currentUser) return;
-      document.getElementById("nav-member-name").textContent = currentUser.name;
-      document.getElementById("nav-member-ledger-id").textContent = currentUser.ledgerId;
-      document.getElementById("member-avatar-display").src = currentUser.avatar || DEFAULT_AVATAR;
-
-      const txList = getLedger();
-      const container = document.getElementById("member-tx-list");
-      container.innerHTML = "";
-
-      let runningBal = 0;
-      let sumUsd = 0;
-      let sumLkr = 0;
-      let sumRec = 0;
-
-      txList.forEach((tx, idx) => {
-        const usd = parseFloat(tx.usd) || 0;
-        const comRate = parseFloat(tx.comRate) || 0;
-        const convRate = parseFloat(tx.convRate) || globalLiveRate;
-        const received = parseFloat(tx.received) || 0;
-
-        const comLkr = usd * comRate;
-        const comQr = convRate > 0 ? (comLkr / convRate) : 0;
-        runningBal += comQr - received;
-
-        sumUsd += usd;
-        sumLkr += comLkr;
-        sumRec += received;
-
-        const displayDate = formatToDDMMYYYY(tx.date);
-
-        const card = document.createElement("div");
-        card.className = "tx-card";
-        card.innerHTML = `
-          <div class="tx-header">
-            <span style="font-size: 11px; font-weight: 700; color: var(--accent);">ENTRY #${idx + 1}</span>
-            <span style="font-size: 11px; color: var(--text-dim); font-weight: 600;">${displayDate}</span>
-          </div>
-          <div style="font-size: 14px; font-weight: 600; margin-bottom: 6px;">${tx.details || 'General Entry'}</div>
-          
-          <div class="calc-box">
-            <div class="calc-item">
-              <span class="c-label">USD Amount</span>
-              <span class="c-val">${usd ? '$' + fmt(usd) : '$0.00'}</span>
-            </div>
-            <div class="calc-item">
-              <span class="c-label">Commission (LKR)</span>
-              <span class="c-val">${fmt(comLkr)}</span>
-            </div>
-            <div class="calc-item">
-              <span class="c-label">Received (QR)</span>
-              <span class="c-val" style="color: var(--danger);">${received ? fmt(received) + ' QR' : '-'}</span>
-            </div>
-            <div class="calc-item">
-              <span class="c-label">Commission (QR)</span>
-              <span class="c-val">${fmt(comQr)}</span>
+              <span class="c-val">${fmt(comQr)} QR</span>
             </div>
             <div class="calc-item bal">
               <span class="c-label">Running Balance</span>
               <span class="c-val">${fmt(runningBal)} QR</span>
             </div>
           </div>
-          ${tx.remarks ? `<div style="font-size: 11px; color: var(--text-dim); margin-top: 6px;">Remarks: ${tx.remarks}</div>` : ''}
+
+          ${canEdit ? `
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+            <button type="button" class="btn-sm btn-primary" onclick="toggleSaveTx('${tx.id}')">
+              ${tx.saved ? '✓ Saved' : '💾 Save Entry'}
+            </button>
+          </div>` : ''}
         `;
         container.appendChild(card);
       });
 
-      document.getElementById("member-stat-usd").textContent = "$" + fmt(sumUsd);
-      document.getElementById("member-stat-lkr").textContent = fmt(sumLkr) + " LKR";
-      document.getElementById("member-stat-rec").textContent = fmt(sumRec) + " QR";
-      document.getElementById("member-stat-bal").textContent = fmt(runningBal) + " QR";
+      // Update Summary Cards
+      document.getElementById("stat-usd").textContent = `$${fmt(sumUsd)}`;
+      document.getElementById("stat-lkr").textContent = `${fmt(sumLkr)} LKR`;
+      document.getElementById("stat-rec").textContent = `${fmt(sumRec)} QR`;
+      document.getElementById("stat-bal").textContent = `${fmt(runningBal)} QR`;
     }
 
-    function submitMemberProposal() {
-      const rawDate = document.getElementById("prop-date").value.trim();
-      const date = formatToDDMMYYYY(rawDate);
-      const usd = parseFloat(document.getElementById("prop-usd").value) || 0;
-      const details = document.getElementById("prop-details").value.trim();
-      const comRate = parseFloat(document.getElementById("prop-comRate").value) || 1.5;
-      const convRate = parseFloat(document.getElementById("prop-convRate").value) || globalLiveRate;
-      const received = parseFloat(document.getElementById("prop-received").value) || 0;
-      const remarks = document.getElementById("prop-remarks").value.trim();
+    // Ledger Mutators
+    function updateTxVal(id, field, val) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === id);
+      if (!item) return;
 
-      if (!details && usd === 0 && received === 0) {
-        alert("Please enter transaction details or an amount.");
-        return;
-      }
+      if (field === 'date') item.date = formatToDDMMYYYY(val);
+      else if (['usd', 'comRate', 'convRate', 'received'].includes(field)) item[field] = val === '' ? 0 : parseFloat(val);
+      else item[field] = val;
 
-      const proposals = getProposals();
-      proposals.unshift({
-        id: "prop_" + Date.now(),
-        memberId: currentUser.id,
-        memberName: currentUser.name,
-        ledgerId: currentUser.ledgerId,
-        date: date,
-        usd: usd,
-        details: details,
-        comRate: comRate,
-        convRate: convRate,
-        received: received,
-        remarks: remarks,
-        submittedAt: new Date().toLocaleString()
-      });
-      saveProposals(proposals);
-
-      document.getElementById("member-propose-modal").classList.add("hidden");
-      alert("Proposal submitted successfully! It will appear on the ledger once approved by Admin.");
-      document.getElementById("prop-usd").value = "";
-      document.getElementById("prop-details").value = "";
-      document.getElementById("prop-received").value = "";
-      document.getElementById("prop-remarks").value = "";
+      saveLedgerData(ledger);
+      renderLedger();
     }
 
-    function updatePendingBadges() {
-      const proposals = getProposals();
-      const badge = document.getElementById("badge-pending-count");
-      if (proposals.length > 0) {
-        badge.textContent = proposals.length;
-        badge.classList.remove("hidden");
-      } else {
-        badge.classList.add("hidden");
+    function toggleSaveTx(id) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === id);
+      if (item) {
+        item.saved = !item.saved;
+        saveLedgerData(ledger);
+        renderLedger();
       }
     }
 
-    function renderAdminApprovals() {
-      const container = document.getElementById("admin-approvals-list");
-      const proposals = getProposals();
-      container.innerHTML = "";
-
-      if (proposals.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim);">No pending edit proposals.</div>`;
-        return;
+    function overrideDuplicate(id) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === id);
+      if (item) {
+        item.overrideDup = true;
+        saveLedgerData(ledger);
+        renderLedger();
       }
-
-      proposals.forEach((p, idx) => {
-        const comLkr = (p.usd || 0) * (p.comRate || 1.5);
-        const comQr = p.convRate > 0 ? (comLkr / p.convRate) : 0;
-        const displayDate = formatToDDMMYYYY(p.date);
-
-        const card = document.createElement("div");
-        card.className = "tx-card";
-        card.innerHTML = `
-          <div class="tx-header">
-            <span style="font-size: 11px; font-weight: 700; color: var(--warning);">PENDING FROM ${p.memberName} (${p.ledgerId})</span>
-            <span style="font-size: 11px; color: var(--text-dim);">${p.submittedAt}</span>
-          </div>
-          <div style="margin-bottom: 6px;"><b>${p.details || 'No Details'}</b> (${displayDate})</div>
-          <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">
-            USD: $${fmt(p.usd)} | COM: ${p.comRate} | LKR: ${fmt(comLkr)} | Conv: ${p.convRate} | QR: ${fmt(comQr)} | Rec: ${fmt(p.received)} QR
-          </div>
-          ${p.remarks ? `<div style="font-size: 11px; color: var(--text-dim); margin-bottom: 10px;">Remarks: ${p.remarks}</div>` : ''}
-          <div style="display: flex; gap: 8px;">
-            <button type="button" class="btn btn-sm btn-success" style="flex:1;" onclick="acceptProposal(${idx})">✓ Accept & Amend Ledger</button>
-            <button type="button" class="btn btn-sm btn-danger" style="flex:1;" onclick="denyProposal(${idx})">✕ Deny</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
     }
 
-    function acceptProposal(idx) {
-      const proposals = getProposals();
-      const p = proposals[idx];
-      if (!p) return;
+    function deleteTx(id) {
+      if (confirm("Delete this entry?")) {
+        let ledger = getLedgerData();
+        ledger = ledger.filter(t => t.id !== id);
+        saveLedgerData(ledger);
+        renderLedger();
+      }
+    }
 
-      const txList = getLedger();
-      txList.unshift({
+    function addNewEntry() {
+      const ledger = getLedgerData();
+      const today = formatToDDMMYYYY(null);
+      const newTx = {
         id: "tx_" + Date.now(),
-        date: formatToDDMMYYYY(p.date),
-        details: p.details + ` [By ${p.ledgerId}]`,
-        usd: p.usd,
-        comRate: p.comRate,
-        convRate: p.convRate,
-        received: p.received,
-        remarks: p.remarks
-      });
-      saveLedger(txList);
-
-      proposals.splice(idx, 1);
-      saveProposals(proposals);
-
-      alert("Proposal accepted and successfully added to the Master Ledger!");
-      updatePendingBadges();
-      renderAdminApprovals();
-      renderAdminMasterLedger();
+        companyId: currentCompanyId,
+        txNum: "TX-" + (ledger.length + 101),
+        date: today,
+        details: "",
+        usd: 0,
+        comRate: 1.5,
+        convRate: globalLiveRate,
+        received: 0,
+        remarks: "",
+        saved: true,
+        createdBy: currentUser ? currentUser.role || currentUser.id : 'admin',
+        overrideDup: false
+      };
+      ledger.unshift(newTx);
+      saveLedgerData(ledger);
+      renderLedger();
+      window.scrollTo({ top: 220, behavior: 'smooth' });
     }
 
-    function denyProposal(idx) {
-      if (confirm("Deny and reject this proposal?")) {
-        const proposals = getProposals();
-        proposals.splice(idx, 1);
-        saveProposals(proposals);
-        updatePendingBadges();
-        renderAdminApprovals();
-      }
-    }
-
-    function setAdminSubTab(tab) {
-      const tabs = ['ledger', 'approvals', 'members', 'logs'];
-      tabs.forEach(t => {
-        document.getElementById(`btn-admin-tab-${t}`).classList.toggle('active', t === tab);
-        document.getElementById(`admin-sec-${t}`).classList.toggle('hidden', t !== tab);
+    // Print & PDF Letterhead Generator
+    function generateLetterheadPDF() {
+      const companies = getCompanies();
+      const activeComp = companies.find(c => c.id === currentCompanyId) || companies[0];
+      const allTx = getLedgerData();
+      const filtered = allTx.filter(t => {
+        const matchesComp = t.companyId === currentCompanyId;
+        const matchesMonth = (selectedMonth === 'all') || (extractMonth(t.date) === parseInt(selectedMonth));
+        return matchesComp && matchesMonth;
       });
 
-      if (tab === 'ledger') renderAdminMasterLedger();
-      if (tab === 'approvals') renderAdminApprovals();
-      if (tab === 'members') renderAdminMembers();
-      if (tab === 'logs') renderAdminLogs();
-    }
+      // Set Metadata & Logos
+      document.getElementById("print-company-logo").src = activeComp.logo || DEFAULT_LOGO;
+      document.getElementById("watermark-logo-img").src = activeComp.logo || DEFAULT_LOGO;
+      document.getElementById("print-company-name").textContent = activeComp.name;
+      document.getElementById("print-company-contact").textContent = `Attn: ${activeComp.contact} | Tel: ${activeComp.phone}`;
+      document.getElementById("print-statement-month").textContent = `Statement: ${selectedMonth === 'all' ? 'All Months 2026' : 'Month ' + selectedMonth + ' / 2026'}`;
 
-    function renderAdminMembers() {
-      const container = document.getElementById("admin-members-list");
-      const members = getMembers();
-      container.innerHTML = "";
+      const now = new Date();
+      document.getElementById("print-timestamp").textContent = `Printed: ${formatToDDMMYYYY(null)} ${now.toLocaleTimeString()}`;
 
-      if (members.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim);">No registered members yet.</div>`;
-        return;
-      }
+      // Populate Table & Stats
+      const tbody = document.getElementById("print-table-body");
+      tbody.innerHTML = "";
+      let sumUsd = 0, sumLkr = 0, sumRec = 0, runningBal = 0;
 
-      members.forEach(m => {
-        const card = document.createElement("div");
-        card.className = "tx-card";
-        card.innerHTML = `
-          <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 8px;">
-            <div style="display:flex; gap: 10px; align-items:center;">
-              <img src="${m.avatar || DEFAULT_AVATAR}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1px solid var(--card-border);">
-              <div>
-                <b>${m.name}</b>
-                <div style="font-size: 11px; color: var(--primary);">${m.ledgerId}</div>
-                <div style="font-size: 11px; color: var(--text-dim);">${m.email} | ${m.phone}</div>
-              </div>
-            </div>
-            <span class="badge ${m.isBlocked ? 'badge-danger' : 'badge-success'}">${m.isBlocked ? 'BLOCKED' : 'ACTIVE'}</span>
-          </div>
-          <div style="display:flex; gap: 8px; margin-top: 8px;">
-            <button type="button" class="btn btn-sm btn-secondary" onclick="toggleBlockUser('${m.id}')">${m.isBlocked ? 'Unblock' : 'Block'}</button>
-            <button type="button" class="btn btn-sm btn-danger" onclick="deleteUser('${m.id}')">Delete</button>
-          </div>
+      filtered.forEach((tx) => {
+        const usd = parseFloat(tx.usd) || 0;
+        const comRate = parseFloat(tx.comRate) || 0;
+        const convRate = parseFloat(tx.convRate) || globalLiveRate;
+        const received = parseFloat(tx.received) || 0;
+
+        const comLkr = usd * comRate;
+        const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+        runningBal += comQr - received;
+
+        sumUsd += usd; sumLkr += comLkr; sumRec += received;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td style="border:1px solid #ddd; padding:5px; text-align:center;">${tx.txNum || '-'}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:center;">${tx.date}</td>
+          <td style="border:1px solid #ddd; padding:5px;"><b>${tx.details || '-'}</b></td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right;">${usd ? '$' + fmt(usd) : '-'}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right;">${comRate}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right;">${fmt(comLkr)}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right;">${convRate}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right;">${fmt(comQr)}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right; color:#b91c1c;">${received ? fmt(received) : '-'}</td>
+          <td style="border:1px solid #ddd; padding:5px; text-align:right; font-weight:bold;">${fmt(runningBal)} QR</td>
         `;
-        container.appendChild(card);
+        tbody.appendChild(tr);
       });
+
+      document.getElementById("print-stat-usd").textContent = `$${fmt(sumUsd)}`;
+      document.getElementById("print-stat-lkr").textContent = `${fmt(sumLkr)} LKR`;
+      document.getElementById("print-stat-rec").textContent = `${fmt(sumRec)} QR`;
+      document.getElementById("print-stat-bal").textContent = `${fmt(runningBal)} QR`;
+
+      // Trigger standard iOS / Desktop Print & Share Dialog
+      window.print();
     }
 
-    function toggleBlockUser(id) {
-      const members = getMembers();
-      const m = members.find(u => u.id === id);
-      if (m) {
-        m.isBlocked = !m.isBlocked;
-        saveMembers(members);
-        renderAdminMembers();
-      }
-    }
-
-    function deleteUser(id) {
-      if (confirm("Delete this member?")) {
-        let members = getMembers();
-        members = members.filter(u => u.id !== id);
-        saveMembers(members);
-        renderAdminMembers();
-      }
-    }
-
-    function renderAdminLogs() {
-      const container = document.getElementById("admin-logs-list");
-      const logs = getLogs();
-      container.innerHTML = "";
-
-      if (logs.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-dim);">No device logs captured yet.</div>`;
-        return;
-      }
-
-      logs.forEach(l => {
-        const item = document.createElement("div");
-        item.className = "tx-card";
-        item.style.fontSize = "12px";
-        item.innerHTML = `
-          <div style="display:flex; justify-content: space-between; margin-bottom: 6px;">
-            <b>${l.userName} (${l.ledgerId})</b>
-            <span class="badge ${l.consentGranted ? 'badge-success' : 'badge-danger'}">Consent: ${l.consentGranted ? 'ALLOWED' : 'DECLINED'}</span>
-          </div>
-          <div style="color: var(--text-dim); margin-bottom: 4px;"><b>Time:</b> ${l.time} | <b>IP:</b> ${l.ip}</div>
-          <div style="color: var(--text-dim); font-size: 11px; word-break: break-all;"><b>Device:</b> ${l.device}</div>
-        `;
-        container.appendChild(item);
-      });
-    }
-
-    function exportLedgerCSV() {
-      const txList = getLedger();
-      let csv = "Date,Details,USD,COM Rate,TOTAL COM IN LKR,CONVERSION RATE,TOTAL COMMISSION IN QR,RECEIVED,TOTAL IN QR,REMARKS\n";
+    // CSV Export
+    function exportCSV() {
+      const allTx = getLedgerData();
+      const filtered = allTx.filter(t => t.companyId === currentCompanyId);
+      let csv = "Transaction No,Date,Details,USD,COM Rate,TOTAL COM IN LKR,CONVERSION RATE,TOTAL COMMISSION IN QR,RECEIVED,BALANCE IN QR,REMARKS\n";
       let runningBal = 0;
-      txList.forEach(t => {
+
+      filtered.forEach(t => {
         const comLkr = (t.usd || 0) * (t.comRate || 1.5);
         const comQr = t.convRate ? (comLkr / t.convRate) : 0;
         runningBal += comQr - (t.received || 0);
-        const d = formatToDDMMYYYY(t.date);
-        csv += `"${d}","${t.details}",${t.usd || 0},${t.comRate || 1.5},${comLkr.toFixed(2)},${t.convRate || globalLiveRate},${comQr.toFixed(2)},${t.received || 0},${runningBal.toFixed(2)},"${t.remarks || ''}"\n`;
+        csv += `"${t.txNum}","${t.date}","${t.details}",${t.usd},${t.comRate},${comLkr.toFixed(2)},${t.convRate},${comQr.toFixed(2)},${t.received},${runningBal.toFixed(2)},"${t.remarks}"\n`;
       });
+
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `iMk_Black_Market_Ledger_${new Date().toISOString().slice(0,10)}.csv`;
+      a.download = `Ledger_Company_${currentCompanyId}_2026.csv`;
       a.click();
     }
 
-    // ==========================================
-    // AI FILE UPLOAD & EXTRACTION ENGINE
-    // ==========================================
-    function openAiModal() {
-      document.getElementById("ai-extractor-modal").classList.remove("hidden");
-      document.getElementById("ai-warning-container").classList.add("hidden");
-      document.getElementById("ai-preview-section").classList.add("hidden");
-      document.getElementById("btn-apply-ai-results").classList.add("hidden");
-      document.getElementById("ai-file-input").value = "";
-      document.getElementById("file-size-indicator").textContent = "Total Selected Size: 0.00 MB / 100 MB";
-      extractedTempEntries = [];
-    }
+    // Company Manager
+    document.getElementById("btn-save-company").addEventListener("click", () => {
+      const name = document.getElementById("comp-name").value.trim();
+      const contact = document.getElementById("comp-contact").value.trim() || "Account Manager";
+      const phone = document.getElementById("comp-phone").value.trim() || "Direct";
+      const logoInput = document.getElementById("comp-logo-input");
 
-    function closeAiModal() {
-      document.getElementById("ai-extractor-modal").classList.add("hidden");
-    }
+      if (!name) { alert("Please enter Company / Client name."); return; }
 
-    document.getElementById("ai-file-input").addEventListener("change", (e) => {
-      const files = Array.from(e.target.files);
-      let totalBytes = 0;
-      files.forEach(f => totalBytes += f.size);
-
-      const mb = (totalBytes / (1024 * 1024)).toFixed(2);
-      const indicator = document.getElementById("file-size-indicator");
-      indicator.textContent = `Total Selected Size: ${mb} MB / 100 MB`;
-
-      if (totalBytes > MAX_UPLOAD_BYTES) {
-        indicator.style.color = "var(--danger)";
-        alert(`Selected files exceed the 100MB per-turn limit (${mb} MB). Please select fewer files.`);
-        e.target.value = "";
-        indicator.textContent = "Total Selected Size: 0.00 MB / 100 MB";
-      } else {
-        indicator.style.color = "var(--text-dim)";
-      }
-    });
-
-    document.getElementById("btn-run-ai-extract").addEventListener("click", async () => {
-      const fileInput = document.getElementById("ai-file-input");
-      const files = Array.from(fileInput.files);
-      const warnBox = document.getElementById("ai-warning-container");
-      const apiKey = document.getElementById("gemini-api-key").value.trim();
-
-      warnBox.classList.add("hidden");
-      warnBox.innerHTML = "";
-
-      if (files.length === 0) {
-        warnBox.textContent = "Please select at least one document or image file.";
-        warnBox.classList.remove("hidden");
-        return;
-      }
-
-      const optDebit = document.getElementById("ext-opt-debit").checked;
-      const optCredit = document.getElementById("ext-opt-credit").checked;
-      const optDeduct = document.getElementById("ext-opt-deduct").checked;
-      const optDate = document.getElementById("ext-opt-date").checked;
-
-      const btn = document.getElementById("btn-run-ai-extract");
-      btn.textContent = "Analyzing Documents...";
-      btn.disabled = true;
-
-      extractedTempEntries = [];
-      let missingWarnings = [];
-
-      try {
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          let entry = null;
-
-          if (apiKey && (file.type.startsWith("image/") || file.type === "application/pdf")) {
-            entry = await extractWithGeminiApi(file, apiKey, { optDebit, optCredit, optDeduct, optDate });
-          } else {
-            entry = await extractWithClientParser(file, { optDebit, optCredit, optDeduct, optDate });
-          }
-
-          let fileErrors = [];
-          if (optDate && (!entry.date || entry.date === "Unknown Date")) {
-            fileErrors.push("Transaction date missing or unreadable");
-          }
-          if (optDebit && optCredit && entry.usd === 0 && entry.received === 0) {
-            fileErrors.push("No Debit amount or Credit amount detected (blurred/missing figures)");
-          }
-          if (!entry.details || entry.details.length < 2) {
-            fileErrors.push("Counterparty / Client name not clearly found");
-          }
-
-          if (fileErrors.length > 0) {
-            missingWarnings.push(`File "${file.name}": There are not clear details as [${fileErrors.join("; ")}].`);
-          }
-
-          extractedTempEntries.push(entry);
-        }
-
-        if (missingWarnings.length > 0) {
-          warnBox.innerHTML = `⚠️ <b>Verification Warning:</b><br/>` + missingWarnings.map(w => `• ${w}`).join("<br/>") + `<br/><br/><i>You can still review the partial extracted data below or re-upload a clearer document.</i>`;
-          warnBox.classList.remove("hidden");
-        }
-
-        renderAiPreview(extractedTempEntries);
-        document.getElementById("ai-preview-section").classList.remove("hidden");
-        document.getElementById("btn-apply-ai-results").classList.remove("hidden");
-
-      } catch (err) {
-        warnBox.textContent = `Extraction error: ${err.message || 'Failed to parse document'}`;
-        warnBox.classList.remove("hidden");
-      } finally {
-        btn.textContent = "Extract & Verify";
-        btn.disabled = false;
-      }
-    });
-
-    async function extractWithGeminiApi(file, apiKey, opts) {
-      const base64Data = await fileToBase64(file);
-      const mimeType = file.type || "image/jpeg";
-
-      const prompt = `
-        You are a financial document parser. Extract the following fields from this document image/receipt:
-        - date: formatted strictly as DD/MM/YYYY
-        - details: client name, company or counterparty
-        - debit_usd: amount in USD turnover/debit (numeric only)
-        - credit_received_qr: amount received or credited in QR (numeric only)
-        - com_rate: commission rate (default 1.5 if not found)
-        - remarks: any slip ref, transfer note, or remarks
-        Return strictly valid JSON with keys: date, details, debit_usd, credit_received_qr, com_rate, remarks. No markdown ticks.
-      `;
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            parts: [
-              { text: prompt },
-              { inline_data: { mime_type: mimeType, data: base64Data.split(",")[1] } }
-            ]
-          }]
-        })
-      });
-
-      const resJson = await response.json();
-      const text = resJson.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
-      const cleanJson = text.replace(/```json|```/g, "").trim();
-      const parsed = JSON.parse(cleanJson);
-
-      return {
-        date: opts.optDate ? formatToDDMMYYYY(parsed.date) : formatToDDMMYYYY(null),
-        details: parsed.details || file.name.replace(/\.[^/.]+$/, ""),
-        usd: opts.optDebit ? (parseFloat(parsed.debit_usd) || 0) : 0,
-        comRate: opts.optDeduct ? (parseFloat(parsed.com_rate) || 1.5) : 1.5,
-        convRate: globalLiveRate,
-        received: opts.optCredit ? (parseFloat(parsed.credit_received_qr) || 0) : 0,
-        remarks: parsed.remarks || `Extracted from ${file.name}`
+      const companies = getCompanies();
+      const newComp = {
+        id: "comp_" + Date.now(),
+        name: name,
+        contact: contact,
+        phone: phone,
+        logo: DEFAULT_LOGO
       };
-    }
 
-    async function extractWithClientParser(file, opts) {
-      return new Promise((resolve) => {
+      if (logoInput.files && logoInput.files[0]) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          const content = e.target.result || "";
-          let date = "";
-          let usd = 0;
-          let received = 0;
-          let details = file.name.replace(/\.[^/.]+$/, "");
-          let comRate = 1.5;
-
-          const numMatches = content.match(/\b\d{1,3}(?:,\d{3})*(?:\.\d{2})?\b/g);
-          if (numMatches && numMatches.length > 0) {
-            const cleanNums = numMatches.map(n => parseFloat(n.replace(/,/g, ''))).filter(n => n > 10 && n < 10000000);
-            if (cleanNums.length > 0) {
-              if (opts.optDebit) usd = cleanNums[0] || 0;
-              if (opts.optCredit && cleanNums.length > 1) received = cleanNums[1] || 0;
-            }
-          }
-
-          const dateMatch = content.match(/\b(?:\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?|\d{4}-\d{2}-\d{2})\b/);
-          if (dateMatch) date = formatToDDMMYYYY(dateMatch[0]);
-
-          resolve({
-            date: opts.optDate ? (date || formatToDDMMYYYY(null)) : formatToDDMMYYYY(null),
-            details: details,
-            usd: opts.optDebit ? usd : 0,
-            comRate: opts.optDeduct ? comRate : 1.5,
-            convRate: globalLiveRate,
-            received: opts.optCredit ? received : 0,
-            remarks: `File: ${file.name}`
-          });
+          newComp.logo = e.target.result;
+          companies.push(newComp);
+          saveCompanies(companies);
+          currentCompanyId = newComp.id;
+          populateCompanySelector();
+          renderLedger();
+          document.getElementById("company-modal").classList.add("hidden");
         };
-
-        if (file.type.includes("text") || file.name.endsWith(".csv") || file.name.endsWith(".txt")) {
-          reader.readAsText(file);
-        } else {
-          setTimeout(() => {
-            resolve({
-              date: formatToDDMMYYYY(null),
-              details: file.name.replace(/\.[^/.]+$/, ""),
-              usd: 0,
-              comRate: 1.5,
-              convRate: globalLiveRate,
-              received: 0,
-              remarks: `Uploaded: ${file.name}`
-            });
-          }, 400);
-        }
-      });
-    }
-
-    function fileToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
-      });
-    }
-
-    function renderAiPreview(entries) {
-      const list = document.getElementById("ai-preview-list");
-      list.innerHTML = "";
-      entries.forEach((e, idx) => {
-        const div = document.createElement("div");
-        div.style.padding = "6px 0";
-        div.style.borderBottom = "1px solid var(--card-border)";
-        div.innerHTML = `
-          <b>#${idx + 1} ${e.details}</b> (${e.date})<br/>
-          <span style="color: var(--text-dim);">Debit/USD:</span> <b>$${fmt(e.usd)}</b> | 
-          <span style="color: var(--text-dim);">Credit/QR:</span> <b>${fmt(e.received)} QR</b> | 
-          <span style="color: var(--text-dim);">Rate:</span> <b>${e.comRate}</b>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-    document.getElementById("btn-apply-ai-results").addEventListener("click", () => {
-      if (extractedTempEntries.length === 0) return;
-
-      if (currentUser && currentUser.role === "admin") {
-        const ledger = getLedger();
-        extractedTempEntries.forEach(entry => {
-          ledger.unshift({
-            id: "tx_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
-            date: formatToDDMMYYYY(entry.date),
-            details: entry.details,
-            usd: entry.usd,
-            comRate: entry.comRate,
-            convRate: entry.convRate,
-            received: entry.received,
-            remarks: entry.remarks
-          });
-        });
-        saveLedger(ledger);
-        renderAdminMasterLedger();
-        alert(`Successfully filed ${extractedTempEntries.length} entries to the Master Ledger!`);
-      } else if (currentUser) {
-        const proposals = getProposals();
-        extractedTempEntries.forEach(entry => {
-          proposals.unshift({
-            id: "prop_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
-            memberId: currentUser.id,
-            memberName: currentUser.name,
-            ledgerId: currentUser.ledgerId,
-            date: formatToDDMMYYYY(entry.date),
-            usd: entry.usd,
-            details: entry.details + " [AI Extract]",
-            comRate: entry.comRate,
-            convRate: entry.convRate,
-            received: entry.received,
-            remarks: entry.remarks,
-            submittedAt: new Date().toLocaleString()
-          });
-        });
-        saveProposals(proposals);
-        alert(`Successfully submitted ${extractedTempEntries.length} entries for Admin Approval!`);
+        reader.readAsDataURL(logoInput.files[0]);
+      } else {
+        companies.push(newComp);
+        saveCompanies(companies);
+        currentCompanyId = newComp.id;
+        populateCompanySelector();
+        renderLedger();
+        document.getElementById("company-modal").classList.add("hidden");
       }
-
-      closeAiModal();
     });
 
-    // Attach Event Listeners on DOM Ready
+    // Authentication Handlers
+    document.getElementById("btn-do-admin-login").addEventListener("click", () => {
+      const u = document.getElementById("admin-email").value.trim();
+      const p = document.getElementById("admin-password").value.trim();
+      if (u === "admin@1994.info" && p === "07107107i") {
+        currentUser = { role: "admin" };
+        resetInactivity();
+        document.getElementById("view-auth").classList.add("hidden");
+        document.getElementById("view-app").classList.remove("hidden");
+        document.getElementById("app-user-role-badge").textContent = "Administrator (Root)";
+        populateCompanySelector();
+        renderLedger();
+      } else {
+        alert("Invalid Username or Password.");
+      }
+    });
+
+    document.getElementById("btn-do-member-login").addEventListener("click", () => {
+      const u = document.getElementById("member-login-id").value.trim();
+      const p = document.getElementById("member-login-pass").value.trim();
+      if (u && p) {
+        currentUser = { role: "member", id: "mem_" + u };
+        resetInactivity();
+        document.getElementById("view-auth").classList.add("hidden");
+        document.getElementById("view-app").classList.remove("hidden");
+        document.getElementById("app-user-role-badge").textContent = `Member Portal (${u})`;
+        populateCompanySelector();
+        renderLedger();
+      } else {
+        alert("Please enter your credentials.");
+      }
+    });
+
+    document.getElementById("btn-app-logout").addEventListener("click", () => {
+      currentUser = null;
+      document.getElementById("view-app").classList.add("hidden");
+      document.getElementById("view-auth").classList.remove("hidden");
+    });
+
+    // Event Bindings
     window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("btn-tab-admin").addEventListener("click", () => setAuthTab('admin'));
-      document.getElementById("btn-tab-member").addEventListener("click", () => setAuthTab('member'));
-      document.getElementById("btn-sub-login").addEventListener("click", () => setMemberSubTab('login'));
-      document.getElementById("btn-sub-signup").addEventListener("click", () => setMemberSubTab('signup'));
+      // Initialize Theme from localStorage or system
+      const savedTheme = localStorage.getItem(KEY_THEME) || 'system';
+      applyTheme(savedTheme);
 
-      document.getElementById("btn-do-admin-login").addEventListener("click", doAdminLogin);
-      document.getElementById("btn-do-member-login").addEventListener("click", doMemberLogin);
-      document.getElementById("btn-do-member-signup").addEventListener("click", doMemberSignup);
-      document.getElementById("btn-member-logout").addEventListener("click", doLogout);
-      document.getElementById("btn-admin-logout").addEventListener("click", doLogout);
+      document.querySelectorAll(".theme-toggle-btn").forEach(b => b.addEventListener("click", cycleTheme));
 
-      document.getElementById("btn-consent-allow").addEventListener("click", () => handleConsentResponse(true));
-      document.getElementById("btn-consent-decline").addEventListener("click", () => handleConsentResponse(false));
-
-      document.querySelectorAll(".btn-trigger-ai").forEach(btn => {
-        btn.addEventListener("click", openAiModal);
+      // Auth sub-tabs
+      document.getElementById("btn-tab-admin").addEventListener("click", () => {
+        document.getElementById("btn-tab-admin").classList.add("active");
+        document.getElementById("btn-tab-member").classList.remove("active");
+        document.getElementById("admin-login-form").classList.remove("hidden");
+        document.getElementById("member-portal-form").classList.add("hidden");
+      });
+      document.getElementById("btn-tab-member").addEventListener("click", () => {
+        document.getElementById("btn-tab-member").classList.add("active");
+        document.getElementById("btn-tab-admin").classList.remove("active");
+        document.getElementById("member-portal-form").classList.remove("hidden");
+        document.getElementById("admin-login-form").classList.add("hidden");
       });
 
-      document.getElementById("member-avatar-display").addEventListener("click", () => {
-        document.getElementById("photo-consent-modal").classList.remove("hidden");
+      // Member sub tabs
+      document.getElementById("btn-sub-login").addEventListener("click", () => {
+        document.getElementById("btn-sub-login").className = "btn btn-sm btn-primary";
+        document.getElementById("btn-sub-signup").className = "btn btn-sm btn-secondary";
+        document.getElementById("member-login-box").classList.remove("hidden");
+        document.getElementById("member-signup-box").classList.add("hidden");
       });
-      document.getElementById("btn-photo-agree").addEventListener("click", () => {
-        document.getElementById("photo-consent-modal").classList.add("hidden");
-        document.getElementById("member-avatar-input").click();
-      });
-      document.getElementById("member-avatar-input").addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const r = new FileReader();
-        r.onload = (evt) => {
-          currentUser.avatar = evt.target.result;
-          const members = getMembers();
-          const idx = members.findIndex(u => u.id === currentUser.id);
-          if (idx !== -1) {
-            members[idx].avatar = currentUser.avatar;
-            saveMembers(members);
-          }
-          renderMemberPortal();
-        };
-        r.readAsDataURL(file);
+      document.getElementById("btn-sub-signup").addEventListener("click", () => {
+        document.getElementById("btn-sub-signup").className = "btn btn-sm btn-primary";
+        document.getElementById("btn-sub-login").className = "btn btn-sm btn-secondary";
+        document.getElementById("member-signup-box").classList.remove("hidden");
+        document.getElementById("member-login-box").classList.add("hidden");
       });
 
-      document.getElementById("btn-open-propose").addEventListener("click", () => {
-        document.getElementById("prop-date").value = formatToDDMMYYYY(null);
-        document.getElementById("prop-convRate").value = globalLiveRate;
-        document.getElementById("member-propose-modal").classList.remove("hidden");
+      // Month pills
+      document.querySelectorAll(".month-pill").forEach(pill => {
+        pill.addEventListener("click", (e) => {
+          document.querySelectorAll(".month-pill").forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          selectedMonth = pill.getAttribute("data-month");
+          renderLedger();
+        });
       });
-      document.getElementById("btn-submit-proposal").addEventListener("click", submitMemberProposal);
-      document.getElementById("member-export-btn").addEventListener("click", exportLedgerCSV);
 
-      document.getElementById("btn-admin-tab-ledger").addEventListener("click", () => setAdminSubTab('ledger'));
-      document.getElementById("btn-admin-tab-approvals").addEventListener("click", () => setAdminSubTab('approvals'));
-      document.getElementById("btn-admin-tab-members").addEventListener("click", () => setAdminSubTab('members'));
-      document.getElementById("btn-admin-tab-logs").addEventListener("click", () => setAdminSubTab('logs'));
-      document.getElementById("btn-admin-add-entry").addEventListener("click", addMasterTx);
-      document.getElementById("btn-admin-export").addEventListener("click", exportLedgerCSV);
-      document.getElementById("btn-refresh-rate-admin").addEventListener("click", fetchLiveRate);
-      document.getElementById("btn-refresh-rate-member").addEventListener("click", fetchLiveRate);
-      document.getElementById("btn-clear-logs").addEventListener("click", () => {
-        if (confirm("Clear all logs?")) {
-          localStorage.removeItem(KEY_LOGS);
-          renderAdminLogs();
-        }
+      // Company change
+      document.getElementById("select-company").addEventListener("change", (e) => {
+        currentCompanyId = e.target.value;
+        populateCompanySelector();
+        renderLedger();
       });
+
+      document.getElementById("btn-add-company-modal").addEventListener("click", () => {
+        document.getElementById("company-modal").classList.remove("hidden");
+      });
+
+      document.getElementById("btn-add-entry").addEventListener("click", addNewEntry);
+      document.getElementById("btn-print-letterhead").addEventListener("click", generateLetterheadPDF);
+      document.getElementById("btn-export-csv").addEventListener("click", exportCSV);
 
       fetchLiveRate();
     });
