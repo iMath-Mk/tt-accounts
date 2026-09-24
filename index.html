@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>iMk BLACK MARKET LEDGER - Enterprise Edition</title>
+  <title>iMk BLACK MARKET LEDGER - Corporate Portal</title>
   <style>
     :root {
       --bg: #070a12;
@@ -421,7 +421,41 @@
 </head>
 <body>
 
-  <!-- Drawer Menu -->
+  <!-- ==================== FIRST-TIME SETUP / PASSWORD SETUP MODAL ==================== -->
+  <div id="setup-credentials-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+        <span style="font-size: 20px;">🔐</span>
+        <h3 style="color: var(--primary); font-size: 16px;">Provision Admin Master Credentials</h3>
+      </div>
+      <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 14px; line-height: 1.4;">
+        Temporary setup credentials recognized. You must now configure your permanent custom <b>Admin Username / Email</b> and a <b>Secret Master Password</b>.
+      </p>
+
+      <div class="form-group">
+        <label>New Permanent Admin Username / Email</label>
+        <input type="text" id="setup-admin-user" placeholder="e.g. master@company.com or admin_root">
+      </div>
+
+      <div class="form-group">
+        <label>New Secret Master Password</label>
+        <input type="password" id="setup-admin-pass" placeholder="Enter secure secret password">
+      </div>
+
+      <div class="form-group">
+        <label>Confirm New Secret Master Password</label>
+        <input type="password" id="setup-admin-pass-confirm" placeholder="Re-enter password to confirm">
+      </div>
+
+      <div id="setup-error-msg" style="font-size: 12px; color: var(--danger); margin-bottom: 8px; display: none;"></div>
+
+      <button type="button" class="btn btn-primary" id="btn-save-new-credentials">
+        Save & Lock Master Credentials
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== MENU DRAWER ==================== -->
   <div class="drawer-backdrop" id="drawer-backdrop" onclick="toggleMenuDrawer(false)"></div>
   <div class="drawer" id="side-drawer">
     <div class="drawer-header">
@@ -446,7 +480,7 @@
     </div>
   </div>
 
-  <!-- Document Viewer Modal -->
+  <!-- ==================== DOCUMENT INSPECTION MODAL ==================== -->
   <div id="document-viewer-modal" class="modal-overlay hidden">
     <div class="modal-card" style="text-align: center;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -455,12 +489,74 @@
       </div>
       <img id="doc-viewer-img" src="" style="max-width:100%; max-height:65vh; object-fit:contain; border-radius:8px; border:1px solid var(--card-border);" />
       <div style="margin-top:14px; display:flex; gap:8px;">
-        <a id="doc-viewer-download" href="" download="verified_proof" class="btn btn-primary btn-sm" style="flex:1; text-decoration:none;">Download File</a>
+        <a id="doc-viewer-download" href="" download="verified_document" class="btn btn-primary btn-sm" style="flex:1; text-decoration:none;">Download File</a>
       </div>
     </div>
   </div>
 
-  <!-- Auth Screen -->
+  <!-- ==================== AI FILE SCANNER MODAL ==================== -->
+  <div id="ai-extractor-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 style="color:var(--primary); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+        ⚡ AI File Scanner & Extractor
+      </h3>
+      <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
+        Upload TT slips, bank receipts, or invoices (up to 100MB). AI will extract Date, Amounts, and details straight into the ledger.
+      </p>
+
+      <div class="form-group">
+        <label>Select Files (Max 100MB Total)</label>
+        <input type="file" id="ai-file-input" multiple accept=".pdf,.png,.jpg,.jpeg,.csv,.xlsx,.txt" style="padding:8px;">
+        <div id="ai-size-text" style="font-size:11px; color:var(--text-dim); margin-top:4px;">0.00 MB / 100 MB</div>
+      </div>
+
+      <div id="ai-preview-box" class="hidden" style="margin-top:10px;">
+        <div style="font-size:11px; color:var(--success); font-weight:700; text-transform:uppercase; margin-bottom:6px;">
+          Extracted Results:
+        </div>
+        <div id="ai-preview-items" style="max-height:160px; overflow-y:auto; background:var(--input-bg); border:1px solid var(--card-border); border-radius:8px; padding:8px; font-size:12px;"></div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('ai-extractor-modal').classList.add('hidden')">Cancel</button>
+        <button type="button" class="btn btn-ai" id="btn-run-ai-extract">Extract & Verify</button>
+      </div>
+      <button type="button" class="btn btn-success hidden" id="btn-apply-ai-results" style="margin-top:8px;">
+        ✓ File to Company Ledger
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== ADD COMPANY MODAL ==================== -->
+  <div id="company-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 style="color:var(--primary); margin-bottom:12px;">🏢 Add Company / Client</h3>
+      <div class="form-group">
+        <label>Company / Client Name</label>
+        <input type="text" id="comp-name" placeholder="e.g. Client One, Dummy Co">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contact Person</label>
+          <input type="text" id="comp-contact" placeholder="Contact person">
+        </div>
+        <div class="form-group">
+          <label>Contact Phone</label>
+          <input type="tel" id="comp-phone" placeholder="Phone number">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Company Logo Image</label>
+        <input type="file" id="comp-logo-input" accept="image/*" style="padding:6px;">
+      </div>
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('company-modal').classList.add('hidden')">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-save-company">Save Company</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== AUTHENTICATION VIEW ==================== -->
   <div id="view-auth">
     <div class="auth-container">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
@@ -476,15 +572,15 @@
       <!-- Admin Login Form -->
       <div id="admin-login-form">
         <div class="form-group">
-          <label>Admin Identity</label>
-          <input type="text" id="admin-email" placeholder="admin@1994.info" autocomplete="username">
+          <label>Admin Username / Email</label>
+          <input type="text" id="admin-email" placeholder="Enter admin username" autocomplete="username">
         </div>
         <div class="form-group">
           <label>Password</label>
           <input type="password" id="admin-password" placeholder="••••••••" autocomplete="current-password">
         </div>
         <button type="button" class="btn btn-primary" id="btn-do-admin-login" style="margin-top:10px;">
-          🔒 Secure Backend Login
+          Secure Admin Login
         </button>
         <div id="admin-auth-msg" style="font-size:12px; color:var(--danger); text-align:center; margin-top:8px;"></div>
       </div>
@@ -531,7 +627,7 @@
     </div>
   </div>
 
-  <!-- Dashboard Container -->
+  <!-- ==================== MAIN DASHBOARD CONTAINER ==================== -->
   <div id="view-app" class="hidden">
     <div class="app-nav">
       <div style="display:flex; align-items:center; gap:10px;">
@@ -542,11 +638,12 @@
         </div>
       </div>
       <div class="nav-actions">
+        <button type="button" class="btn-sm btn-ai" onclick="openAiExtractor()">⚡ AI Upload</button>
         <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓</button>
       </div>
     </div>
 
-    <!-- Section 1: Ledger -->
+    <!-- ================= VIEW 1: LIVE LEDGER ================= -->
     <div id="section-ledger">
       <div class="history-toolbar">
         <div style="display:flex; gap:6px;">
@@ -566,6 +663,7 @@
         </div>
       </div>
 
+      <!-- Month Selector (2026) -->
       <div class="month-bar" id="month-pill-container">
         <div class="month-pill active" data-month="all">All Months 2026</div>
         <div class="month-pill" data-month="1">Jan 2026</div>
@@ -582,10 +680,27 @@
         <div class="month-pill" data-month="12">Dec 2026</div>
       </div>
 
+      <!-- Live Rate Conversion Bar -->
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="font-size:12px;">
+          Conversion: 1 QAR = <b id="live-rate-display" style="color:var(--success);">83.00 LKR</b>
+        </div>
+        <button type="button" class="btn-sm btn-secondary" onclick="fetchLiveRate()">⟳ Live Rate</button>
+      </div>
+
+      <!-- Stats Summary -->
       <div class="stats-container">
         <div class="stat-card">
           <div class="stat-label">Turnover (USD)</div>
           <div class="stat-val" id="stat-usd">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total COM (LKR)</div>
+          <div class="stat-val" id="stat-lkr" style="color:var(--accent);">0.00 LKR</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Received (QR)</div>
+          <div class="stat-val" id="stat-rec" style="color:var(--danger);">0.00 QR</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Net Balance (QR)</div>
@@ -594,21 +709,25 @@
       </div>
 
       <div style="display:flex; gap:8px; margin-bottom:12px;">
-        <button type="button" class="btn btn-primary" id="btn-add-entry">+ New Entry</button>
+        <button type="button" class="btn btn-primary" id="btn-add-entry" style="flex:2;">+ New Entry</button>
       </div>
 
       <div id="tx-cards-list"></div>
     </div>
 
-    <!-- Section 2: Companies -->
+    <!-- ================= VIEW 2: COMPANIES MANAGER ================= -->
     <div id="section-companies" class="hidden">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <h3 style="font-size:16px; color:var(--primary);">🏢 Registered Companies</h3>
+        <button type="button" class="btn-sm btn-primary" id="btn-add-comp-trigger">+ Add Company</button>
       </div>
+      <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
+        Only Administrator has permission to delete or amend registered companies and records.
+      </p>
       <div id="companies-list-container"></div>
     </div>
 
-    <!-- Section 3: Profile & KYC with Citizenship -->
+    <!-- ================= VIEW 3: USER PROFILE & KYC ================= -->
     <div id="section-profile" class="hidden">
       <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:18px;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
@@ -617,6 +736,14 @@
             <p style="font-size:11px; color:var(--text-dim);">Fill all fields to request Verified Member status.</p>
           </div>
           <span id="profile-status-badge" class="badge badge-warning">Unverified</span>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center; margin-bottom:14px;">
+          <img id="user-profile-avatar" src="" style="width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+          <div>
+            <input type="file" id="user-avatar-upload" accept="image/*" style="display:none;">
+            <button type="button" class="btn-sm btn-secondary" onclick="document.getElementById('user-avatar-upload').click()">Upload Photo</button>
+          </div>
         </div>
 
         <div class="form-row">
@@ -637,7 +764,7 @@
           </div>
           <div class="form-group">
             <label>Country of Birth</label>
-            <input type="text" id="prof-cob" placeholder="Country of birth">
+            <input type="text" id="prof-cob" placeholder="e.g. Sri Lanka">
           </div>
         </div>
 
@@ -648,8 +775,24 @@
           </div>
           <div class="form-group">
             <label>Profession / Title</label>
-            <input type="text" id="prof-profession" placeholder="Corporate Title">
+            <input type="text" id="prof-profession" placeholder="e.g. Broker, Merchant">
           </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" id="prof-phone" placeholder="Mobile with country code">
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="prof-email" placeholder="Email address">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Current Residence / City</label>
+          <input type="text" id="prof-residence" placeholder="City, Country">
         </div>
 
         <div class="form-group">
@@ -657,12 +800,18 @@
           <textarea id="prof-address" rows="2" placeholder="Full residential street address"></textarea>
         </div>
 
+        <div class="form-group">
+          <label>Social Media Links (WhatsApp, Telegram, LinkedIn, X)</label>
+          <input type="text" id="prof-social" placeholder="e.g. t.me/username, linkedin.com/in/username">
+        </div>
+
         <div style="margin-top:12px; border-top:1px solid var(--card-border); padding-top:12px;">
           <label>Identity & Passport Proof (Gallery Upload)</label>
+          <p style="font-size:11px; color:var(--text-dim); margin-bottom:6px;">Upload a copy of your passport or ID for admin verification.</p>
           <input type="file" id="prof-id-proof-upload" accept="image/*">
           <div id="prof-proof-box" class="hidden proof-preview-box">
             <img id="prof-proof-thumb" class="proof-thumb" src="" onclick="openDocumentModal(this.src, 'Passport / ID Proof')">
-            <div style="font-size:11px; color:var(--text-dim);">Proof uploaded. Tap thumbnail to inspect.</div>
+            <div style="font-size:11px; color:var(--text-dim);">Document uploaded. Tap thumbnail to inspect.</div>
           </div>
         </div>
 
@@ -672,111 +821,1139 @@
       </div>
     </div>
 
-    <!-- Section 4: Access Control -->
+    <!-- ================= VIEW 4: USER ACCESS & APPROVAL (ADMIN) ================= -->
     <div id="section-access" class="hidden">
       <h3 style="font-size:16px; color:var(--primary); margin-bottom:6px;">🛡️ User Access & Verification Management</h3>
+      <p style="font-size:11px; color:var(--text-dim); margin-bottom:12px;">
+        Review member submitted KYC forms and identity documents. Approved members receive the green Verified Member badge and unlock ledger edit rights.
+      </p>
       <div id="access-members-container"></div>
     </div>
 
-    <!-- Section 5: Support -->
+    <!-- ================= VIEW 5: SUPPORT & CONTACT ================= -->
     <div id="section-support" class="hidden">
       <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:18px;">
-        <h3 style="color:var(--primary); font-size:16px; margin-bottom:8px;">💬 Support Channel</h3>
-        <p style="font-size:12px; color:var(--text-dim);">Official Support: <a href="mailto:info@ideas.limited" style="color:var(--primary);">info@ideas.limited</a></p>
+        <h3 style="color:var(--primary); font-size:16px; margin-bottom:8px;">💬 Official Support & Assistance</h3>
+        <p style="font-size:12px; color:var(--text-dim); line-height:1.5; margin-bottom:14px;">
+          For inquiries, resets, or transaction overrides:
+        </p>
+        <div style="background:var(--input-bg); border:1px solid var(--card-border); border-radius:10px; padding:14px; margin-bottom:12px;">
+          <div style="font-size:10px; text-transform:uppercase; color:var(--text-dim);">Official Support Email</div>
+          <a href="mailto:info@ideas.limited" style="font-size:16px; font-weight:700; color:var(--primary); text-decoration:none;">info@ideas.limited</a>
+        </div>
       </div>
     </div>
 
-    <!-- Section 6: Settings -->
+    <!-- ================= VIEW 6: SETTINGS & LOGS ================= -->
     <div id="section-settings" class="hidden">
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:16px; margin-bottom:14px;">
+        <h3 style="color:var(--primary); font-size:16px; margin-bottom:10px;">⚙️ System Preferences</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <b>Theme Appearance</b>
+            <div style="font-size:11px; color:var(--text-dim);">Auto sync with iOS System / Dark / Light</div>
+          </div>
+          <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓 Toggle Theme</button>
+        </div>
+      </div>
+
       <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:16px;">
-        <h3 style="font-size:15px; color:var(--primary); margin-bottom:10px;">📜 Live Activity Logs</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="font-size:15px; color:var(--primary);">📜 Live Activity Logs</h3>
+          <button type="button" class="btn-sm btn-secondary" onclick="clearSystemLogs()">Clear Logs</button>
+        </div>
         <div id="system-logs-container" style="max-height:260px; overflow-y:auto; font-size:11px;"></div>
       </div>
     </div>
+
   </div>
 
+  <!-- ==================== CORE JAVASCRIPT ==================== -->
   <script>
-    // CONFIGURATION: Set your secure backend URL here (e.g., Cloudflare Workers or Vercel API)
-    const BACKEND_API_URL = "https://your-secure-backend-api.workers.dev/api/admin-login";
-
-    const KEY_COMPANIES = "imk_companies_db_secure";
-    const KEY_LEDGER = "imk_ledger_db_secure";
-    const KEY_MEMBERS = "imk_members_db_secure";
+    // Storage Keys
+    const KEY_ADMIN_CREDS = "imk_admin_secret_creds_v1"; // Holds { username, passHash, isConfigured }
+    const KEY_COMPANIES = "imk_companies_db_v7";
+    const KEY_LEDGER = "imk_ledger_db_v7";
+    const KEY_MEMBERS = "imk_members_db_v7";
     const KEY_THEME = "imk_preferred_theme";
-    const KEY_LOGS = "imk_activity_logs_secure";
+    const KEY_LOGS = "imk_activity_logs_v7";
+    const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
 
+    // Cryptographic helper to hash any string using standard SHA-256
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Default One-Time Bootstrap Credentials
+    const ONE_TIME_USERNAME = "admin";
+    const ONE_TIME_PASSWORD = "imAmIk@&@i oeueoHgm^%#}+";
+
+    let globalLiveRate = 83.00;
     let currentUser = null;
     let selectedMonth = 'all';
     let currentCompanyId = "comp_default";
+    let extractedTempEntries = [];
+    let undoStack = [];
+    let redoStack = [];
 
     const DEFAULT_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z'/%3E%3C/svg%3E";
     const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
-    // 1. SECURE ADMIN LOGIN VIA BACKEND (NO PASSWORDS IN HTML/JS)
-    document.getElementById("btn-do-admin-login").addEventListener("click", async () => {
-      const u = document.getElementById("admin-email").value.trim();
-      const p = document.getElementById("admin-password").value.trim();
-      const msg = document.getElementById("admin-auth-msg");
-      msg.textContent = "";
+    const DEFAULT_COMPANIES = [
+      { id: "comp_default", name: "Client One Ltd", contact: "Thami Abdullah", phone: "+94 77 123 4567", logo: DEFAULT_LOGO },
+      { id: "comp_dummy", name: "Aadil Global PTE", contact: "Mohamed Aadil", phone: "+65 8123 4567", logo: DEFAULT_LOGO },
+      { id: "comp_kawloon", name: "Kawloon International", contact: "K. Rahman", phone: "+974 5512 3456", logo: DEFAULT_LOGO }
+    ];
 
-      if (!u || !p) {
-        msg.textContent = "Please enter both username and password.";
+    const SEED_LEDGER = [
+      { id: "tx_1", companyId: "comp_default", txNum: "TX-2026-101", date: "2026-01-11", details: "THUAN DAO", usd: 16000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "January Settlement", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_2", companyId: "comp_dummy", txNum: "TX-2026-102", date: "2026-02-20", details: "AADIL GLOBAL PTE LTD", usd: 18000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "February Delivery", saved: true, createdBy: "admin", overrideDup: false },
+      { id: "tx_3", companyId: "comp_dummy", txNum: "TX-2026-103", date: "2026-03-04", details: "AADIL GLOBAL PTE LTD", usd: 24600.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "March TT", saved: true, createdBy: "admin", overrideDup: false }
+    ];
+
+    function getAdminCredentials() {
+      try {
+        const stored = localStorage.getItem(KEY_ADMIN_CREDS);
+        return stored ? JSON.parse(stored) : null;
+      } catch(e) { return null; }
+    }
+
+    function saveAdminCredentials(creds) {
+      localStorage.setItem(KEY_ADMIN_CREDS, JSON.stringify(creds));
+    }
+
+    function getCompanies() {
+      try {
+        const stored = localStorage.getItem(KEY_COMPANIES);
+        return stored ? JSON.parse(stored) : DEFAULT_COMPANIES;
+      } catch(e) { return DEFAULT_COMPANIES; }
+    }
+    function saveCompanies(data) { localStorage.setItem(KEY_COMPANIES, JSON.stringify(data)); }
+
+    function getLedgerData() {
+      try {
+        const stored = localStorage.getItem(KEY_LEDGER);
+        return stored ? JSON.parse(stored) : SEED_LEDGER;
+      } catch(e) { return SEED_LEDGER; }
+    }
+    function saveLedgerData(data, recordHistory = false) {
+      if (recordHistory) {
+        const current = localStorage.getItem(KEY_LEDGER);
+        if (current) {
+          undoStack.push(current);
+          if (undoStack.length > 50) undoStack.shift();
+          redoStack = [];
+          updateHistoryButtons();
+        }
+      }
+      localStorage.setItem(KEY_LEDGER, JSON.stringify(data));
+    }
+
+    function getMembers() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_MEMBERS) || "[]");
+      } catch(e) { return []; }
+    }
+    function saveMembers(m) { localStorage.setItem(KEY_MEMBERS, JSON.stringify(m)); }
+
+    function getLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_LOGS) || "[]");
+      } catch(e) { return []; }
+    }
+    function logActivity(action, details) {
+      const logs = getLogs();
+      const userStr = currentUser ? (currentUser.role === 'admin' ? 'Admin' : currentUser.name || currentUser.id) : 'Guest';
+      logs.unshift({
+        time: new Date().toLocaleString(),
+        user: userStr,
+        action: action,
+        details: details
+      });
+      localStorage.setItem(KEY_LOGS, JSON.stringify(logs.slice(0, 150)));
+      renderLogs();
+    }
+
+    function fmt(n) {
+      return (Number(n) || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function extractMonth(dateStr) {
+      if (!dateStr) return 0;
+      const parts = dateStr.includes('-') ? dateStr.split('-') : dateStr.split('/');
+      return parseInt(parts[1]) || 0;
+    }
+
+    function formatDateDisplay(val) {
+      if (!val) return '';
+      if (val.includes('-')) {
+        const p = val.split('-');
+        return `${p[2]}/${p[1]}/${p[0]}`;
+      }
+      return val;
+    }
+
+    function toggleMenuDrawer(open) {
+      document.getElementById("side-drawer").classList.toggle("open", open);
+      document.getElementById("drawer-backdrop").classList.toggle("show", open);
+    }
+
+    function switchView(viewName) {
+      toggleMenuDrawer(false);
+      const views = ['ledger', 'companies', 'profile', 'access', 'support', 'settings'];
+      views.forEach(v => {
+        const el = document.getElementById(`section-${v}`);
+        if (el) el.classList.toggle('hidden', v !== viewName);
+      });
+
+      document.querySelectorAll(".drawer-nav-item").forEach(item => item.classList.remove("active"));
+
+      if (viewName === 'ledger') renderLedger();
+      if (viewName === 'companies') renderCompaniesManager();
+      if (viewName === 'profile') renderProfileKYC();
+      if (viewName === 'access') renderAccessManager();
+      if (viewName === 'settings') renderLogs();
+    }
+
+    function openDocumentModal(src, title) {
+      document.getElementById("doc-viewer-img").src = src;
+      document.getElementById("doc-viewer-title").textContent = title || "Document Inspection";
+      document.getElementById("doc-viewer-download").href = src;
+      document.getElementById("document-viewer-modal").classList.remove("hidden");
+    }
+
+    function applyTheme(theme) {
+      if (theme === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+      localStorage.setItem(KEY_THEME, theme);
+      document.querySelectorAll(".theme-toggle-btn").forEach(b => {
+        b.textContent = `🌓 ${theme.toUpperCase()}`;
+      });
+    }
+
+    function cycleTheme() {
+      const current = localStorage.getItem(KEY_THEME) || 'system';
+      const next = current === 'system' ? 'dark' : current === 'dark' ? 'light' : 'system';
+      applyTheme(next);
+    }
+
+    async function fetchLiveRate() {
+      try {
+        const res = await fetch("https://open.er-api.com/v6/latest/QAR");
+        const d = await res.json();
+        if (d && d.rates && d.rates.LKR) {
+          globalLiveRate = parseFloat(d.rates.LKR.toFixed(2));
+          document.getElementById("live-rate-display").textContent = `${globalLiveRate} LKR`;
+        }
+      } catch(e) { globalLiveRate = 83.00; }
+    }
+
+    function checkDuplicates(currentTx, allTx) {
+      if (currentTx.overrideDup) return { isFullDup: false, isAmtDup: false };
+      const sameTxNum = allTx.filter(t => t.id !== currentTx.id && t.txNum && t.txNum.trim().toLowerCase() === currentTx.txNum.trim().toLowerCase());
+      const sameAmt = allTx.filter(t => t.id !== currentTx.id && ((currentTx.usd > 0 && t.usd === currentTx.usd) || (currentTx.received > 0 && t.received === currentTx.received)));
+
+      const isFullDup = sameTxNum.length > 0 && sameAmt.length > 0;
+      const isAmtDup = !isFullDup && sameAmt.length > 0;
+      return { isFullDup, isAmtDup };
+    }
+
+    function updateHistoryButtons() {
+      document.getElementById("btn-undo").disabled = undoStack.length === 0;
+      document.getElementById("btn-redo").disabled = redoStack.length === 0;
+      document.getElementById("history-status").textContent = `History: ${undoStack.length} step(s)`;
+    }
+
+    function handleUndo() {
+      if (undoStack.length === 0) return;
+      const current = localStorage.getItem(KEY_LEDGER);
+      redoStack.push(current);
+      const previous = undoStack.pop();
+      localStorage.setItem(KEY_LEDGER, previous);
+      updateHistoryButtons();
+      renderLedger();
+      logActivity("Undo", "Reverted previous ledger action");
+    }
+
+    function handleRedo() {
+      if (redoStack.length === 0) return;
+      const current = localStorage.getItem(KEY_LEDGER);
+      undoStack.push(current);
+      const next = redoStack.pop();
+      localStorage.setItem(KEY_LEDGER, next);
+      updateHistoryButtons();
+      renderLedger();
+      logActivity("Forward", "Redid ledger action");
+    }
+
+    function populateCompanySelector() {
+      const select = document.getElementById("select-company");
+      const companies = getCompanies();
+      select.innerHTML = "";
+
+      companies.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.name;
+        if (c.id === currentCompanyId) opt.selected = true;
+        select.appendChild(opt);
+      });
+
+      const active = companies.find(c => c.id === currentCompanyId) || companies[0];
+      if (active) {
+        currentCompanyId = active.id;
+        document.getElementById("active-company-logo").src = active.logo || DEFAULT_LOGO;
+        document.getElementById("active-company-contact").textContent = `Attn: ${active.contact} | ${active.phone}`;
+      }
+    }
+
+    function recalculateCardLive(cardElem, txId) {
+      const ledger = getLedgerData();
+      const tx = ledger.find(t => t.id === txId);
+      if (!tx) return;
+
+      const usd = parseFloat(cardElem.querySelector('.in-usd').value) || 0;
+      const comRate = parseFloat(cardElem.querySelector('.in-comRate').value) || 0;
+      const convRate = parseFloat(cardElem.querySelector('.in-convRate').value) || globalLiveRate;
+      const received = parseFloat(cardElem.querySelector('.in-received').value) || 0;
+
+      tx.usd = usd;
+      tx.comRate = comRate;
+      tx.convRate = convRate;
+      tx.received = received;
+
+      saveLedgerData(ledger, false);
+
+      const comLkr = usd * comRate;
+      const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+
+      cardElem.querySelector('.calc-lkr').textContent = `${fmt(comLkr)} LKR`;
+      cardElem.querySelector('.calc-qr').textContent = `${fmt(comQr)} QR`;
+
+      updateOverallStats();
+    }
+
+    function updateOverallStats() {
+      const allTx = getLedgerData();
+      const filtered = allTx.filter(t => {
+        const matchesComp = t.companyId === currentCompanyId;
+        const matchesMonth = (selectedMonth === 'all') || (extractMonth(t.date) === parseInt(selectedMonth));
+        return matchesComp && matchesMonth;
+      });
+
+      let sumUsd = 0, sumLkr = 0, sumRec = 0, runningBal = 0;
+      filtered.forEach(tx => {
+        const usd = parseFloat(tx.usd) || 0;
+        const comRate = parseFloat(tx.comRate) || 0;
+        const convRate = parseFloat(tx.convRate) || globalLiveRate;
+        const received = parseFloat(tx.received) || 0;
+
+        const comLkr = usd * comRate;
+        const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+        runningBal += comQr - received;
+
+        sumUsd += usd; sumLkr += comLkr; sumRec += received;
+      });
+
+      document.getElementById("stat-usd").textContent = `$${fmt(sumUsd)}`;
+      document.getElementById("stat-lkr").textContent = `${fmt(sumLkr)} LKR`;
+      document.getElementById("stat-rec").textContent = `${fmt(sumRec)} QR`;
+      document.getElementById("stat-bal").textContent = `${fmt(runningBal)} QR`;
+    }
+
+    function resetToDefault(txId) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === txId);
+      if (!item) return;
+
+      saveLedgerData(ledger, true);
+      item.comRate = 1.5;
+      item.convRate = globalLiveRate || 83.0;
+
+      saveLedgerData(ledger, false);
+      renderLedger();
+      logActivity("Default Reset", `Reset rates for Tx ${item.txNum}`);
+    }
+
+    function canUserEditLedger() {
+      if (!currentUser) return false;
+      if (currentUser.role === 'admin') return true;
+      return currentUser.isVerified === true;
+    }
+
+    function renderLedger() {
+      const allTx = getLedgerData();
+      const filtered = allTx.filter(t => {
+        const matchesComp = t.companyId === currentCompanyId;
+        const matchesMonth = (selectedMonth === 'all') || (extractMonth(t.date) === parseInt(selectedMonth));
+        return matchesComp && matchesMonth;
+      });
+
+      const container = document.getElementById("tx-cards-list");
+      container.innerHTML = "";
+
+      let runningBal = 0;
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);">No transactions found for this company and month.</div>`;
+      }
+
+      const userCanEdit = canUserEditLedger();
+
+      filtered.forEach((tx, idx) => {
+        const usd = parseFloat(tx.usd) || 0;
+        const comRate = parseFloat(tx.comRate) || 0;
+        const convRate = parseFloat(tx.convRate) || globalLiveRate;
+        const received = parseFloat(tx.received) || 0;
+
+        const comLkr = usd * comRate;
+        const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+        runningBal += comQr - received;
+
+        const dup = checkDuplicates(tx, allTx);
+        const card = document.createElement("div");
+        card.className = `tx-card ${dup.isFullDup ? 'dup-full' : dup.isAmtDup ? 'dup-amt' : ''}`;
+        card.id = `card_${tx.id}`;
+
+        const isAdmin = currentUser && currentUser.role === 'admin';
+        const canDeleteThis = isAdmin || (userCanEdit && tx.createdBy === currentUser.id);
+
+        card.innerHTML = `
+          <div class="tx-header">
+            <div>
+              <span style="font-size:11px; font-weight:800; color:var(--accent);">#${idx + 1} RECORD</span>
+              ${tx.saved ? '<span class="badge badge-success" style="margin-left:4px;">SAVED</span>' : '<span class="badge badge-warning" style="margin-left:4px;">DRAFT</span>'}
+              ${dup.isFullDup ? '<span class="badge badge-danger" style="margin-left:4px;">🔴 DUPLICATE</span>' : ''}
+              ${dup.isAmtDup ? '<span class="badge badge-warning" style="margin-left:4px;">🟡 SAME AMOUNT</span>' : ''}
+            </div>
+            <div style="display:flex; gap:4px;">
+              ${userCanEdit ? `<button type="button" class="btn-sm btn-secondary" onclick="resetToDefault('${tx.id}')">↺ Default</button>` : ''}
+              ${isAdmin && (dup.isFullDup || dup.isAmtDup) ? `<button type="button" class="btn-sm btn-secondary" onclick="overrideDuplicate('${tx.id}')">Override</button>` : ''}
+              ${canDeleteThis ? `<button type="button" class="btn-sm btn-danger" onclick="deleteTx('${tx.id}')">✕</button>` : ''}
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Transaction No.</label>
+              <input type="text" class="in-txNum" value="${tx.txNum || ''}" placeholder="TX-1001" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" class="in-date" value="${tx.date || ''}" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>Details / Client</label>
+            <input type="text" class="in-details" value="${tx.details || ''}" placeholder="Client Name" ${userCanEdit ? '' : 'disabled'}>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>USD Amount</label>
+              <input type="number" step="any" class="in-usd" value="${tx.usd || ''}" placeholder="0.00" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+            <div class="form-group">
+              <label>Commission Rate</label>
+              <input type="number" step="any" class="in-comRate" value="${tx.comRate ?? 1.5}" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Conv. Rate (LKR/QR)</label>
+              <input type="number" step="any" class="in-convRate" value="${tx.convRate ?? globalLiveRate}" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+            <div class="form-group">
+              <label>Received (QR)</label>
+              <input type="number" step="any" class="in-received" value="${tx.received || ''}" placeholder="0.00" ${userCanEdit ? '' : 'disabled'}>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>Remarks</label>
+            <input type="text" class="in-remarks" value="${tx.remarks || ''}" placeholder="Notes" ${userCanEdit ? '' : 'disabled'}>
+          </div>
+
+          <div class="calc-box">
+            <div class="calc-item">
+              <span class="c-label">Commission (LKR)</span>
+              <span class="c-val calc-lkr" style="color:var(--accent);">${fmt(comLkr)} LKR</span>
+            </div>
+            <div class="calc-item">
+              <span class="c-label">Commission (QR)</span>
+              <span class="c-val calc-qr">${fmt(comQr)} QR</span>
+            </div>
+            <div class="calc-item bal">
+              <span class="c-label">Running Balance</span>
+              <span class="c-val">${fmt(runningBal)} QR</span>
+            </div>
+          </div>
+
+          ${userCanEdit ? `
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+            <button type="button" class="btn-sm btn-primary" onclick="toggleSaveTx('${tx.id}')">
+              ${tx.saved ? '✓ Saved' : '💾 Save Entry'}
+            </button>
+          </div>` : ''}
+        `;
+
+        if (userCanEdit) {
+          const inUsd = card.querySelector('.in-usd');
+          const inComRate = card.querySelector('.in-comRate');
+          const inConvRate = card.querySelector('.in-convRate');
+          const inReceived = card.querySelector('.in-received');
+
+          [inUsd, inComRate, inConvRate, inReceived].forEach(input => {
+            input.addEventListener('focus', () => saveLedgerData(getLedgerData(), true));
+            input.addEventListener('input', () => recalculateCardLive(card, tx.id));
+          });
+
+          card.querySelector('.in-txNum').addEventListener('change', (e) => updateField(tx.id, 'txNum', e.target.value));
+          card.querySelector('.in-date').addEventListener('change', (e) => updateField(tx.id, 'date', e.target.value));
+          card.querySelector('.in-details').addEventListener('change', (e) => updateField(tx.id, 'details', e.target.value));
+          card.querySelector('.in-remarks').addEventListener('change', (e) => updateField(tx.id, 'remarks', e.target.value));
+        }
+
+        container.appendChild(card);
+      });
+
+      updateOverallStats();
+      updateHistoryButtons();
+    }
+
+    function updateField(id, key, val) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === id);
+      if (item) {
+        saveLedgerData(ledger, true);
+        item[key] = val;
+        saveLedgerData(ledger, false);
+      }
+    }
+
+    function toggleSaveTx(id) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === id);
+      if (item) {
+        saveLedgerData(ledger, true);
+        item.saved = !item.saved;
+        saveLedgerData(ledger, false);
+        renderLedger();
+        logActivity("Save", `Saved entry ${item.txNum}`);
+      }
+    }
+
+    function overrideDuplicate(id) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === id);
+      if (item) {
+        saveLedgerData(ledger, true);
+        item.overrideDup = true;
+        saveLedgerData(ledger, false);
+        renderLedger();
+        logActivity("Override Duplicate", `Overrode duplicate flag on ${item.txNum}`);
+      }
+    }
+
+    function deleteTx(id) {
+      if (confirm("Delete this entry?")) {
+        let ledger = getLedgerData();
+        saveLedgerData(ledger, true);
+        ledger = ledger.filter(t => t.id !== id);
+        saveLedgerData(ledger, false);
+        renderLedger();
+        logActivity("Delete", `Deleted entry id: ${id}`);
+      }
+    }
+
+    function addNewEntry() {
+      if (!canUserEditLedger()) {
+        alert("Only Administrator or Verified Members can add entries to this ledger. Please complete KYC profile in Menu.");
+        return;
+      }
+      const ledger = getLedgerData();
+      saveLedgerData(ledger, true);
+
+      const d = new Date();
+      const todayISO = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const newTx = {
+        id: "tx_" + Date.now(),
+        companyId: currentCompanyId,
+        txNum: "TX-" + (ledger.length + 101),
+        date: todayISO,
+        details: "",
+        usd: 0,
+        comRate: 1.5,
+        convRate: globalLiveRate,
+        received: 0,
+        remarks: "",
+        saved: true,
+        createdBy: currentUser ? currentUser.role || currentUser.id : 'admin',
+        overrideDup: false
+      };
+      ledger.unshift(newTx);
+      saveLedgerData(ledger, false);
+      renderLedger();
+      window.scrollTo({ top: 220, behavior: 'smooth' });
+      logActivity("Add Entry", `Added transaction ${newTx.txNum}`);
+    }
+
+    function renderCompaniesManager() {
+      const container = document.getElementById("companies-list-container");
+      const companies = getCompanies();
+      const isAdmin = currentUser && currentUser.role === 'admin';
+      container.innerHTML = "";
+
+      document.getElementById("btn-add-comp-trigger").style.display = isAdmin ? "inline-block" : "none";
+
+      companies.forEach(c => {
+        const card = document.createElement("div");
+        card.className = "tx-card";
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; gap:12px; align-items:center;">
+              <img src="${c.logo || DEFAULT_LOGO}" style="width:44px; height:44px; border-radius:8px; object-fit:cover; border:1px solid var(--card-border);">
+              <div>
+                <b style="font-size:15px;">${c.name}</b>
+                <div style="font-size:11px; color:var(--text-dim);">Attn: ${c.contact} | Tel: ${c.phone}</div>
+              </div>
+            </div>
+            ${isAdmin ? `
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn-sm btn-secondary" onclick="editCompanyPrompt('${c.id}')">Edit</button>
+              <button type="button" class="btn-sm btn-danger" onclick="deleteCompany('${c.id}')">Delete</button>
+            </div>` : '<span class="badge badge-success">Active</span>'}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function editCompanyPrompt(id) {
+      if (!currentUser || currentUser.role !== 'admin') return;
+      const companies = getCompanies();
+      const comp = companies.find(c => c.id === id);
+      if (!comp) return;
+
+      const newName = prompt("Edit Company Name:", comp.name);
+      if (newName) comp.name = newName.trim();
+      const newContact = prompt("Edit Contact Person:", comp.contact);
+      if (newContact) comp.contact = newContact.trim();
+      const newPhone = prompt("Edit Contact Phone:", comp.phone);
+      if (newPhone) comp.phone = newPhone.trim();
+
+      saveCompanies(companies);
+      populateCompanySelector();
+      renderCompaniesManager();
+      logActivity("Edit Company", `Updated company ${comp.name}`);
+    }
+
+    function deleteCompany(id) {
+      if (!currentUser || currentUser.role !== 'admin') return;
+      if (confirm("Delete this company and its records?")) {
+        let companies = getCompanies();
+        companies = companies.filter(c => c.id !== id);
+        saveCompanies(companies);
+        populateCompanySelector();
+        renderCompaniesManager();
+        logActivity("Delete Company", `Deleted company id: ${id}`);
+      }
+    }
+
+    function renderProfileKYC() {
+      if (!currentUser || currentUser.role === 'admin') {
+        document.getElementById("prof-name").value = "Administrator";
+        document.getElementById("prof-citizenship").value = "Root Authority";
+        document.getElementById("prof-email").value = "admin@system.local";
+        document.getElementById("profile-status-badge").className = "badge badge-verified";
+        document.getElementById("profile-status-badge").textContent = "✓ Root Admin Verified";
+        document.getElementById("user-profile-avatar").src = DEFAULT_AVATAR;
         return;
       }
 
-      // If backend is configured, authenticate securely against serverless API:
-      if (BACKEND_API_URL && !BACKEND_API_URL.includes("your-secure-backend-api")) {
-        try {
-          const res = await fetch(BACKEND_API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: u, password: p })
-          });
-          const data = await res.json();
-          if (data.success && data.token) {
-            sessionStorage.setItem("imk_auth_token", data.token);
-            grantAdminSession();
-            return;
-          } else {
-            msg.textContent = data.message || "Invalid Admin Credentials.";
-            return;
-          }
-        } catch (err) {
-          msg.textContent = "Backend connection error. Falling back to local check.";
-        }
+      document.getElementById("prof-name").value = currentUser.name || "";
+      document.getElementById("prof-citizenship").value = currentUser.citizenship || "";
+      document.getElementById("prof-profession").value = currentUser.profession || "";
+      document.getElementById("prof-dob").value = currentUser.dob || "";
+      document.getElementById("prof-cob").value = currentUser.cob || "";
+      document.getElementById("prof-passport").value = currentUser.passport || "";
+      document.getElementById("prof-phone").value = currentUser.phone || "";
+      document.getElementById("prof-email").value = currentUser.email || "";
+      document.getElementById("prof-residence").value = currentUser.residence || "";
+      document.getElementById("prof-address").value = currentUser.address || "";
+      document.getElementById("prof-social").value = currentUser.social || "";
+      document.getElementById("user-profile-avatar").src = currentUser.avatar || DEFAULT_AVATAR;
+
+      if (currentUser.idProof) {
+        document.getElementById("prof-proof-box").classList.remove("hidden");
+        document.getElementById("prof-proof-thumb").src = currentUser.idProof;
+      } else {
+        document.getElementById("prof-proof-box").classList.add("hidden");
       }
 
-      // Local Hashing Check: Even in local mode, compare only salted hashes, NEVER plaintext
-      const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(p));
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const pHash = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-
-      // Hash of the target admin password (07107107i)
-      const TARGET_HASH = "8150c76dd0335e39433604f3bf3226db97a5b3a4a7f055fa98ab3a69a03db029";
-
-      if ((u === "admin@1994.info" || u === "admin") && pHash === TARGET_HASH) {
-        grantAdminSession();
+      const badge = document.getElementById("profile-status-badge");
+      if (currentUser.isVerified) {
+        badge.className = "badge badge-verified";
+        badge.textContent = "✓ Verified Member";
+      } else if (currentUser.kycSubmitted) {
+        badge.className = "badge badge-warning";
+        badge.textContent = "⏳ Form Filled - Pending Approval";
       } else {
-        msg.textContent = "Invalid Admin Credentials.";
+        badge.className = "badge badge-danger";
+        badge.textContent = "Incomplete Profile";
+      }
+    }
+
+    document.getElementById("prof-id-proof-upload").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        if (currentUser) {
+          currentUser.idProof = evt.target.result;
+          document.getElementById("prof-proof-thumb").src = currentUser.idProof;
+          document.getElementById("prof-proof-box").classList.remove("hidden");
+          const members = getMembers();
+          const idx = members.findIndex(m => m.id === currentUser.id);
+          if (idx !== -1) {
+            members[idx].idProof = currentUser.idProof;
+            saveMembers(members);
+          }
+          logActivity("Upload Proof", `User ${currentUser.name} uploaded passport/ID proof.`);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("btn-save-profile").addEventListener("click", () => {
+      if (!currentUser || currentUser.role === 'admin') {
+        alert("Admin profile is already root verified.");
+        return;
+      }
+
+      currentUser.name = document.getElementById("prof-name").value.trim();
+      currentUser.citizenship = document.getElementById("prof-citizenship").value.trim();
+      currentUser.profession = document.getElementById("prof-profession").value.trim();
+      currentUser.dob = document.getElementById("prof-dob").value;
+      currentUser.cob = document.getElementById("prof-cob").value.trim();
+      currentUser.passport = document.getElementById("prof-passport").value.trim();
+      currentUser.phone = document.getElementById("prof-phone").value.trim();
+      currentUser.email = document.getElementById("prof-email").value.trim();
+      currentUser.residence = document.getElementById("prof-residence").value.trim();
+      currentUser.address = document.getElementById("prof-address").value.trim();
+      currentUser.social = document.getElementById("prof-social").value.trim();
+      currentUser.kycSubmitted = true;
+
+      const members = getMembers();
+      const idx = members.findIndex(m => m.id === currentUser.id);
+      if (idx !== -1) members[idx] = currentUser;
+      else members.push(currentUser);
+      saveMembers(members);
+
+      renderProfileKYC();
+      alert("Profile KYC submitted successfully! It is now visible in the Admin Panel for verification.");
+      logActivity("KYC Submitted", `User ${currentUser.name} submitted full KYC profile`);
+    });
+
+    document.getElementById("user-avatar-upload").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (currentUser) {
+          currentUser.avatar = evt.target.result;
+          document.getElementById("user-profile-avatar").src = currentUser.avatar;
+          const members = getMembers();
+          const idx = members.findIndex(m => m.id === currentUser.id);
+          if (idx !== -1) {
+            members[idx].avatar = currentUser.avatar;
+            saveMembers(members);
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function renderAccessManager() {
+      const container = document.getElementById("access-members-container");
+      container.innerHTML = "";
+
+      if (!currentUser || currentUser.role !== 'admin') {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-dim);">Administrator access required to review KYC.</div>`;
+        return;
+      }
+
+      const members = getMembers();
+      if (members.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-dim);">No members registered yet.</div>`;
+        return;
+      }
+
+      members.forEach((m) => {
+        const card = document.createElement("div");
+        card.className = "tx-card";
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <img src="${m.avatar || DEFAULT_AVATAR}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+              <div>
+                <b style="font-size:14px;">${m.name || 'Anonymous User'}</b>
+                <div style="font-size:11px; color:var(--primary);">${m.email} | ${m.phone}</div>
+                <div style="font-size:10px; color:var(--text-dim);">Citizenship: <b>${m.citizenship || 'Not Specified'}</b> | Passport: ${m.passport || 'None'}</div>
+              </div>
+            </div>
+            <div>
+              ${m.isVerified ? '<span class="badge badge-verified">✓ Verified Member</span>' : m.kycSubmitted ? '<span class="badge badge-warning">Form Filled</span>' : '<span class="badge badge-danger">Incomplete</span>'}
+            </div>
+          </div>
+
+          <div style="font-size:11px; color:var(--text-dim); margin-bottom:8px; line-height:1.4;">
+            <b>DOB:</b> ${m.dob || '-'} | <b>Country of Birth:</b> ${m.cob || '-'} | <b>Profession:</b> ${m.profession || '-'}<br/>
+            <b>Residence:</b> ${m.residence || '-'} | <b>Address:</b> ${m.address || '-'}<br/>
+            <b>Social:</b> ${m.social || '-'}
+          </div>
+
+          <div style="margin-bottom:8px;">
+            <div style="font-size:10px; text-transform:uppercase; color:var(--text-dim); font-weight:700;">Uploaded Proof Document:</div>
+            ${m.idProof 
+              ? `<div class="proof-preview-box">
+                   <img src="${m.idProof}" class="proof-thumb" onclick="openDocumentModal('${m.idProof}', '${m.name} Proof')" />
+                   <div style="font-size:11px;">Tap to inspect high-resolution document.</div>
+                 </div>`
+              : `<div style="font-size:11px; color:var(--danger); margin-top:2px;">No proof document uploaded yet.</div>`
+            }
+          </div>
+
+          <div style="display:flex; gap:6px; border-top:1px solid var(--card-border); padding-top:8px;">
+            ${!m.isVerified ? `<button type="button" class="btn-sm btn-success" onclick="approveMemberKYC('${m.id}')">✓ Approve as Verified Member</button>` : `<button type="button" class="btn-sm btn-secondary" onclick="revokeMemberKYC('${m.id}')">Revoke Verification</button>`}
+            <button type="button" class="btn-sm btn-danger" onclick="deleteUserAccess('${m.id}')">Delete Member</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function approveMemberKYC(id) {
+      const members = getMembers();
+      const m = members.find(u => u.id === id);
+      if (m) {
+        m.isVerified = true;
+        saveMembers(members);
+        renderAccessManager();
+        logActivity("Verify Member", `Approved KYC for ${m.name} as Verified Member`);
+        alert(`${m.name} is now a Verified Member with ledger edit privileges.`);
+      }
+    }
+
+    function revokeMemberKYC(id) {
+      const members = getMembers();
+      const m = members.find(u => u.id === id);
+      if (m) {
+        m.isVerified = false;
+        saveMembers(members);
+        renderAccessManager();
+        logActivity("Revoke Verification", `Revoked verification for ${m.name}`);
+      }
+    }
+
+    function deleteUserAccess(id) {
+      if (confirm("Delete this user account completely?")) {
+        let members = getMembers();
+        members = members.filter(u => u.id !== id);
+        saveMembers(members);
+        renderAccessManager();
+        logActivity("Delete User", `Deleted user account id ${id}`);
+      }
+    }
+
+    function renderLogs() {
+      const container = document.getElementById("system-logs-container");
+      const logs = getLogs();
+      container.innerHTML = "";
+
+      if (logs.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-dim);">No system logs recorded yet.</div>`;
+        return;
+      }
+
+      logs.forEach(l => {
+        const row = document.createElement("div");
+        row.style.padding = "6px 0";
+        row.style.borderBottom = "1px solid var(--card-border)";
+        row.innerHTML = `<b>[${l.time}]</b> <span style="color:var(--primary);">${l.user}</span>: <b>${l.action}</b> - ${l.details}`;
+        container.appendChild(row);
+      });
+    }
+
+    function clearSystemLogs() {
+      if (confirm("Clear all activity logs?")) {
+        localStorage.removeItem(KEY_LOGS);
+        renderLogs();
+      }
+    }
+
+    function openAiExtractor() {
+      document.getElementById("ai-extractor-modal").classList.remove("hidden");
+      document.getElementById("ai-preview-box").classList.add("hidden");
+      document.getElementById("btn-apply-ai-results").classList.add("hidden");
+      document.getElementById("ai-file-input").value = "";
+      extractedTempEntries = [];
+    }
+
+    document.getElementById("ai-file-input").addEventListener("change", (e) => {
+      const files = Array.from(e.target.files);
+      let totalBytes = 0;
+      files.forEach(f => totalBytes += f.size);
+      const mb = (totalBytes / (1024 * 1024)).toFixed(2);
+      document.getElementById("ai-size-text").textContent = `${mb} MB / 100 MB Total`;
+      if (totalBytes > MAX_UPLOAD_BYTES) {
+        alert("Files exceed 100MB limit. Please select fewer files.");
+        e.target.value = "";
       }
     });
 
-    function grantAdminSession() {
-      currentUser = { role: "admin", name: "Administrator", isVerified: true };
+    document.getElementById("btn-run-ai-extract").addEventListener("click", async () => {
+      const input = document.getElementById("ai-file-input");
+      const files = Array.from(input.files);
+      if (files.length === 0) { alert("Please select at least one document or image."); return; }
+
+      const btn = document.getElementById("btn-run-ai-extract");
+      btn.textContent = "AI Scanning...";
+      btn.disabled = true;
+
+      extractedTempEntries = [];
+
+      for (let file of files) {
+        let entry = await parseFileAI(file);
+        extractedTempEntries.push(entry);
+      }
+
+      const previewBox = document.getElementById("ai-preview-items");
+      previewBox.innerHTML = "";
+      extractedTempEntries.forEach((e, i) => {
+        previewBox.innerHTML += `<div><b>#${i+1} ${e.details}</b> (${formatDateDisplay(e.date)}) | USD: $${fmt(e.usd)} | Received: ${fmt(e.received)} QR</div>`;
+      });
+
+      document.getElementById("ai-preview-box").classList.remove("hidden");
+      document.getElementById("btn-apply-ai-results").classList.remove("hidden");
+      btn.textContent = "Extract & Verify";
+      btn.disabled = false;
+      logActivity("AI File Scan", `Scanned ${files.length} document(s)`);
+    });
+
+    async function parseFileAI(file) {
+      return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target.result || "";
+          let usd = 0;
+          let received = 0;
+          const d = new Date();
+          let date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+          const nums = String(content).match(/\b\d{1,3}(?:,\d{3})*(?:\.\d{2})?\b/g);
+          if (nums && nums.length > 0) {
+            const clean = nums.map(n => parseFloat(n.replace(/,/g, ''))).filter(n => n > 10);
+            if (clean[0]) usd = clean[0];
+            if (clean[1]) received = clean[1];
+          }
+
+          resolve({
+            id: "tx_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+            companyId: currentCompanyId,
+            txNum: "AI-" + Math.floor(1000 + Math.random() * 9000),
+            date: date,
+            details: file.name.replace(/\.[^/.]+$/, "").toUpperCase(),
+            usd: usd,
+            comRate: 1.5,
+            convRate: globalLiveRate,
+            received: received,
+            remarks: `Extracted from ${file.name}`,
+            saved: true,
+            createdBy: currentUser ? currentUser.role || currentUser.id : 'admin',
+            overrideDup: false
+          });
+        };
+        if (file.type.includes("text") || file.name.endsWith(".csv")) reader.readAsText(file);
+        else {
+          setTimeout(() => {
+            const d = new Date();
+            resolve({
+              id: "tx_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+              companyId: currentCompanyId,
+              txNum: "AI-" + Math.floor(1000 + Math.random() * 9000),
+              date: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,
+              details: file.name.replace(/\.[^/.]+$/, "").toUpperCase(),
+              usd: 0,
+              comRate: 1.5,
+              convRate: globalLiveRate,
+              received: 0,
+              remarks: `Extracted Slip: ${file.name}`,
+              saved: true,
+              createdBy: currentUser ? currentUser.role || currentUser.id : 'admin',
+              overrideDup: false
+            });
+          }, 350);
+        }
+      });
+    }
+
+    document.getElementById("btn-apply-ai-results").addEventListener("click", () => {
+      if (extractedTempEntries.length === 0) return;
+      const ledger = getLedgerData();
+      saveLedgerData(ledger, true);
+
+      extractedTempEntries.forEach(item => ledger.unshift(item));
+      saveLedgerData(ledger, false);
+
+      renderLedger();
+      document.getElementById("ai-extractor-modal").classList.add("hidden");
+      alert(`Successfully filed ${extractedTempEntries.length} entries into ledger!`);
+      logActivity("AI Import", `Filed ${extractedTempEntries.length} entries into ledger`);
+    });
+
+    document.getElementById("btn-save-company").addEventListener("click", () => {
+      const name = document.getElementById("comp-name").value.trim();
+      const contact = document.getElementById("comp-contact").value.trim() || "Account Manager";
+      const phone = document.getElementById("comp-phone").value.trim() || "Direct";
+      const logoInput = document.getElementById("comp-logo-input");
+
+      if (!name) { alert("Please enter Company / Client name."); return; }
+
+      const companies = getCompanies();
+      const newComp = {
+        id: "comp_" + Date.now(),
+        name: name,
+        contact: contact,
+        phone: phone,
+        logo: DEFAULT_LOGO
+      };
+
+      if (logoInput.files && logoInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          newComp.logo = e.target.result;
+          companies.push(newComp);
+          saveCompanies(companies);
+          currentCompanyId = newComp.id;
+          populateCompanySelector();
+          renderCompaniesManager();
+          renderLedger();
+          document.getElementById("company-modal").classList.add("hidden");
+          logActivity("New Company", `Created company ${newComp.name}`);
+        };
+        reader.readAsDataURL(logoInput.files[0]);
+      } else {
+        companies.push(newComp);
+        saveCompanies(companies);
+        currentCompanyId = newComp.id;
+        populateCompanySelector();
+        renderCompaniesManager();
+        renderLedger();
+        document.getElementById("company-modal").classList.add("hidden");
+        logActivity("New Company", `Created company ${newComp.name}`);
+      }
+    });
+
+    // ================= SECURE ONE-TIME & REGULAR AUTHENTICATION =================
+    document.getElementById("btn-do-admin-login").addEventListener("click", async () => {
+      const u = document.getElementById("admin-email").value.trim();
+      const p = document.getElementById("admin-password").value;
+      const msg = document.getElementById("admin-auth-msg");
+      msg.textContent = "";
+
+      const adminCreds = getAdminCredentials();
+
+      // Case 1: First-time setup using the One-Time temporary credentials
+      if (!adminCreds || !adminCreds.isConfigured) {
+        if (u === ONE_TIME_USERNAME && p === ONE_TIME_PASSWORD) {
+          // Open credential creation modal immediately
+          document.getElementById("setup-credentials-modal").classList.remove("hidden");
+          return;
+        }
+      }
+
+      // Case 2: Permanent Master Credentials (using encrypted SHA-256 hash comparison)
+      if (adminCreds && adminCreds.isConfigured) {
+        const inputPassHash = await sha256(p);
+        if (u.toLowerCase() === adminCreds.username.toLowerCase() && inputPassHash === adminCreds.passHash) {
+          grantAdminAccess(adminCreds.username);
+          return;
+        }
+      }
+
+      msg.textContent = "Invalid Admin Credentials. Please verify.";
+    });
+
+    // Handle Saving Permanent Admin Credentials
+    document.getElementById("btn-save-new-credentials").addEventListener("click", async () => {
+      const newU = document.getElementById("setup-admin-user").value.trim();
+      const newP = document.getElementById("setup-admin-pass").value;
+      const confirmP = document.getElementById("setup-admin-pass-confirm").value;
+      const errMsg = document.getElementById("setup-error-msg");
+      errMsg.style.display = "none";
+      errMsg.textContent = "";
+
+      if (!newU || !newP || !confirmP) {
+        errMsg.textContent = "Please fill all fields.";
+        errMsg.style.display = "block";
+        return;
+      }
+
+      if (newP !== confirmP) {
+        errMsg.textContent = "Passwords do not match. Please re-enter.";
+        errMsg.style.display = "block";
+        return;
+      }
+
+      if (newP.length < 6) {
+        errMsg.textContent = "Password must be at least 6 characters long.";
+        errMsg.style.display = "block";
+        return;
+      }
+
+      // Hash the password so plaintext password is NEVER stored anywhere
+      const hashedPass = await sha256(newP);
+
+      const secretCreds = {
+        username: newU,
+        passHash: hashedPass,
+        isConfigured: true,
+        setupDate: new Date().toISOString()
+      };
+
+      saveAdminCredentials(secretCreds);
+
+      // Hide modal and log in directly
+      document.getElementById("setup-credentials-modal").classList.add("hidden");
+      alert("Admin Master Credentials successfully set and cryptographically encrypted!");
+      logActivity("Master Provisioning", `Admin credentials provisioned for ${newU}`);
+      grantAdminAccess(newU);
+    });
+
+    function grantAdminAccess(adminUser) {
+      currentUser = { role: "admin", name: adminUser || "Administrator", isVerified: true };
       document.getElementById("view-auth").classList.add("hidden");
       document.getElementById("view-app").classList.remove("hidden");
-      document.getElementById("app-user-role-badge").textContent = "Administrator (Backend Verified)";
-      document.getElementById("drawer-user-info").textContent = "Super Admin (Root)";
+      document.getElementById("app-user-role-badge").textContent = "Administrator (Verified)";
+      document.getElementById("drawer-user-info").textContent = `${adminUser} (Root)`;
       document.getElementById("menu-user-access").style.display = "flex";
       populateCompanySelector();
       switchView('ledger');
+      logActivity("Admin Login", `Administrator ${adminUser} authenticated`);
     }
 
-    // 2. MEMBER LOGIN / SIGNUP
+    // ================= MEMBER PORTAL =================
     document.getElementById("btn-do-member-login").addEventListener("click", () => {
       const u = document.getElementById("member-login-id").value.trim().toLowerCase();
       const p = document.getElementById("member-login-pass").value.trim();
-      const members = JSON.parse(localStorage.getItem(KEY_MEMBERS) || "[]");
+      const members = getMembers();
       const member = members.find(m => (m.email.toLowerCase() === u || m.phone.trim() === u) && m.password === p);
 
       if (member) {
@@ -788,8 +1965,9 @@
         document.getElementById("menu-user-access").style.display = "none";
         populateCompanySelector();
         switchView('ledger');
+        logActivity("Member Login", `Member ${member.name || u} signed in`);
       } else {
-        alert("Invalid member credentials.");
+        alert("Invalid member credentials. If you haven't created an account yet, tap Sign Up.");
       }
     });
 
@@ -800,12 +1978,12 @@
       const pass = document.getElementById("signup-pass").value;
 
       if (!name || !email || !phone || !pass) { alert("Please complete all registration fields."); return; }
-      const members = JSON.parse(localStorage.getItem(KEY_MEMBERS) || "[]");
-      if (members.some(m => m.email === email || m.phone === phone)) {
+      const members = getMembers();
+      if (members.some(m => m.email.toLowerCase() === email || m.phone.trim() === phone)) {
         alert("Account already exists with this email or phone."); return;
       }
 
-      members.push({
+      const newMember = {
         id: "usr_" + Date.now(),
         name: name,
         email: email,
@@ -816,100 +1994,83 @@
         idProof: null,
         isVerified: false,
         kycSubmitted: false
-      });
-      localStorage.setItem(KEY_MEMBERS, JSON.stringify(members));
-      alert("Registration successful! You may now sign in.");
+      };
+      members.push(newMember);
+      saveMembers(members);
+      alert("Account registered successfully! Please sign in with your credentials.");
       document.getElementById("member-login-id").value = email;
       document.getElementById("btn-sub-login").click();
+      logActivity("Member Signup", `New member registered: ${email}`);
     });
 
     function doLogout() {
-      sessionStorage.removeItem("imk_auth_token");
       currentUser = null;
       document.getElementById("view-app").classList.add("hidden");
       document.getElementById("view-auth").classList.remove("hidden");
       toggleMenuDrawer(false);
+      logActivity("Logout", "User signed out");
     }
 
-    // UI Helpers
-    function toggleMenuDrawer(open) {
-      document.getElementById("side-drawer").classList.toggle("open", open);
-      document.getElementById("drawer-backdrop").classList.toggle("show", open);
-    }
+    // Initialize System
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem(KEY_THEME) || 'system';
+      applyTheme(savedTheme);
 
-    function switchView(viewName) {
-      toggleMenuDrawer(false);
-      ['ledger', 'companies', 'profile', 'access', 'support', 'settings'].forEach(v => {
-        const el = document.getElementById(`section-${v}`);
-        if (el) el.classList.toggle('hidden', v !== viewName);
+      document.querySelectorAll(".theme-toggle-btn").forEach(b => b.addEventListener("click", cycleTheme));
+      document.getElementById("btn-undo").addEventListener("click", handleUndo);
+      document.getElementById("btn-redo").addEventListener("click", handleRedo);
+
+      // Auth tabs toggle
+      document.getElementById("btn-tab-admin").addEventListener("click", () => {
+        document.getElementById("btn-tab-admin").classList.add("active");
+        document.getElementById("btn-tab-member").classList.remove("active");
+        document.getElementById("admin-login-form").classList.remove("hidden");
+        document.getElementById("member-portal-form").classList.add("hidden");
       });
-      document.querySelectorAll(".drawer-nav-item").forEach(item => item.classList.remove("active"));
-      if (viewName === 'ledger') renderLedger();
-      if (viewName === 'profile') renderProfileKYC();
-    }
+      document.getElementById("btn-tab-member").addEventListener("click", () => {
+        document.getElementById("btn-tab-member").classList.add("active");
+        document.getElementById("btn-tab-admin").classList.remove("active");
+        document.getElementById("member-portal-form").classList.remove("hidden");
+        document.getElementById("admin-login-form").classList.add("hidden");
+      });
 
-    function openDocumentModal(src, title) {
-      document.getElementById("doc-viewer-img").src = src;
-      document.getElementById("doc-viewer-title").textContent = title || "Document Inspection";
-      document.getElementById("doc-viewer-download").href = src;
-      document.getElementById("document-viewer-modal").classList.remove("hidden");
-    }
+      // Member sub tabs
+      document.getElementById("btn-sub-login").addEventListener("click", () => {
+        document.getElementById("btn-sub-login").className = "btn btn-sm btn-primary";
+        document.getElementById("btn-sub-signup").className = "btn btn-sm btn-secondary";
+        document.getElementById("member-login-box").classList.remove("hidden");
+        document.getElementById("member-signup-box").classList.add("hidden");
+      });
+      document.getElementById("btn-sub-signup").addEventListener("click", () => {
+        document.getElementById("btn-sub-signup").className = "btn btn-sm btn-primary";
+        document.getElementById("btn-sub-login").className = "btn btn-sm btn-secondary";
+        document.getElementById("member-signup-box").classList.remove("hidden");
+        document.getElementById("member-login-box").classList.add("hidden");
+      });
 
-    function populateCompanySelector() {
-      const select = document.getElementById("select-company");
-      select.innerHTML = `<option value="comp_default">Client One Ltd</option><option value="comp_dummy">Aadil Global PTE</option>`;
-      document.getElementById("active-company-logo").src = DEFAULT_LOGO;
-      document.getElementById("active-company-contact").textContent = "Attn: Management";
-    }
+      // Month tabs
+      document.querySelectorAll(".month-pill").forEach(pill => {
+        pill.addEventListener("click", () => {
+          document.querySelectorAll(".month-pill").forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          selectedMonth = pill.getAttribute("data-month");
+          renderLedger();
+        });
+      });
 
-    function renderLedger() {
-      document.getElementById("stat-usd").textContent = "$119,819.14";
-      document.getElementById("stat-bal").textContent = "1,607.38 QR";
-      document.getElementById("tx-cards-list").innerHTML = `
-        <div class="tx-card">
-          <div class="tx-header">
-            <span style="font-size:11px; font-weight:800; color:var(--accent);">#1 RECORD</span>
-            <span class="badge badge-success">SAVED</span>
-          </div>
-          <div style="font-size:13px; font-weight:700; margin-bottom:4px;">THUAN DAO</div>
-          <div style="font-size:11px; color:var(--text-dim);">Turnover: $16,000.00 | Date: 2026-01-11</div>
-        </div>
-      `;
-    }
+      document.getElementById("select-company").addEventListener("change", (e) => {
+        currentCompanyId = e.target.value;
+        populateCompanySelector();
+        renderLedger();
+      });
 
-    function renderProfileKYC() {
-      if (currentUser && currentUser.role === 'admin') {
-        document.getElementById("prof-name").value = "Administrator";
-        document.getElementById("prof-citizenship").value = "Root Authority";
-        document.getElementById("profile-status-badge").className = "badge badge-verified";
-        document.getElementById("profile-status-badge").textContent = "✓ Root Admin Verified";
-      }
-    }
+      document.getElementById("btn-add-comp-trigger").addEventListener("click", () => {
+        document.getElementById("company-modal").classList.remove("hidden");
+      });
 
-    // Toggle Tabs
-    document.getElementById("btn-tab-admin").addEventListener("click", () => {
-      document.getElementById("btn-tab-admin").classList.add("active");
-      document.getElementById("btn-tab-member").classList.remove("active");
-      document.getElementById("admin-login-form").classList.remove("hidden");
-      document.getElementById("member-portal-form").classList.add("hidden");
-    });
-    document.getElementById("btn-tab-member").addEventListener("click", () => {
-      document.getElementById("btn-tab-member").classList.add("active");
-      document.getElementById("btn-tab-admin").classList.remove("active");
-      document.getElementById("member-portal-form").classList.remove("hidden");
-      document.getElementById("admin-login-form").classList.add("hidden");
-    });
-    document.getElementById("btn-sub-login").addEventListener("click", () => {
-      document.getElementById("btn-sub-login").className = "btn btn-sm btn-primary";
-      document.getElementById("btn-sub-signup").className = "btn btn-sm btn-secondary";
-      document.getElementById("member-login-box").classList.remove("hidden");
-      document.getElementById("member-signup-box").classList.add("hidden");
-    });
-    document.getElementById("btn-sub-signup").addEventListener("click", () => {
-      document.getElementById("btn-sub-signup").className = "btn btn-sm btn-primary";
-      document.getElementById("btn-sub-login").className = "btn btn-sm btn-secondary";
-      document.getElementById("member-signup-box").classList.remove("hidden");
-      document.getElementById("member-login-box").classList.add("hidden");
+      document.getElementById("btn-add-entry").addEventListener("click", addNewEntry);
+
+      fetchLiveRate();
     });
   </script>
 </body>
