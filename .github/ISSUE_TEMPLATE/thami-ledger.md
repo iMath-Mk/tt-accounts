@@ -1,9 +1,9 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: ''
+name: Thami Ledger
+about: Easy Cal
+title: Thami
 labels: ''
-assignees: ''
+assignees: iMath-Mk
 
 ---
 
