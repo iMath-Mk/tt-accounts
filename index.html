@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>iMk BLACK MARKET LEDGER</title>
   <style>
-    /* Theme Variables */
     :root {
       --bg: #090d16;
       --card-bg: #131b2e;
@@ -25,7 +24,6 @@
       --dup-yellow-border: #f59e0b;
     }
 
-    /* Light Theme Palette */
     [data-theme="light"] {
       --bg: #f1f5f9;
       --card-bg: #ffffff;
@@ -106,7 +104,24 @@
     .nav-actions {
       display: flex;
       align-items: center;
+      gap: 6px;
+    }
+
+    /* History & Undo Toolbar */
+    .history-toolbar {
+      display: flex;
       gap: 8px;
+      margin-bottom: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 8px 12px;
+      border-radius: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .history-group {
+      display: flex;
+      gap: 6px;
     }
 
     /* Month Selector Bar */
@@ -303,7 +318,6 @@
     }
     .btn-primary { background: var(--primary); color: #090d16; }
     .btn-secondary { background: var(--card-bg); color: var(--text); border: 1px solid var(--card-border); }
-    .btn-ai { background: linear-gradient(135deg, #6366f1, #38bdf8); color: #fff; }
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 6px; width: auto; }
 
@@ -338,7 +352,7 @@
     }
     .auth-toggle button.active { background: var(--primary); color: #0b0f19; }
 
-    /* Print / PDF Letterhead Styling */
+    /* Print Letterhead */
     @media print {
       body * { visibility: hidden; }
       #printable-letterhead, #printable-letterhead * { visibility: visible; }
@@ -352,7 +366,6 @@
         padding: 20px;
         display: block !important;
       }
-      .no-print { display: none !important; }
     }
 
     .hidden { display: none !important; }
@@ -360,23 +373,21 @@
 </head>
 <body>
 
-  <!-- ==================== PRINT / PDF LETTERHEAD (OFFICIAL TEMPLATE) ==================== -->
+  <!-- ==================== LETTERHEAD TEMPLATE (PDF) ==================== -->
   <div id="printable-letterhead" class="hidden" style="background:#fff; color:#000; padding:25px; position:relative; min-height:1000px; font-size:12px;">
-    <!-- Background Central Watermark Logo -->
     <div id="watermark-logo-container" style="position:absolute; top:35%; left:50%; transform:translate(-50%, -50%); opacity:0.07; z-index:0; pointer-events:none; text-align:center;">
       <img id="watermark-logo-img" src="" style="max-width:340px; max-height:340px; filter: grayscale(100%);">
       <h1 style="font-size: 40px; letter-spacing: 2px; margin-top:10px;">iMk LEDGER</h1>
     </div>
 
     <div style="position:relative; z-index:1;">
-      <!-- Letterhead Header -->
       <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #000; padding-bottom:12px; margin-bottom:14px;">
         <div style="display:flex; gap:12px; align-items:center;">
           <img id="print-company-logo" src="" style="width:55px; height:55px; object-fit:contain; border-radius:4px;">
           <div>
             <h2 id="print-company-name" style="font-size:18px; text-transform:uppercase; margin-bottom:2px;">COMPANY NAME</h2>
             <div id="print-company-contact" style="color:#555; font-size:11px;">Attn: Contact Name | Phone: 00000000</div>
-            <div style="font-size:10px; color:#777;">Official Client Statement - 2026 Financial Year</div>
+            <div style="font-size:10px; color:#777;">Official Statement - Financial Year 2026</div>
           </div>
         </div>
         <div style="text-align:right;">
@@ -386,7 +397,6 @@
         </div>
       </div>
 
-      <!-- Financial Summary Cards on Print -->
       <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; margin-bottom:15px; text-align:center;">
         <div style="border:1px solid #ccc; padding:8px; border-radius:4px; background:#f9f9f9;">
           <div style="font-size:9px; color:#666; text-transform:uppercase;">Turnover USD</div>
@@ -406,7 +416,6 @@
         </div>
       </div>
 
-      <!-- Main Ledger Table -->
       <table style="width:100%; border-collapse:collapse; font-size:10px; margin-bottom:25px;" id="print-table">
         <thead>
           <tr style="background:#0f172a; color:#fff;">
@@ -425,14 +434,9 @@
         <tbody id="print-table-body"></tbody>
       </table>
 
-      <!-- Statement Footer Notice -->
       <div style="position:relative; margin-top:30px; border-top:1px dashed #999; padding-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:10px; color:#555;">
-        <div>
-          <b>Security Notice:</b> This is a computer-generated statement. No physical signature is required.
-        </div>
-        <div>
-          <b>iMk BLACK MARKET LEDGER PORTAL</b> | info@ideas.limited
-        </div>
+        <div><b>Notice:</b> This is a computer-generated statement. No physical signature is required.</div>
+        <div><b>iMk BLACK MARKET LEDGER</b> | info@ideas.limited</div>
       </div>
     </div>
   </div>
@@ -440,23 +444,23 @@
   <!-- ==================== ADD COMPANY MODAL ==================== -->
   <div id="company-modal" class="modal-overlay hidden">
     <div class="modal-card">
-      <h3 style="color:var(--primary); margin-bottom:10px;">🏢 Add / Edit Company</h3>
+      <h3 style="color:var(--primary); margin-bottom:10px;">🏢 Add Company / Client</h3>
       <div class="form-group">
         <label>Company / Client Name</label>
         <input type="text" id="comp-name" placeholder="e.g. Client One, Dummy Co">
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Contact Person Name</label>
+          <label>Contact Name</label>
           <input type="text" id="comp-contact" placeholder="Contact person">
         </div>
         <div class="form-group">
-          <label>Contact Mobile / Phone</label>
+          <label>Contact Phone</label>
           <input type="tel" id="comp-phone" placeholder="Phone number">
         </div>
       </div>
       <div class="form-group">
-        <label>Company Logo Image</label>
+        <label>Company Logo</label>
         <input type="file" id="comp-logo-input" accept="image/*" style="padding:6px;">
       </div>
       <div style="display:flex; gap:8px; margin-top:12px;">
@@ -466,12 +470,12 @@
     </div>
   </div>
 
-  <!-- ==================== LANDING / AUTH VIEW ==================== -->
+  <!-- ==================== AUTH VIEW ==================== -->
   <div id="view-auth">
     <div class="auth-container">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
         <div style="font-size:18px; font-weight:700; color:var(--primary);">iMk LEDGER</div>
-        <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓 Theme: Auto</button>
+        <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓 Theme</button>
       </div>
 
       <div class="auth-toggle">
@@ -479,7 +483,6 @@
         <button type="button" id="btn-tab-member">Members Login</button>
       </div>
 
-      <!-- Admin Form -->
       <div id="admin-login-form">
         <div class="form-group">
           <label>Username</label>
@@ -492,7 +495,6 @@
         <button type="button" class="btn btn-primary" id="btn-do-admin-login" style="margin-top:8px;">Secure Admin Login</button>
       </div>
 
-      <!-- Member Form -->
       <div id="member-portal-form" class="hidden">
         <div style="display:flex; gap:8px; margin-bottom:12px;">
           <button type="button" id="btn-sub-login" class="btn btn-sm btn-primary" style="flex:1;">Sign In</button>
@@ -534,9 +536,8 @@
     </div>
   </div>
 
-  <!-- ==================== MAIN LEDGER APPLICATION VIEW ==================== -->
+  <!-- ==================== MAIN LEDGER VIEW ==================== -->
   <div id="view-app" class="hidden">
-    <!-- Top Navigation -->
     <div class="app-nav">
       <div>
         <div class="brand-title">iMk BLACK MARKET LEDGER</div>
@@ -548,7 +549,16 @@
       </div>
     </div>
 
-    <!-- Company Selector & Manager Bar -->
+    <!-- Undo & Redo Tool Bar -->
+    <div class="history-toolbar">
+      <div class="history-group">
+        <button type="button" class="btn-sm btn-secondary" id="btn-undo" title="Undo last action">⤺ Undo</button>
+        <button type="button" class="btn-sm btn-secondary" id="btn-redo" title="Redo action">⤻ Forward</button>
+      </div>
+      <div style="font-size:11px; color:var(--text-dim);" id="history-status">Ready</div>
+    </div>
+
+    <!-- Company Selector -->
     <div class="company-bar">
       <div class="company-meta">
         <img id="active-company-logo" class="company-logo-img" src="" alt="logo">
@@ -558,12 +568,12 @@
         </div>
       </div>
       <div style="display:flex; gap:6px;">
-        <button type="button" class="btn-sm btn-primary" id="btn-add-company-modal">+ Add Company</button>
-        <button type="button" class="btn-sm btn-secondary" id="btn-print-letterhead" title="Share Professional PDF Statement">📄 Print Letterhead</button>
+        <button type="button" class="btn-sm btn-primary" id="btn-add-company-modal">+ Company</button>
+        <button type="button" class="btn-sm btn-secondary" id="btn-print-letterhead">📄 PDF Letterhead</button>
       </div>
     </div>
 
-    <!-- Horizontal Month Filter (January to December 2026) -->
+    <!-- Month Bar (Jan - Dec 2026) -->
     <div class="month-bar" id="month-pill-container">
       <div class="month-pill active" data-month="all">All Months 2026</div>
       <div class="month-pill" data-month="1">Jan 2026</div>
@@ -583,12 +593,12 @@
     <!-- Live Rate Banner -->
     <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
       <div style="font-size:12px;">
-        Live Conversion: 1 QAR = <b id="live-rate-display" style="color:var(--success);">83.00 LKR</b>
+        Conversion: 1 QAR = <b id="live-rate-display" style="color:var(--success);">83.00 LKR</b>
       </div>
-      <button type="button" class="btn-sm btn-secondary" onclick="fetchLiveRate()">⟳ Refresh Rate</button>
+      <button type="button" class="btn-sm btn-secondary" onclick="fetchLiveRate()">⟳ Live Rate</button>
     </div>
 
-    <!-- Monthly / Filtered Overview Dashboard -->
+    <!-- Overview Stats -->
     <div class="stats-container">
       <div class="stat-card">
         <div class="stat-label">Turnover (USD)</div>
@@ -599,7 +609,7 @@
         <div class="stat-val" id="stat-lkr" style="color:var(--accent);">0.00 LKR</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Total Received (QR)</div>
+        <div class="stat-label">Received (QR)</div>
         <div class="stat-val" id="stat-rec" style="color:var(--danger);">0.00 QR</div>
       </div>
       <div class="stat-card">
@@ -614,34 +624,35 @@
       <button type="button" class="btn btn-secondary" id="btn-export-csv" style="flex:1;">CSV Export</button>
     </div>
 
-    <!-- Ledger Transaction Cards Container -->
+    <!-- Cards -->
     <div id="tx-cards-list"></div>
   </div>
 
-  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
   <script>
-    // Storage Keys
     const KEY_COMPANIES = "imk_companies_db_v3";
     const KEY_LEDGER = "imk_ledger_db_v3";
     const KEY_THEME = "imk_preferred_theme";
-    const INACTIVITY_LIMIT_MS = 3 * 60 * 60 * 1000; // 3 Hours
+    const INACTIVITY_LIMIT_MS = 3 * 60 * 60 * 1000;
 
     let globalLiveRate = 83.00;
-    let currentUser = null; // { role: 'admin' } or member object
-    let selectedMonth = 'all'; // 'all' or '1'...'12'
+    let currentUser = null;
+    let selectedMonth = 'all';
     let currentCompanyId = "comp_default";
     let autoLogoutTimer = null;
 
+    // Undo / Redo History Stacks
+    let undoStack = [];
+    let redoStack = [];
+
     const DEFAULT_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z'/%3E%3C/svg%3E";
 
-    // Seed Companies
     const DEFAULT_COMPANIES = [
       { id: "comp_default", name: "Client One Ltd", contact: "Thami Abdullah", phone: "+94 77 123 4567", logo: DEFAULT_LOGO },
       { id: "comp_dummy", name: "Aadil Global PTE", contact: "Mohamed Aadil", phone: "+65 8123 4567", logo: DEFAULT_LOGO },
       { id: "comp_kawloon", name: "Kawloon International", contact: "K. Rahman", phone: "+974 5512 3456", logo: DEFAULT_LOGO }
     ];
 
-    // Seed Ledger (January to December 2026 data structured with Transaction Numbers)
     const SEED_LEDGER = [
       { id: "tx_1", companyId: "comp_default", txNum: "TX-2026-101", date: "11/01/2026", details: "THUAN DAO", usd: 16000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "January Settlement", saved: true, createdBy: "admin", overrideDup: false },
       { id: "tx_2", companyId: "comp_dummy", txNum: "TX-2026-102", date: "20/02/2026", details: "AADIL GLOBAL PTE LTD", usd: 18000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "February Delivery", saved: true, createdBy: "admin", overrideDup: false },
@@ -658,7 +669,6 @@
       { id: "tx_13", companyId: "comp_dummy", txNum: "TX-2026-113", date: "12/12/2026", details: "TFT TRADIN", usd: 18074.39, comRate: 1.5, convRate: 83.0, received: 0, remarks: "December Closing", saved: true, createdBy: "admin", overrideDup: false }
     ];
 
-    // Storage access
     function getCompanies() {
       try {
         const stored = localStorage.getItem(KEY_COMPANIES);
@@ -673,13 +683,23 @@
         return stored ? JSON.parse(stored) : SEED_LEDGER;
       } catch(e) { return SEED_LEDGER; }
     }
-    function saveLedgerData(data) { localStorage.setItem(KEY_LEDGER, JSON.stringify(data)); }
+    function saveLedgerData(data, recordHistory = false) {
+      if (recordHistory) {
+        const current = localStorage.getItem(KEY_LEDGER);
+        if (current) {
+          undoStack.push(current);
+          if (undoStack.length > 50) undoStack.shift();
+          redoStack = []; // clear redo on new action
+          updateHistoryButtons();
+        }
+      }
+      localStorage.setItem(KEY_LEDGER, JSON.stringify(data));
+    }
 
     function fmt(n) {
       return (Number(n) || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Standardize to DD/MM/YYYY
     function formatToDDMMYYYY(val) {
       if (!val) {
         const d = new Date();
@@ -701,13 +721,12 @@
       return str;
     }
 
-    // Extract month number (1 - 12) from DD/MM/YYYY string
     function extractMonth(dateStr) {
       const parts = dateStr.split('/');
       return parts.length >= 2 ? parseInt(parts[1]) || 0 : 0;
     }
 
-    // Theme Management (System / Dark / Light)
+    // Theme Switcher
     function applyTheme(theme) {
       if (theme === 'system') {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -727,7 +746,7 @@
       applyTheme(next);
     }
 
-    // Silent Inactivity Timer
+    // Inactivity Guard
     function resetInactivity() {
       if (autoLogoutTimer) clearTimeout(autoLogoutTimer);
       if (currentUser) {
@@ -735,13 +754,13 @@
           currentUser = null;
           document.getElementById("view-app").classList.add("hidden");
           document.getElementById("view-auth").classList.remove("hidden");
-          alert("Session timed out due to 3 hours of inactivity. Please sign in again.");
+          alert("Session expired due to 3 hours of inactivity.");
         }, INACTIVITY_LIMIT_MS);
       }
     }
-    ['touchstart', 'mousedown', 'keydown', 'scroll'].forEach(e => window.addEventListener(e, resetInactivity, { passive: true }));
+    ['touchstart', 'mousedown', 'keydown'].forEach(e => window.addEventListener(e, resetInactivity, { passive: true }));
 
-    // Currency API
+    // Currency Rate
     async function fetchLiveRate() {
       try {
         const res = await fetch("https://open.er-api.com/v6/latest/QAR");
@@ -756,17 +775,42 @@
     // Duplicate Detection Logic
     function checkDuplicates(currentTx, allTx) {
       if (currentTx.overrideDup) return { isFullDup: false, isAmtDup: false };
-
       const sameTxNum = allTx.filter(t => t.id !== currentTx.id && t.txNum && t.txNum.trim().toLowerCase() === currentTx.txNum.trim().toLowerCase());
       const sameAmt = allTx.filter(t => t.id !== currentTx.id && ((currentTx.usd > 0 && t.usd === currentTx.usd) || (currentTx.received > 0 && t.received === currentTx.received)));
 
       const isFullDup = sameTxNum.length > 0 && sameAmt.length > 0;
       const isAmtDup = !isFullDup && sameAmt.length > 0;
-
-      return { isFullDup, isAmtDup, countAmt: sameAmt.length };
+      return { isFullDup, isAmtDup };
     }
 
-    // Render Company Dropdown & Metadata
+    // History (Undo / Redo) Handlers
+    function updateHistoryButtons() {
+      document.getElementById("btn-undo").disabled = undoStack.length === 0;
+      document.getElementById("btn-redo").disabled = redoStack.length === 0;
+      document.getElementById("history-status").textContent = `History: ${undoStack.length} step(s)`;
+    }
+
+    function handleUndo() {
+      if (undoStack.length === 0) return;
+      const current = localStorage.getItem(KEY_LEDGER);
+      redoStack.push(current);
+      const previous = undoStack.pop();
+      localStorage.setItem(KEY_LEDGER, previous);
+      updateHistoryButtons();
+      renderLedger();
+    }
+
+    function handleRedo() {
+      if (redoStack.length === 0) return;
+      const current = localStorage.getItem(KEY_LEDGER);
+      undoStack.push(current);
+      const next = redoStack.pop();
+      localStorage.setItem(KEY_LEDGER, next);
+      updateHistoryButtons();
+      renderLedger();
+    }
+
+    // Company Manager
     function populateCompanySelector() {
       const select = document.getElementById("select-company");
       const companies = getCompanies();
@@ -788,7 +832,78 @@
       }
     }
 
-    // Render Transactions & Live Recalculations
+    // Live Calculation Update WITHOUT destroying inputs (Keeps iOS Keyboard open!)
+    function recalculateCardLive(cardElem, txId) {
+      const ledger = getLedgerData();
+      const tx = ledger.find(t => t.id === txId);
+      if (!tx) return;
+
+      const usd = parseFloat(cardElem.querySelector('.in-usd').value) || 0;
+      const comRate = parseFloat(cardElem.querySelector('.in-comRate').value) || 0;
+      const convRate = parseFloat(cardElem.querySelector('.in-convRate').value) || globalLiveRate;
+      const received = parseFloat(cardElem.querySelector('.in-received').value) || 0;
+
+      tx.usd = usd;
+      tx.comRate = comRate;
+      tx.convRate = convRate;
+      tx.received = received;
+
+      saveLedgerData(ledger, false);
+
+      const comLkr = usd * comRate;
+      const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+
+      cardElem.querySelector('.calc-lkr').textContent = `${fmt(comLkr)} LKR`;
+      cardElem.querySelector('.calc-qr').textContent = `${fmt(comQr)} QR`;
+
+      // Update Total Overall Stats
+      updateOverallStats();
+    }
+
+    function updateOverallStats() {
+      const allTx = getLedgerData();
+      const filtered = allTx.filter(t => {
+        const matchesComp = t.companyId === currentCompanyId;
+        const matchesMonth = (selectedMonth === 'all') || (extractMonth(t.date) === parseInt(selectedMonth));
+        return matchesComp && matchesMonth;
+      });
+
+      let sumUsd = 0, sumLkr = 0, sumRec = 0, runningBal = 0;
+      filtered.forEach(tx => {
+        const usd = parseFloat(tx.usd) || 0;
+        const comRate = parseFloat(tx.comRate) || 0;
+        const convRate = parseFloat(tx.convRate) || globalLiveRate;
+        const received = parseFloat(tx.received) || 0;
+
+        const comLkr = usd * comRate;
+        const comQr = convRate > 0 ? (comLkr / convRate) : 0;
+        runningBal += comQr - received;
+
+        sumUsd += usd; sumLkr += comLkr; sumRec += received;
+      });
+
+      document.getElementById("stat-usd").textContent = `$${fmt(sumUsd)}`;
+      document.getElementById("stat-lkr").textContent = `${fmt(sumLkr)} LKR`;
+      document.getElementById("stat-rec").textContent = `${fmt(sumRec)} QR`;
+      document.getElementById("stat-bal").textContent = `${fmt(runningBal)} QR`;
+    }
+
+    // Reset Specific Entry to Normal Default Rates
+    function resetToDefault(txId) {
+      const ledger = getLedgerData();
+      const item = ledger.find(t => t.id === txId);
+      if (!item) return;
+
+      saveLedgerData(ledger, true); // record undo
+
+      item.comRate = 1.5;
+      item.convRate = globalLiveRate || 83.0;
+
+      saveLedgerData(ledger, false);
+      renderLedger();
+    }
+
+    // Full Render (Only runs on initial load, month switch, or entry add/delete)
     function renderLedger() {
       const allTx = getLedgerData();
       const filtered = allTx.filter(t => {
@@ -800,10 +915,10 @@
       const container = document.getElementById("tx-cards-list");
       container.innerHTML = "";
 
-      let sumUsd = 0, sumLkr = 0, sumRec = 0, runningBal = 0;
+      let runningBal = 0;
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);">No transactions found for this company and month.</div>`;
+        container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);">No transactions found for this selection.</div>`;
       }
 
       filtered.forEach((tx, idx) => {
@@ -816,13 +931,10 @@
         const comQr = convRate > 0 ? (comLkr / convRate) : 0;
         runningBal += comQr - received;
 
-        sumUsd += usd;
-        sumLkr += comLkr;
-        sumRec += received;
-
         const dup = checkDuplicates(tx, allTx);
         const card = document.createElement("div");
         card.className = `tx-card ${dup.isFullDup ? 'dup-full' : dup.isAmtDup ? 'dup-amt' : ''}`;
+        card.id = `card_${tx.id}`;
 
         const isAdmin = currentUser && currentUser.role === 'admin';
         const canEdit = isAdmin || (tx.createdBy === currentUser.id);
@@ -832,10 +944,11 @@
             <div>
               <span style="font-size:11px; font-weight:700; color:var(--accent);">#${idx + 1} RECORD</span>
               ${tx.saved ? '<span class="badge badge-success" style="margin-left:4px;">SAVED</span>' : '<span class="badge badge-warning" style="margin-left:4px;">DRAFT</span>'}
-              ${dup.isFullDup ? '<span class="badge badge-danger" style="margin-left:4px;">🔴 DUPLICATE TRANSACTION</span>' : ''}
-              ${dup.isAmtDup ? '<span class="badge badge-warning" style="margin-left:4px;">🟡 SAME AMOUNT DETECTED</span>' : ''}
+              ${dup.isFullDup ? '<span class="badge badge-danger" style="margin-left:4px;">🔴 DUPLICATE RECORD</span>' : ''}
+              ${dup.isAmtDup ? '<span class="badge badge-warning" style="margin-left:4px;">🟡 SAME AMOUNT</span>' : ''}
             </div>
             <div style="display:flex; gap:4px;">
+              ${canEdit ? `<button type="button" class="btn-sm btn-secondary" onclick="resetToDefault('${tx.id}')" title="Reset rate to default">↺ Default</button>` : ''}
               ${isAdmin && (dup.isFullDup || dup.isAmtDup) ? `<button type="button" class="btn-sm btn-secondary" onclick="overrideDuplicate('${tx.id}')">Override</button>` : ''}
               ${canEdit ? `<button type="button" class="btn-sm btn-danger" onclick="deleteTx('${tx.id}')">✕</button>` : ''}
             </div>
@@ -844,55 +957,54 @@
           <div class="form-row">
             <div class="form-group">
               <label>Transaction No.</label>
-              <input type="text" value="${tx.txNum || ''}" placeholder="TX-1001" ${canEdit ? '' : 'disabled'} onchange="updateTxVal('${tx.id}', 'txNum', this.value)">
+              <input type="text" class="in-txNum" value="${tx.txNum || ''}" placeholder="TX-1001" ${canEdit ? '' : 'disabled'}>
             </div>
             <div class="form-group">
               <label>Date (DD/MM/YYYY)</label>
-              <input type="text" value="${tx.date}" placeholder="DD/MM/YYYY" ${canEdit ? '' : 'disabled'} onchange="updateTxVal('${tx.id}', 'date', this.value)">
+              <input type="text" class="in-date" value="${tx.date}" placeholder="DD/MM/YYYY" ${canEdit ? '' : 'disabled'}>
             </div>
           </div>
 
           <div class="form-group full">
             <label>Details / Client</label>
-            <input type="text" value="${tx.details || ''}" placeholder="Client Name" ${canEdit ? '' : 'disabled'} onchange="updateTxVal('${tx.id}', 'details', this.value)">
+            <input type="text" class="in-details" value="${tx.details || ''}" placeholder="Client Name" ${canEdit ? '' : 'disabled'}>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>USD Amount</label>
-              <input type="number" step="any" value="${tx.usd ?? ''}" placeholder="0.00" ${canEdit ? '' : 'disabled'} oninput="updateTxVal('${tx.id}', 'usd', this.value)">
+              <input type="number" step="any" class="in-usd" value="${tx.usd || ''}" placeholder="0.00" ${canEdit ? '' : 'disabled'}>
             </div>
             <div class="form-group">
               <label>Commission Rate</label>
-              <input type="number" step="any" value="${tx.comRate ?? 1.5}" ${canEdit ? '' : 'disabled'} oninput="updateTxVal('${tx.id}', 'comRate', this.value)">
+              <input type="number" step="any" class="in-comRate" value="${tx.comRate ?? 1.5}" ${canEdit ? '' : 'disabled'}>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>Conv. Rate (LKR/QR)</label>
-              <input type="number" step="any" value="${tx.convRate ?? globalLiveRate}" ${canEdit ? '' : 'disabled'} oninput="updateTxVal('${tx.id}', 'convRate', this.value)">
+              <input type="number" step="any" class="in-convRate" value="${tx.convRate ?? globalLiveRate}" ${canEdit ? '' : 'disabled'}>
             </div>
             <div class="form-group">
               <label>Received (QR)</label>
-              <input type="number" step="any" value="${tx.received ?? ''}" placeholder="0.00" ${canEdit ? '' : 'disabled'} oninput="updateTxVal('${tx.id}', 'received', this.value)">
+              <input type="number" step="any" class="in-received" value="${tx.received || ''}" placeholder="0.00" ${canEdit ? '' : 'disabled'}>
             </div>
           </div>
 
           <div class="form-group full">
             <label>Remarks</label>
-            <input type="text" value="${tx.remarks || ''}" placeholder="Notes" ${canEdit ? '' : 'disabled'} onchange="updateTxVal('${tx.id}', 'remarks', this.value)">
+            <input type="text" class="in-remarks" value="${tx.remarks || ''}" placeholder="Notes" ${canEdit ? '' : 'disabled'}>
           </div>
 
-          <!-- Live Commission Dual-Display Box -->
           <div class="calc-box">
             <div class="calc-item">
               <span class="c-label">Commission (LKR)</span>
-              <span class="c-val" style="color:var(--accent);">${fmt(comLkr)} LKR</span>
+              <span class="c-val calc-lkr" style="color:var(--accent);">${fmt(comLkr)} LKR</span>
             </div>
             <div class="calc-item">
               <span class="c-label">Commission (QR)</span>
-              <span class="c-val">${fmt(comQr)} QR</span>
+              <span class="c-val calc-qr">${fmt(comQr)} QR</span>
             </div>
             <div class="calc-item bal">
               <span class="c-label">Running Balance</span>
@@ -902,41 +1014,54 @@
 
           ${canEdit ? `
           <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
-            <button type="button" class="btn-sm btn-primary" onclick="toggleSaveTx('${tx.id}')">
+            <button type="button" class="btn-sm btn-primary btn-save-action" onclick="toggleSaveTx('${tx.id}')">
               ${tx.saved ? '✓ Saved' : '💾 Save Entry'}
             </button>
           </div>` : ''}
         `;
+
+        // Attach Live In-Place Handlers: NO RE-RENDER, NO KEYBOARD CLOSING!
+        if (canEdit) {
+          const inUsd = card.querySelector('.in-usd');
+          const inComRate = card.querySelector('.in-comRate');
+          const inConvRate = card.querySelector('.in-convRate');
+          const inReceived = card.querySelector('.in-received');
+
+          [inUsd, inComRate, inConvRate, inReceived].forEach(input => {
+            input.addEventListener('focus', () => saveLedgerData(getLedgerData(), true)); // Snapshot before edit for undo
+            input.addEventListener('input', () => recalculateCardLive(card, tx.id));
+          });
+
+          card.querySelector('.in-txNum').addEventListener('change', (e) => updateField(tx.id, 'txNum', e.target.value));
+          card.querySelector('.in-date').addEventListener('change', (e) => updateField(tx.id, 'date', formatToDDMMYYYY(e.target.value)));
+          card.querySelector('.in-details').addEventListener('change', (e) => updateField(tx.id, 'details', e.target.value));
+          card.querySelector('.in-remarks').addEventListener('change', (e) => updateField(tx.id, 'remarks', e.target.value));
+        }
+
         container.appendChild(card);
       });
 
-      // Update Summary Cards
-      document.getElementById("stat-usd").textContent = `$${fmt(sumUsd)}`;
-      document.getElementById("stat-lkr").textContent = `${fmt(sumLkr)} LKR`;
-      document.getElementById("stat-rec").textContent = `${fmt(sumRec)} QR`;
-      document.getElementById("stat-bal").textContent = `${fmt(runningBal)} QR`;
+      updateOverallStats();
+      updateHistoryButtons();
     }
 
-    // Ledger Mutators
-    function updateTxVal(id, field, val) {
+    function updateField(id, key, val) {
       const ledger = getLedgerData();
       const item = ledger.find(t => t.id === id);
-      if (!item) return;
-
-      if (field === 'date') item.date = formatToDDMMYYYY(val);
-      else if (['usd', 'comRate', 'convRate', 'received'].includes(field)) item[field] = val === '' ? 0 : parseFloat(val);
-      else item[field] = val;
-
-      saveLedgerData(ledger);
-      renderLedger();
+      if (item) {
+        saveLedgerData(ledger, true); // save history for undo
+        item[key] = val;
+        saveLedgerData(ledger, false);
+      }
     }
 
     function toggleSaveTx(id) {
       const ledger = getLedgerData();
       const item = ledger.find(t => t.id === id);
       if (item) {
+        saveLedgerData(ledger, true);
         item.saved = !item.saved;
-        saveLedgerData(ledger);
+        saveLedgerData(ledger, false);
         renderLedger();
       }
     }
@@ -945,8 +1070,9 @@
       const ledger = getLedgerData();
       const item = ledger.find(t => t.id === id);
       if (item) {
+        saveLedgerData(ledger, true);
         item.overrideDup = true;
-        saveLedgerData(ledger);
+        saveLedgerData(ledger, false);
         renderLedger();
       }
     }
@@ -954,14 +1080,17 @@
     function deleteTx(id) {
       if (confirm("Delete this entry?")) {
         let ledger = getLedgerData();
+        saveLedgerData(ledger, true); // save history for undo
         ledger = ledger.filter(t => t.id !== id);
-        saveLedgerData(ledger);
+        saveLedgerData(ledger, false);
         renderLedger();
       }
     }
 
     function addNewEntry() {
       const ledger = getLedgerData();
+      saveLedgerData(ledger, true); // save history for undo
+
       const today = formatToDDMMYYYY(null);
       const newTx = {
         id: "tx_" + Date.now(),
@@ -979,12 +1108,12 @@
         overrideDup: false
       };
       ledger.unshift(newTx);
-      saveLedgerData(ledger);
+      saveLedgerData(ledger, false);
       renderLedger();
       window.scrollTo({ top: 220, behavior: 'smooth' });
     }
 
-    // Print & PDF Letterhead Generator
+    // PDF / Letterhead Print
     function generateLetterheadPDF() {
       const companies = getCompanies();
       const activeComp = companies.find(c => c.id === currentCompanyId) || companies[0];
@@ -995,7 +1124,6 @@
         return matchesComp && matchesMonth;
       });
 
-      // Set Metadata & Logos
       document.getElementById("print-company-logo").src = activeComp.logo || DEFAULT_LOGO;
       document.getElementById("watermark-logo-img").src = activeComp.logo || DEFAULT_LOGO;
       document.getElementById("print-company-name").textContent = activeComp.name;
@@ -1005,7 +1133,6 @@
       const now = new Date();
       document.getElementById("print-timestamp").textContent = `Printed: ${formatToDDMMYYYY(null)} ${now.toLocaleTimeString()}`;
 
-      // Populate Table & Stats
       const tbody = document.getElementById("print-table-body");
       tbody.innerHTML = "";
       let sumUsd = 0, sumLkr = 0, sumRec = 0, runningBal = 0;
@@ -1043,7 +1170,6 @@
       document.getElementById("print-stat-rec").textContent = `${fmt(sumRec)} QR`;
       document.getElementById("print-stat-bal").textContent = `${fmt(runningBal)} QR`;
 
-      // Trigger standard iOS / Desktop Print & Share Dialog
       window.print();
     }
 
@@ -1069,7 +1195,7 @@
       a.click();
     }
 
-    // Company Manager
+    // Company Creation
     document.getElementById("btn-save-company").addEventListener("click", () => {
       const name = document.getElementById("comp-name").value.trim();
       const contact = document.getElementById("comp-contact").value.trim() || "Account Manager";
@@ -1148,15 +1274,18 @@
       document.getElementById("view-auth").classList.remove("hidden");
     });
 
-    // Event Bindings
+    // Boot & Listeners
     window.addEventListener("DOMContentLoaded", () => {
-      // Initialize Theme from localStorage or system
       const savedTheme = localStorage.getItem(KEY_THEME) || 'system';
       applyTheme(savedTheme);
 
       document.querySelectorAll(".theme-toggle-btn").forEach(b => b.addEventListener("click", cycleTheme));
 
-      // Auth sub-tabs
+      // Undo / Redo Click Bindings
+      document.getElementById("btn-undo").addEventListener("click", handleUndo);
+      document.getElementById("btn-redo").addEventListener("click", handleRedo);
+
+      // Auth tabs
       document.getElementById("btn-tab-admin").addEventListener("click", () => {
         document.getElementById("btn-tab-admin").classList.add("active");
         document.getElementById("btn-tab-member").classList.remove("active");
@@ -1186,7 +1315,7 @@
 
       // Month pills
       document.querySelectorAll(".month-pill").forEach(pill => {
-        pill.addEventListener("click", (e) => {
+        pill.addEventListener("click", () => {
           document.querySelectorAll(".month-pill").forEach(p => p.classList.remove("active"));
           pill.classList.add("active");
           selectedMonth = pill.getAttribute("data-month");
