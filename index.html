@@ -60,7 +60,7 @@
       transition: background-color 0.2s, color 0.2s;
     }
 
-    /* Modals */
+    /* Modals & Drawers */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -79,10 +79,61 @@
       border-radius: 16px;
       padding: 20px;
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
       max-height: 90vh;
       overflow-y: auto;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    /* Slide-out Menu Drawer */
+    .drawer {
+      position: fixed;
+      top: 0; left: -290px;
+      width: 280px;
+      height: 100%;
+      background: var(--card-bg);
+      border-right: 1px solid var(--card-border);
+      z-index: 10000;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px;
+      box-shadow: 4px 0 25px rgba(0,0,0,0.5);
+    }
+    .drawer.open { left: 0; }
+    .drawer-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9998;
+      display: none;
+    }
+    .drawer-backdrop.show { display: block; }
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 14px;
+    }
+    .drawer-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 4px;
+      transition: background 0.15s;
+    }
+    .drawer-nav-item:active, .drawer-nav-item.active {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--primary);
     }
 
     /* Header Nav */
@@ -97,7 +148,7 @@
       margin-bottom: 12px;
     }
     .brand-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--primary);
     }
@@ -107,7 +158,7 @@
       gap: 6px;
     }
 
-    /* History & Undo Toolbar */
+    /* Toolbars & Month Bars */
     .history-toolbar {
       display: flex;
       gap: 8px;
@@ -119,12 +170,6 @@
       align-items: center;
       justify-content: space-between;
     }
-    .history-group {
-      display: flex;
-      gap: 6px;
-    }
-
-    /* Month Selector Bar */
     .month-bar {
       display: flex;
       gap: 6px;
@@ -179,7 +224,7 @@
       border: 1px solid var(--card-border);
     }
 
-    /* Dashboard Stats */
+    /* Stats */
     .stats-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -204,7 +249,7 @@
       font-weight: 700;
     }
 
-    /* Form Fields */
+    /* Inputs */
     .form-group {
       display: flex;
       flex-direction: column;
@@ -238,7 +283,7 @@
       border-color: var(--primary);
     }
 
-    /* Vertical Cards */
+    /* Cards */
     .tx-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -255,7 +300,6 @@
       border: 2px solid var(--dup-yellow-border) !important;
       background: var(--dup-yellow) !important;
     }
-
     .tx-header {
       display: flex;
       justify-content: space-between;
@@ -264,7 +308,6 @@
       padding-bottom: 6px;
       border-bottom: 1px solid var(--card-border);
     }
-
     .calc-box {
       background: rgba(56, 189, 248, 0.05);
       border: 1px dashed rgba(56, 189, 248, 0.3);
@@ -291,7 +334,9 @@
 
     /* Badges */
     .badge {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       padding: 3px 8px;
       font-size: 10px;
       font-weight: 700;
@@ -300,6 +345,7 @@
     .badge-danger { background: var(--danger); color: #fff; }
     .badge-warning { background: var(--warning); color: #000; }
     .badge-success { background: var(--success); color: #000; }
+    .badge-verified { background: #059669; color: #fff; }
 
     /* Buttons */
     .btn {
@@ -318,7 +364,9 @@
     }
     .btn-primary { background: var(--primary); color: #090d16; }
     .btn-secondary { background: var(--card-bg); color: var(--text); border: 1px solid var(--card-border); }
+    .btn-ai { background: linear-gradient(135deg, #6366f1, #38bdf8); color: #fff; font-weight: 700; }
     .btn-danger { background: var(--danger); color: #fff; }
+    .btn-success { background: var(--success); color: #090d16; }
     .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 6px; width: auto; }
 
     /* Auth Box */
@@ -373,7 +421,32 @@
 </head>
 <body>
 
-  <!-- ==================== LETTERHEAD TEMPLATE (PDF) ==================== -->
+  <!-- ==================== DRAWER BACKDROP & MENU DRAWER ==================== -->
+  <div class="drawer-backdrop" id="drawer-backdrop" onclick="toggleMenuDrawer(false)"></div>
+  <div class="drawer" id="side-drawer">
+    <div class="drawer-header">
+      <div>
+        <div style="font-weight: 700; color: var(--primary); font-size: 16px;">iMk LEDGER</div>
+        <div style="font-size: 11px; color: var(--text-dim);" id="drawer-user-info">Logged in User</div>
+      </div>
+      <button type="button" class="btn-sm btn-secondary" onclick="toggleMenuDrawer(false)">✕</button>
+    </div>
+
+    <div style="flex: 1; overflow-y: auto;">
+      <div class="drawer-nav-item active" onclick="switchView('ledger')">📊 Live Ledger</div>
+      <div class="drawer-nav-item" onclick="switchView('companies')">🏢 Companies Manager</div>
+      <div class="drawer-nav-item" onclick="switchView('profile')">👤 My Profile & KYC</div>
+      <div class="drawer-nav-item" id="menu-user-access" onclick="switchView('access')">🛡️ User Access & Verify</div>
+      <div class="drawer-nav-item" onclick="switchView('support')">💬 Support & Help</div>
+      <div class="drawer-nav-item" onclick="switchView('settings')">⚙️ Settings & System</div>
+    </div>
+
+    <div style="padding-top: 12px; border-top: 1px solid var(--card-border);">
+      <button type="button" class="btn btn-danger btn-sm" style="width: 100%;" onclick="doLogout()">Log Out</button>
+    </div>
+  </div>
+
+  <!-- ==================== LETTERHEAD TEMPLATE (FOR PRINTING) ==================== -->
   <div id="printable-letterhead" class="hidden" style="background:#fff; color:#000; padding:25px; position:relative; min-height:1000px; font-size:12px;">
     <div id="watermark-logo-container" style="position:absolute; top:35%; left:50%; transform:translate(-50%, -50%); opacity:0.07; z-index:0; pointer-events:none; text-align:center;">
       <img id="watermark-logo-img" src="" style="max-width:340px; max-height:340px; filter: grayscale(100%);">
@@ -441,6 +514,39 @@
     </div>
   </div>
 
+  <!-- ==================== AI FILE EXTRACTION MODAL ==================== -->
+  <div id="ai-extractor-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 style="color:var(--primary); margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+        ⚡ AI File Scanner & Extractor
+      </h3>
+      <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
+        Upload TT slips, bank receipts, or invoices (up to 100MB). AI extracts Date (DD/MM/YYYY), Amounts, and details directly into the ledger.
+      </p>
+
+      <div class="form-group">
+        <label>Select Files (Max 100MB Total)</label>
+        <input type="file" id="ai-file-input" multiple accept=".pdf,.png,.jpg,.jpeg,.csv,.xlsx,.txt" style="padding:8px;">
+        <div id="ai-size-text" style="font-size:11px; color:var(--text-dim); margin-top:4px;">0.00 MB / 100 MB</div>
+      </div>
+
+      <div id="ai-preview-box" class="hidden" style="margin-top:10px;">
+        <div style="font-size:11px; color:var(--success); font-weight:700; text-transform:uppercase; margin-bottom:6px;">
+          Extracted Results Preview:
+        </div>
+        <div id="ai-preview-items" style="max-height:160px; overflow-y:auto; background:var(--input-bg); border:1px solid var(--card-border); border-radius:8px; padding:8px; font-size:12px;"></div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('ai-extractor-modal').classList.add('hidden')">Cancel</button>
+        <button type="button" class="btn btn-ai" id="btn-run-ai-extract">Extract & Verify</button>
+      </div>
+      <button type="button" class="btn btn-success hidden" id="btn-apply-ai-results" style="margin-top:8px;">
+        ✓ File to Selected Company Ledger
+      </button>
+    </div>
+  </div>
+
   <!-- ==================== ADD COMPANY MODAL ==================== -->
   <div id="company-modal" class="modal-overlay hidden">
     <div class="modal-card">
@@ -451,7 +557,7 @@
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Contact Name</label>
+          <label>Contact Person</label>
           <input type="text" id="comp-contact" placeholder="Contact person">
         </div>
         <div class="form-group">
@@ -460,7 +566,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Company Logo</label>
+        <label>Company Logo Image</label>
         <input type="file" id="comp-logo-input" accept="image/*" style="padding:6px;">
       </div>
       <div style="display:flex; gap:8px; margin-top:12px;">
@@ -536,123 +642,276 @@
     </div>
   </div>
 
-  <!-- ==================== MAIN LEDGER VIEW ==================== -->
+  <!-- ==================== MAIN DASHBOARD CONTAINER ==================== -->
   <div id="view-app" class="hidden">
+    <!-- Top Navigation -->
     <div class="app-nav">
-      <div>
-        <div class="brand-title">iMk BLACK MARKET LEDGER</div>
-        <div style="font-size:11px; color:var(--text-dim);" id="app-user-role-badge">Admin Portal</div>
-      </div>
-      <div class="nav-actions">
-        <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓 Theme</button>
-        <button type="button" class="btn-sm btn-danger" id="btn-app-logout">Exit</button>
-      </div>
-    </div>
-
-    <!-- Undo & Redo Tool Bar -->
-    <div class="history-toolbar">
-      <div class="history-group">
-        <button type="button" class="btn-sm btn-secondary" id="btn-undo" title="Undo last action">⤺ Undo</button>
-        <button type="button" class="btn-sm btn-secondary" id="btn-redo" title="Redo action">⤻ Forward</button>
-      </div>
-      <div style="font-size:11px; color:var(--text-dim);" id="history-status">Ready</div>
-    </div>
-
-    <!-- Company Selector -->
-    <div class="company-bar">
-      <div class="company-meta">
-        <img id="active-company-logo" class="company-logo-img" src="" alt="logo">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button type="button" class="btn-sm btn-secondary" onclick="toggleMenuDrawer(true)" style="font-size:16px; padding:6px 12px;">☰ Menu</button>
         <div>
-          <select id="select-company" style="padding:6px 10px; font-weight:700; font-size:13px; max-width:180px;"></select>
-          <div style="font-size:10px; color:var(--text-dim);" id="active-company-contact">Attn: Contact</div>
+          <div class="brand-title">iMk BLACK MARKET LEDGER</div>
+          <div style="font-size:10px; color:var(--text-dim);" id="app-user-role-badge">Admin Portal</div>
         </div>
       </div>
-      <div style="display:flex; gap:6px;">
-        <button type="button" class="btn-sm btn-primary" id="btn-add-company-modal">+ Company</button>
-        <button type="button" class="btn-sm btn-secondary" id="btn-print-letterhead">📄 PDF Letterhead</button>
+      <div class="nav-actions">
+        <button type="button" class="btn-sm btn-ai" onclick="openAiExtractor()">⚡ AI Upload</button>
+        <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓</button>
       </div>
     </div>
 
-    <!-- Month Bar (Jan - Dec 2026) -->
-    <div class="month-bar" id="month-pill-container">
-      <div class="month-pill active" data-month="all">All Months 2026</div>
-      <div class="month-pill" data-month="1">Jan 2026</div>
-      <div class="month-pill" data-month="2">Feb 2026</div>
-      <div class="month-pill" data-month="3">Mar 2026</div>
-      <div class="month-pill" data-month="4">Apr 2026</div>
-      <div class="month-pill" data-month="5">May 2026</div>
-      <div class="month-pill" data-month="6">Jun 2026</div>
-      <div class="month-pill" data-month="7">Jul 2026</div>
-      <div class="month-pill" data-month="8">Aug 2026</div>
-      <div class="month-pill" data-month="9">Sep 2026</div>
-      <div class="month-pill" data-month="10">Oct 2026</div>
-      <div class="month-pill" data-month="11">Nov 2026</div>
-      <div class="month-pill" data-month="12">Dec 2026</div>
+    <!-- ================= VIEW 1: LIVE LEDGER ================= -->
+    <div id="section-ledger">
+      <!-- Undo / Redo Toolbar -->
+      <div class="history-toolbar">
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn-sm btn-secondary" id="btn-undo">⤺ Undo</button>
+          <button type="button" class="btn-sm btn-secondary" id="btn-redo">⤻ Forward</button>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);" id="history-status">Ready</div>
+      </div>
+
+      <!-- Company Selector Bar -->
+      <div class="company-bar">
+        <div class="company-meta">
+          <img id="active-company-logo" class="company-logo-img" src="" alt="logo">
+          <div>
+            <select id="select-company" style="padding:6px 10px; font-weight:700; font-size:13px; max-width:180px;"></select>
+            <div style="font-size:10px; color:var(--text-dim);" id="active-company-contact">Attn: Contact</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn-sm btn-secondary" id="btn-print-letterhead">📄 Print Letterhead</button>
+        </div>
+      </div>
+
+      <!-- Monthly Selector Bar (Jan - Dec 2026) -->
+      <div class="month-bar" id="month-pill-container">
+        <div class="month-pill active" data-month="all">All Months 2026</div>
+        <div class="month-pill" data-month="1">Jan 2026</div>
+        <div class="month-pill" data-month="2">Feb 2026</div>
+        <div class="month-pill" data-month="3">Mar 2026</div>
+        <div class="month-pill" data-month="4">Apr 2026</div>
+        <div class="month-pill" data-month="5">May 2026</div>
+        <div class="month-pill" data-month="6">Jun 2026</div>
+        <div class="month-pill" data-month="7">Jul 2026</div>
+        <div class="month-pill" data-month="8">Aug 2026</div>
+        <div class="month-pill" data-month="9">Sep 2026</div>
+        <div class="month-pill" data-month="10">Oct 2026</div>
+        <div class="month-pill" data-month="11">Nov 2026</div>
+        <div class="month-pill" data-month="12">Dec 2026</div>
+      </div>
+
+      <!-- Live Rate Bar -->
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="font-size:12px;">
+          Conversion: 1 QAR = <b id="live-rate-display" style="color:var(--success);">83.00 LKR</b>
+        </div>
+        <button type="button" class="btn-sm btn-secondary" onclick="fetchLiveRate()">⟳ Live Rate</button>
+      </div>
+
+      <!-- Overview Stats -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-label">Turnover (USD)</div>
+          <div class="stat-val" id="stat-usd">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total COM (LKR)</div>
+          <div class="stat-val" id="stat-lkr" style="color:var(--accent);">0.00 LKR</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Received (QR)</div>
+          <div class="stat-val" id="stat-rec" style="color:var(--danger);">0.00 QR</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Net Balance (QR)</div>
+          <div class="stat-val" id="stat-bal" style="color:var(--primary);">0.00 QR</div>
+        </div>
+      </div>
+
+      <!-- Actions Bar -->
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <button type="button" class="btn btn-primary" id="btn-add-entry" style="flex:2;">+ New Entry</button>
+        <button type="button" class="btn btn-secondary" id="btn-export-csv" style="flex:1;">CSV Export</button>
+      </div>
+
+      <!-- Cards Container -->
+      <div id="tx-cards-list"></div>
     </div>
 
-    <!-- Live Rate Banner -->
-    <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <div style="font-size:12px;">
-        Conversion: 1 QAR = <b id="live-rate-display" style="color:var(--success);">83.00 LKR</b>
+    <!-- ================= VIEW 2: COMPANIES MANAGER ================= -->
+    <div id="section-companies" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="font-size:16px; color:var(--primary);">🏢 Registered Companies</h3>
+        <button type="button" class="btn-sm btn-primary" id="btn-add-comp-trigger">+ Add Company</button>
       </div>
-      <button type="button" class="btn-sm btn-secondary" onclick="fetchLiveRate()">⟳ Live Rate</button>
+      <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
+        Only Administrator can delete or amend registered companies and their ledger records.
+      </p>
+      <div id="companies-list-container"></div>
     </div>
 
-    <!-- Overview Stats -->
-    <div class="stats-container">
-      <div class="stat-card">
-        <div class="stat-label">Turnover (USD)</div>
-        <div class="stat-val" id="stat-usd">$0.00</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total COM (LKR)</div>
-        <div class="stat-val" id="stat-lkr" style="color:var(--accent);">0.00 LKR</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Received (QR)</div>
-        <div class="stat-val" id="stat-rec" style="color:var(--danger);">0.00 QR</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Net Balance (QR)</div>
-        <div class="stat-val" id="stat-bal" style="color:var(--primary);">0.00 QR</div>
+    <!-- ================= VIEW 3: USER PROFILE & KYC ================= -->
+    <div id="section-profile" class="hidden">
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+          <div>
+            <h3 style="color:var(--primary); font-size:16px;">👤 User Profile & KYC Verification</h3>
+            <p style="font-size:11px; color:var(--text-dim);">Fill all fields completely to request Verified Member status.</p>
+          </div>
+          <span id="profile-status-badge" class="badge badge-warning">Unverified</span>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center; margin-bottom:14px;">
+          <img id="user-profile-avatar" src="" style="width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+          <div>
+            <input type="file" id="user-avatar-upload" accept="image/*" style="display:none;">
+            <button type="button" class="btn-sm btn-secondary" onclick="document.getElementById('user-avatar-upload').click()">Upload Photo</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="prof-name" placeholder="Your full name">
+          </div>
+          <div class="form-group">
+            <label>Profession</label>
+            <input type="text" id="prof-profession" placeholder="e.g. Trader, Merchant">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date of Birth (DD/MM/YYYY)</label>
+            <input type="text" id="prof-dob" placeholder="DD/MM/YYYY">
+          </div>
+          <div class="form-group">
+            <label>Country of Birth</label>
+            <input type="text" id="prof-cob" placeholder="e.g. Sri Lanka, Qatar">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Passport / ID Number</label>
+            <input type="text" id="prof-passport" placeholder="Passport number">
+          </div>
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" id="prof-phone" placeholder="Mobile with country code">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="prof-email" placeholder="Email address">
+        </div>
+
+        <div class="form-group">
+          <label>Current Residence / City</label>
+          <input type="text" id="prof-residence" placeholder="City, Country">
+        </div>
+
+        <div class="form-group">
+          <label>Permanent Residential Address</label>
+          <textarea id="prof-address" rows="2" placeholder="Full residential street address"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Social Media Links (WhatsApp, Telegram, LinkedIn, X)</label>
+          <input type="text" id="prof-social" placeholder="e.g. t.me/username, linkedin.com/in/username">
+        </div>
+
+        <button type="button" class="btn btn-primary" id="btn-save-profile" style="margin-top:10px;">
+          💾 Save & Submit KYC for Verification
+        </button>
       </div>
     </div>
 
-    <!-- Actions Bar -->
-    <div style="display:flex; gap:8px; margin-bottom:12px;">
-      <button type="button" class="btn btn-primary" id="btn-add-entry" style="flex:2;">+ New Entry</button>
-      <button type="button" class="btn btn-secondary" id="btn-export-csv" style="flex:1;">CSV Export</button>
+    <!-- ================= VIEW 4: USER ACCESS & APPROVAL (ADMIN) ================= -->
+    <div id="section-access" class="hidden">
+      <h3 style="font-size:16px; color:var(--primary); margin-bottom:6px;">🛡️ User Access & Verification Management</h3>
+      <p style="font-size:11px; color:var(--text-dim); margin-bottom:12px;">
+        Review member submitted KYC profiles. When approved, member receives the green Verified Member badge and unlocks ledger editing rights.
+      </p>
+      <div id="access-members-container"></div>
     </div>
 
-    <!-- Cards -->
-    <div id="tx-cards-list"></div>
+    <!-- ================= VIEW 5: SUPPORT & CONTACT ================= -->
+    <div id="section-support" class="hidden">
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:18px;">
+        <h3 style="color:var(--primary); font-size:16px; margin-bottom:8px;">💬 Official Support & Assistance</h3>
+        <p style="font-size:12px; color:var(--text-dim); line-height:1.5; margin-bottom:14px;">
+          For inquiries, password resets, duplicate transaction reviews, or partnership queries:
+        </p>
+        <div style="background:var(--input-bg); border:1px solid var(--card-border); border-radius:10px; padding:14px; margin-bottom:12px;">
+          <div style="font-size:10px; text-transform:uppercase; color:var(--text-dim);">Official Support Email</div>
+          <a href="mailto:info@ideas.limited" style="font-size:16px; font-weight:700; color:var(--primary); text-decoration:none;">info@ideas.limited</a>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);">
+          Portal maintained by <b>iMk Solutions</b>. All financial statements are computer-generated.
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= VIEW 6: SETTINGS & LOGS ================= -->
+    <div id="section-settings" class="hidden">
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:16px; margin-bottom:14px;">
+        <h3 style="color:var(--primary); font-size:16px; margin-bottom:10px;">⚙️ System Preferences</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div>
+            <b>Theme Appearance</b>
+            <div style="font-size:11px; color:var(--text-dim);">Auto sync with iOS System / Dark / Light</div>
+          </div>
+          <button type="button" class="btn-sm btn-secondary theme-toggle-btn">🌓 Toggle Theme</button>
+        </div>
+      </div>
+
+      <!-- Real-Time Activity Logs -->
+      <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="font-size:15px; color:var(--primary);">📜 Live Activity Logs</h3>
+          <button type="button" class="btn-sm btn-secondary" onclick="clearSystemLogs()">Clear Logs</button>
+        </div>
+        <div id="system-logs-container" style="max-height:260px; overflow-y:auto; font-size:11px;"></div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ==================== JAVASCRIPT ENGINE ==================== -->
   <script>
-    const KEY_COMPANIES = "imk_companies_db_v3";
-    const KEY_LEDGER = "imk_ledger_db_v3";
+    // Storage Keys
+    const KEY_COMPANIES = "imk_companies_db_v4";
+    const KEY_LEDGER = "imk_ledger_db_v4";
+    const KEY_MEMBERS = "imk_members_db_v4";
     const KEY_THEME = "imk_preferred_theme";
+    const KEY_LOGS = "imk_activity_logs_v4";
     const INACTIVITY_LIMIT_MS = 3 * 60 * 60 * 1000;
+    const MAX_UPLOAD_BYTES = 100 * 1024 * 1024; // 100 MB Limit
 
     let globalLiveRate = 83.00;
-    let currentUser = null;
+    let currentUser = null; // { role: 'admin' } or member object
     let selectedMonth = 'all';
     let currentCompanyId = "comp_default";
     let autoLogoutTimer = null;
+    let extractedTempEntries = [];
 
-    // Undo / Redo History Stacks
     let undoStack = [];
     let redoStack = [];
 
     const DEFAULT_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z'/%3E%3C/svg%3E";
+    const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
+    // Initial Seed Companies
     const DEFAULT_COMPANIES = [
       { id: "comp_default", name: "Client One Ltd", contact: "Thami Abdullah", phone: "+94 77 123 4567", logo: DEFAULT_LOGO },
       { id: "comp_dummy", name: "Aadil Global PTE", contact: "Mohamed Aadil", phone: "+65 8123 4567", logo: DEFAULT_LOGO },
       { id: "comp_kawloon", name: "Kawloon International", contact: "K. Rahman", phone: "+974 5512 3456", logo: DEFAULT_LOGO }
     ];
 
+    // Seed Ledger (January to December 2026 data structured with Transaction Numbers)
     const SEED_LEDGER = [
       { id: "tx_1", companyId: "comp_default", txNum: "TX-2026-101", date: "11/01/2026", details: "THUAN DAO", usd: 16000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "January Settlement", saved: true, createdBy: "admin", overrideDup: false },
       { id: "tx_2", companyId: "comp_dummy", txNum: "TX-2026-102", date: "20/02/2026", details: "AADIL GLOBAL PTE LTD", usd: 18000.0, comRate: 1.5, convRate: 83.0, received: 0, remarks: "February Delivery", saved: true, createdBy: "admin", overrideDup: false },
@@ -669,6 +928,7 @@
       { id: "tx_13", companyId: "comp_dummy", txNum: "TX-2026-113", date: "12/12/2026", details: "TFT TRADIN", usd: 18074.39, comRate: 1.5, convRate: 83.0, received: 0, remarks: "December Closing", saved: true, createdBy: "admin", overrideDup: false }
     ];
 
+    // Storage access
     function getCompanies() {
       try {
         const stored = localStorage.getItem(KEY_COMPANIES);
@@ -689,11 +949,36 @@
         if (current) {
           undoStack.push(current);
           if (undoStack.length > 50) undoStack.shift();
-          redoStack = []; // clear redo on new action
+          redoStack = [];
           updateHistoryButtons();
         }
       }
       localStorage.setItem(KEY_LEDGER, JSON.stringify(data));
+    }
+
+    function getMembers() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_MEMBERS) || "[]");
+      } catch(e) { return []; }
+    }
+    function saveMembers(m) { localStorage.setItem(KEY_MEMBERS, JSON.stringify(m)); }
+
+    function getLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_LOGS) || "[]");
+      } catch(e) { return []; }
+    }
+    function logActivity(action, details) {
+      const logs = getLogs();
+      const userStr = currentUser ? (currentUser.role === 'admin' ? 'Admin' : currentUser.name || currentUser.id) : 'Guest';
+      logs.unshift({
+        time: new Date().toLocaleString(),
+        user: userStr,
+        action: action,
+        details: details
+      });
+      localStorage.setItem(KEY_LOGS, JSON.stringify(logs.slice(0, 150)));
+      renderLogs();
     }
 
     function fmt(n) {
@@ -726,7 +1011,39 @@
       return parts.length >= 2 ? parseInt(parts[1]) || 0 : 0;
     }
 
-    // Theme Switcher
+    // Drawer Switcher
+    function toggleMenuDrawer(open) {
+      const drawer = document.getElementById("side-drawer");
+      const backdrop = document.getElementById("drawer-backdrop");
+      if (open) {
+        drawer.classList.add("open");
+        backdrop.classList.add("show");
+      } else {
+        drawer.classList.remove("open");
+        backdrop.classList.remove("show");
+      }
+    }
+
+    function switchView(viewName) {
+      toggleMenuDrawer(false);
+      const views = ['ledger', 'companies', 'profile', 'access', 'support', 'settings'];
+      views.forEach(v => {
+        const el = document.getElementById(`section-${v}`);
+        if (el) el.classList.toggle('hidden', v !== viewName);
+      });
+
+      document.querySelectorAll(".drawer-nav-item").forEach(item => {
+        item.classList.remove("active");
+      });
+
+      if (viewName === 'ledger') renderLedger();
+      if (viewName === 'companies') renderCompaniesManager();
+      if (viewName === 'profile') renderProfileKYC();
+      if (viewName === 'access') renderAccessManager();
+      if (viewName === 'settings') renderLogs();
+    }
+
+    // Theme Management
     function applyTheme(theme) {
       if (theme === 'system') {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -736,7 +1053,7 @@
       }
       localStorage.setItem(KEY_THEME, theme);
       document.querySelectorAll(".theme-toggle-btn").forEach(b => {
-        b.textContent = `🌓 Theme: ${theme.toUpperCase()}`;
+        b.textContent = `🌓 ${theme.toUpperCase()}`;
       });
     }
 
@@ -746,21 +1063,7 @@
       applyTheme(next);
     }
 
-    // Inactivity Guard
-    function resetInactivity() {
-      if (autoLogoutTimer) clearTimeout(autoLogoutTimer);
-      if (currentUser) {
-        autoLogoutTimer = setTimeout(() => {
-          currentUser = null;
-          document.getElementById("view-app").classList.add("hidden");
-          document.getElementById("view-auth").classList.remove("hidden");
-          alert("Session expired due to 3 hours of inactivity.");
-        }, INACTIVITY_LIMIT_MS);
-      }
-    }
-    ['touchstart', 'mousedown', 'keydown'].forEach(e => window.addEventListener(e, resetInactivity, { passive: true }));
-
-    // Currency Rate
+    // Currency API
     async function fetchLiveRate() {
       try {
         const res = await fetch("https://open.er-api.com/v6/latest/QAR");
@@ -783,7 +1086,6 @@
       return { isFullDup, isAmtDup };
     }
 
-    // History (Undo / Redo) Handlers
     function updateHistoryButtons() {
       document.getElementById("btn-undo").disabled = undoStack.length === 0;
       document.getElementById("btn-redo").disabled = redoStack.length === 0;
@@ -798,6 +1100,7 @@
       localStorage.setItem(KEY_LEDGER, previous);
       updateHistoryButtons();
       renderLedger();
+      logActivity("Undo", "Reverted last ledger action");
     }
 
     function handleRedo() {
@@ -808,6 +1111,7 @@
       localStorage.setItem(KEY_LEDGER, next);
       updateHistoryButtons();
       renderLedger();
+      logActivity("Forward", "Redid ledger action");
     }
 
     // Company Manager
@@ -832,7 +1136,7 @@
       }
     }
 
-    // Live Calculation Update WITHOUT destroying inputs (Keeps iOS Keyboard open!)
+    // Live Calculation Update (Continuous Keyboard Focus)
     function recalculateCardLive(cardElem, txId) {
       const ledger = getLedgerData();
       const tx = ledger.find(t => t.id === txId);
@@ -856,7 +1160,6 @@
       cardElem.querySelector('.calc-lkr').textContent = `${fmt(comLkr)} LKR`;
       cardElem.querySelector('.calc-qr').textContent = `${fmt(comQr)} QR`;
 
-      // Update Total Overall Stats
       updateOverallStats();
     }
 
@@ -888,22 +1191,28 @@
       document.getElementById("stat-bal").textContent = `${fmt(runningBal)} QR`;
     }
 
-    // Reset Specific Entry to Normal Default Rates
     function resetToDefault(txId) {
       const ledger = getLedgerData();
       const item = ledger.find(t => t.id === txId);
       if (!item) return;
 
-      saveLedgerData(ledger, true); // record undo
-
+      saveLedgerData(ledger, true);
       item.comRate = 1.5;
       item.convRate = globalLiveRate || 83.0;
 
       saveLedgerData(ledger, false);
       renderLedger();
+      logActivity("Default Reset", `Reset rates for Tx ${item.txNum}`);
     }
 
-    // Full Render (Only runs on initial load, month switch, or entry add/delete)
+    // Permission Checker: Verified Members or Admin Can Edit
+    function canUserEditLedger() {
+      if (!currentUser) return false;
+      if (currentUser.role === 'admin') return true;
+      return currentUser.isVerified === true;
+    }
+
+    // Render Ledger
     function renderLedger() {
       const allTx = getLedgerData();
       const filtered = allTx.filter(t => {
@@ -916,10 +1225,11 @@
       container.innerHTML = "";
 
       let runningBal = 0;
-
       if (filtered.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);">No transactions found for this selection.</div>`;
+        container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-dim);">No transactions found for this company and month.</div>`;
       }
+
+      const userCanEdit = canUserEditLedger();
 
       filtered.forEach((tx, idx) => {
         const usd = parseFloat(tx.usd) || 0;
@@ -937,7 +1247,7 @@
         card.id = `card_${tx.id}`;
 
         const isAdmin = currentUser && currentUser.role === 'admin';
-        const canEdit = isAdmin || (tx.createdBy === currentUser.id);
+        const canDeleteThis = isAdmin || (userCanEdit && tx.createdBy === currentUser.id);
 
         card.innerHTML = `
           <div class="tx-header">
@@ -948,53 +1258,53 @@
               ${dup.isAmtDup ? '<span class="badge badge-warning" style="margin-left:4px;">🟡 SAME AMOUNT</span>' : ''}
             </div>
             <div style="display:flex; gap:4px;">
-              ${canEdit ? `<button type="button" class="btn-sm btn-secondary" onclick="resetToDefault('${tx.id}')" title="Reset rate to default">↺ Default</button>` : ''}
+              ${userCanEdit ? `<button type="button" class="btn-sm btn-secondary" onclick="resetToDefault('${tx.id}')" title="Reset rate to default">↺ Default</button>` : ''}
               ${isAdmin && (dup.isFullDup || dup.isAmtDup) ? `<button type="button" class="btn-sm btn-secondary" onclick="overrideDuplicate('${tx.id}')">Override</button>` : ''}
-              ${canEdit ? `<button type="button" class="btn-sm btn-danger" onclick="deleteTx('${tx.id}')">✕</button>` : ''}
+              ${canDeleteThis ? `<button type="button" class="btn-sm btn-danger" onclick="deleteTx('${tx.id}')">✕</button>` : ''}
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>Transaction No.</label>
-              <input type="text" class="in-txNum" value="${tx.txNum || ''}" placeholder="TX-1001" ${canEdit ? '' : 'disabled'}>
+              <input type="text" class="in-txNum" value="${tx.txNum || ''}" placeholder="TX-1001" ${userCanEdit ? '' : 'disabled'}>
             </div>
             <div class="form-group">
               <label>Date (DD/MM/YYYY)</label>
-              <input type="text" class="in-date" value="${tx.date}" placeholder="DD/MM/YYYY" ${canEdit ? '' : 'disabled'}>
+              <input type="text" class="in-date" value="${tx.date}" placeholder="DD/MM/YYYY" ${userCanEdit ? '' : 'disabled'}>
             </div>
           </div>
 
           <div class="form-group full">
             <label>Details / Client</label>
-            <input type="text" class="in-details" value="${tx.details || ''}" placeholder="Client Name" ${canEdit ? '' : 'disabled'}>
+            <input type="text" class="in-details" value="${tx.details || ''}" placeholder="Client Name" ${userCanEdit ? '' : 'disabled'}>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>USD Amount</label>
-              <input type="number" step="any" class="in-usd" value="${tx.usd || ''}" placeholder="0.00" ${canEdit ? '' : 'disabled'}>
+              <input type="number" step="any" class="in-usd" value="${tx.usd || ''}" placeholder="0.00" ${userCanEdit ? '' : 'disabled'}>
             </div>
             <div class="form-group">
               <label>Commission Rate</label>
-              <input type="number" step="any" class="in-comRate" value="${tx.comRate ?? 1.5}" ${canEdit ? '' : 'disabled'}>
+              <input type="number" step="any" class="in-comRate" value="${tx.comRate ?? 1.5}" ${userCanEdit ? '' : 'disabled'}>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label>Conv. Rate (LKR/QR)</label>
-              <input type="number" step="any" class="in-convRate" value="${tx.convRate ?? globalLiveRate}" ${canEdit ? '' : 'disabled'}>
+              <input type="number" step="any" class="in-convRate" value="${tx.convRate ?? globalLiveRate}" ${userCanEdit ? '' : 'disabled'}>
             </div>
             <div class="form-group">
               <label>Received (QR)</label>
-              <input type="number" step="any" class="in-received" value="${tx.received || ''}" placeholder="0.00" ${canEdit ? '' : 'disabled'}>
+              <input type="number" step="any" class="in-received" value="${tx.received || ''}" placeholder="0.00" ${userCanEdit ? '' : 'disabled'}>
             </div>
           </div>
 
           <div class="form-group full">
             <label>Remarks</label>
-            <input type="text" class="in-remarks" value="${tx.remarks || ''}" placeholder="Notes" ${canEdit ? '' : 'disabled'}>
+            <input type="text" class="in-remarks" value="${tx.remarks || ''}" placeholder="Notes" ${userCanEdit ? '' : 'disabled'}>
           </div>
 
           <div class="calc-box">
@@ -1012,23 +1322,22 @@
             </div>
           </div>
 
-          ${canEdit ? `
+          ${userCanEdit ? `
           <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
-            <button type="button" class="btn-sm btn-primary btn-save-action" onclick="toggleSaveTx('${tx.id}')">
+            <button type="button" class="btn-sm btn-primary" onclick="toggleSaveTx('${tx.id}')">
               ${tx.saved ? '✓ Saved' : '💾 Save Entry'}
             </button>
           </div>` : ''}
         `;
 
-        // Attach Live In-Place Handlers: NO RE-RENDER, NO KEYBOARD CLOSING!
-        if (canEdit) {
+        if (userCanEdit) {
           const inUsd = card.querySelector('.in-usd');
           const inComRate = card.querySelector('.in-comRate');
           const inConvRate = card.querySelector('.in-convRate');
           const inReceived = card.querySelector('.in-received');
 
           [inUsd, inComRate, inConvRate, inReceived].forEach(input => {
-            input.addEventListener('focus', () => saveLedgerData(getLedgerData(), true)); // Snapshot before edit for undo
+            input.addEventListener('focus', () => saveLedgerData(getLedgerData(), true));
             input.addEventListener('input', () => recalculateCardLive(card, tx.id));
           });
 
@@ -1049,7 +1358,7 @@
       const ledger = getLedgerData();
       const item = ledger.find(t => t.id === id);
       if (item) {
-        saveLedgerData(ledger, true); // save history for undo
+        saveLedgerData(ledger, true);
         item[key] = val;
         saveLedgerData(ledger, false);
       }
@@ -1063,6 +1372,7 @@
         item.saved = !item.saved;
         saveLedgerData(ledger, false);
         renderLedger();
+        logActivity("Save", `Saved entry ${item.txNum}`);
       }
     }
 
@@ -1074,22 +1384,28 @@
         item.overrideDup = true;
         saveLedgerData(ledger, false);
         renderLedger();
+        logActivity("Override Duplicate", `Overrode duplicate warning on ${item.txNum}`);
       }
     }
 
     function deleteTx(id) {
       if (confirm("Delete this entry?")) {
         let ledger = getLedgerData();
-        saveLedgerData(ledger, true); // save history for undo
+        saveLedgerData(ledger, true);
         ledger = ledger.filter(t => t.id !== id);
         saveLedgerData(ledger, false);
         renderLedger();
+        logActivity("Delete", `Deleted entry id: ${id}`);
       }
     }
 
     function addNewEntry() {
+      if (!canUserEditLedger()) {
+        alert("Only Administrator or Verified Members can add entries to this ledger. Please complete KYC profile in Menu.");
+        return;
+      }
       const ledger = getLedgerData();
-      saveLedgerData(ledger, true); // save history for undo
+      saveLedgerData(ledger, true);
 
       const today = formatToDDMMYYYY(null);
       const newTx = {
@@ -1111,7 +1427,384 @@
       saveLedgerData(ledger, false);
       renderLedger();
       window.scrollTo({ top: 220, behavior: 'smooth' });
+      logActivity("Add Entry", `Added transaction ${newTx.txNum}`);
     }
+
+    // ================= VIEW 2: COMPANIES MANAGER =================
+    function renderCompaniesManager() {
+      const container = document.getElementById("companies-list-container");
+      const companies = getCompanies();
+      const isAdmin = currentUser && currentUser.role === 'admin';
+      container.innerHTML = "";
+
+      document.getElementById("btn-add-comp-trigger").style.display = isAdmin ? "inline-block" : "none";
+
+      companies.forEach(c => {
+        const card = document.createElement("div");
+        card.className = "tx-card";
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <img src="${c.logo || DEFAULT_LOGO}" style="width:44px; height:44px; border-radius:8px; object-fit:cover; border:1px solid var(--card-border);">
+              <div>
+                <b style="font-size:15px;">${c.name}</b>
+                <div style="font-size:11px; color:var(--text-dim);">Attn: ${c.contact} | Tel: ${c.phone}</div>
+              </div>
+            </div>
+            ${isAdmin ? `
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn-sm btn-secondary" onclick="editCompanyPrompt('${c.id}')">Edit</button>
+              <button type="button" class="btn-sm btn-danger" onclick="deleteCompany('${c.id}')">Delete</button>
+            </div>` : '<span class="badge badge-success">Active</span>'}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function editCompanyPrompt(id) {
+      if (!currentUser || currentUser.role !== 'admin') return;
+      const companies = getCompanies();
+      const comp = companies.find(c => c.id === id);
+      if (!comp) return;
+
+      const newName = prompt("Edit Company Name:", comp.name);
+      if (newName) comp.name = newName.trim();
+      const newContact = prompt("Edit Contact Person:", comp.contact);
+      if (newContact) comp.contact = newContact.trim();
+      const newPhone = prompt("Edit Contact Phone:", comp.phone);
+      if (newPhone) comp.phone = newPhone.trim();
+
+      saveCompanies(companies);
+      populateCompanySelector();
+      renderCompaniesManager();
+      logActivity("Edit Company", `Updated company ${comp.name}`);
+    }
+
+    function deleteCompany(id) {
+      if (!currentUser || currentUser.role !== 'admin') return;
+      if (confirm("Delete this company and its records?")) {
+        let companies = getCompanies();
+        companies = companies.filter(c => c.id !== id);
+        saveCompanies(companies);
+        populateCompanySelector();
+        renderCompaniesManager();
+        logActivity("Delete Company", `Deleted company id: ${id}`);
+      }
+    }
+
+    // ================= VIEW 3: PROFILE & KYC =================
+    function renderProfileKYC() {
+      if (!currentUser || currentUser.role === 'admin') {
+        document.getElementById("prof-name").value = "Administrator";
+        document.getElementById("prof-email").value = "admin@1994.info";
+        document.getElementById("profile-status-badge").className = "badge badge-verified";
+        document.getElementById("profile-status-badge").textContent = "✓ Root Admin Verified";
+        document.getElementById("user-profile-avatar").src = DEFAULT_AVATAR;
+        return;
+      }
+
+      document.getElementById("prof-name").value = currentUser.name || "";
+      document.getElementById("prof-profession").value = currentUser.profession || "";
+      document.getElementById("prof-dob").value = currentUser.dob || "";
+      document.getElementById("prof-cob").value = currentUser.cob || "";
+      document.getElementById("prof-passport").value = currentUser.passport || "";
+      document.getElementById("prof-phone").value = currentUser.phone || "";
+      document.getElementById("prof-email").value = currentUser.email || "";
+      document.getElementById("prof-residence").value = currentUser.residence || "";
+      document.getElementById("prof-address").value = currentUser.address || "";
+      document.getElementById("prof-social").value = currentUser.social || "";
+      document.getElementById("user-profile-avatar").src = currentUser.avatar || DEFAULT_AVATAR;
+
+      const badge = document.getElementById("profile-status-badge");
+      if (currentUser.isVerified) {
+        badge.className = "badge badge-verified";
+        badge.textContent = "✓ Verified Member";
+      } else if (currentUser.kycSubmitted) {
+        badge.className = "badge badge-warning";
+        badge.textContent = "⏳ Form Filled - Pending Admin Approval";
+      } else {
+        badge.className = "badge badge-danger";
+        badge.textContent = "Incomplete Profile";
+      }
+    }
+
+    document.getElementById("btn-save-profile").addEventListener("click", () => {
+      if (!currentUser || currentUser.role === 'admin') {
+        alert("Admin profile is already root verified.");
+        return;
+      }
+
+      currentUser.name = document.getElementById("prof-name").value.trim();
+      currentUser.profession = document.getElementById("prof-profession").value.trim();
+      currentUser.dob = formatToDDMMYYYY(document.getElementById("prof-dob").value.trim());
+      currentUser.cob = document.getElementById("prof-cob").value.trim();
+      currentUser.passport = document.getElementById("prof-passport").value.trim();
+      currentUser.phone = document.getElementById("prof-phone").value.trim();
+      currentUser.email = document.getElementById("prof-email").value.trim();
+      currentUser.residence = document.getElementById("prof-residence").value.trim();
+      currentUser.address = document.getElementById("prof-address").value.trim();
+      currentUser.social = document.getElementById("prof-social").value.trim();
+      currentUser.kycSubmitted = true;
+
+      // Update in members list
+      const members = getMembers();
+      const idx = members.findIndex(m => m.id === currentUser.id);
+      if (idx !== -1) members[idx] = currentUser;
+      else members.push(currentUser);
+      saveMembers(members);
+
+      renderProfileKYC();
+      alert("Profile KYC submitted successfully! It is now visible in the Admin Panel for approval.");
+      logActivity("KYC Submitted", `User ${currentUser.name} submitted full profile`);
+    });
+
+    document.getElementById("user-avatar-upload").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (currentUser) {
+          currentUser.avatar = evt.target.result;
+          document.getElementById("user-profile-avatar").src = currentUser.avatar;
+          const members = getMembers();
+          const idx = members.findIndex(m => m.id === currentUser.id);
+          if (idx !== -1) {
+            members[idx].avatar = currentUser.avatar;
+            saveMembers(members);
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // ================= VIEW 4: USER ACCESS & APPROVAL (ADMIN) =================
+    function renderAccessManager() {
+      const container = document.getElementById("access-members-container");
+      container.innerHTML = "";
+
+      if (!currentUser || currentUser.role !== 'admin') {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-dim);">Administrator access required to review KYC.</div>`;
+        return;
+      }
+
+      const members = getMembers();
+      if (members.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-dim);">No members registered yet.</div>`;
+        return;
+      }
+
+      members.forEach((m, idx) => {
+        const card = document.createElement("div");
+        card.className = "tx-card";
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <img src="${m.avatar || DEFAULT_AVATAR}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+              <div>
+                <b style="font-size:14px;">${m.name || 'Anonymous User'}</b>
+                <div style="font-size:11px; color:var(--primary);">${m.email} | ${m.phone}</div>
+                <div style="font-size:10px; color:var(--text-dim);">Passport: ${m.passport || 'Not Provided'}</div>
+              </div>
+            </div>
+            <div>
+              ${m.isVerified ? '<span class="badge badge-verified">✓ Verified Member</span>' : m.kycSubmitted ? '<span class="badge badge-warning">Form Filled - Needs Review</span>' : '<span class="badge badge-danger">Incomplete</span>'}
+            </div>
+          </div>
+
+          <div style="font-size:11px; color:var(--text-dim); margin-bottom:8px; line-height:1.4;">
+            <b>DOB:</b> ${m.dob || '-'} | <b>Country of Birth:</b> ${m.cob || '-'} | <b>Profession:</b> ${m.profession || '-'}<br/>
+            <b>Residence:</b> ${m.residence || '-'} | <b>Address:</b> ${m.address || '-'}<br/>
+            <b>Social Links:</b> ${m.social || '-'}
+          </div>
+
+          <div style="display:flex; gap:6px; border-top:1px solid var(--card-border); padding-top:8px;">
+            ${!m.isVerified ? `<button type="button" class="btn-sm btn-success" onclick="approveMemberKYC('${m.id}')">✓ Approve as Verified Member</button>` : `<button type="button" class="btn-sm btn-secondary" onclick="revokeMemberKYC('${m.id}')">Revoke Verification</button>`}
+            <button type="button" class="btn-sm btn-danger" onclick="deleteUserAccess('${m.id}')">Delete Member</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function approveMemberKYC(id) {
+      const members = getMembers();
+      const m = members.find(u => u.id === id);
+      if (m) {
+        m.isVerified = true;
+        saveMembers(members);
+        renderAccessManager();
+        logActivity("Verify Member", `Approved KYC for ${m.name} as Verified Member`);
+        alert(`${m.name} is now a Verified Member with ledger edit privileges.`);
+      }
+    }
+
+    function revokeMemberKYC(id) {
+      const members = getMembers();
+      const m = members.find(u => u.id === id);
+      if (m) {
+        m.isVerified = false;
+        saveMembers(members);
+        renderAccessManager();
+        logActivity("Revoke Verification", `Revoked verification for ${m.name}`);
+      }
+    }
+
+    function deleteUserAccess(id) {
+      if (confirm("Delete this user account completely?")) {
+        let members = getMembers();
+        members = members.filter(u => u.id !== id);
+        saveMembers(members);
+        renderAccessManager();
+        logActivity("Delete User", `Deleted user account id ${id}`);
+      }
+    }
+
+    // ================= VIEW 6: LOGS =================
+    function renderLogs() {
+      const container = document.getElementById("system-logs-container");
+      const logs = getLogs();
+      container.innerHTML = "";
+
+      if (logs.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-dim);">No system logs recorded yet.</div>`;
+        return;
+      }
+
+      logs.forEach(l => {
+        const row = document.createElement("div");
+        row.style.padding = "6px 0";
+        row.style.borderBottom = "1px solid var(--card-border)";
+        row.innerHTML = `<b>[${l.time}]</b> <span style="color:var(--primary);">${l.user}</span>: <b>${l.action}</b> - ${l.details}`;
+        container.appendChild(row);
+      });
+    }
+
+    function clearSystemLogs() {
+      if (confirm("Clear all activity logs?")) {
+        localStorage.removeItem(KEY_LOGS);
+        renderLogs();
+      }
+    }
+
+    // ================= AI FILE EXTRACTOR =================
+    function openAiExtractor() {
+      document.getElementById("ai-extractor-modal").classList.remove("hidden");
+      document.getElementById("ai-preview-box").classList.add("hidden");
+      document.getElementById("btn-apply-ai-results").classList.add("hidden");
+      document.getElementById("ai-file-input").value = "";
+      extractedTempEntries = [];
+    }
+
+    document.getElementById("ai-file-input").addEventListener("change", (e) => {
+      const files = Array.from(e.target.files);
+      let totalBytes = 0;
+      files.forEach(f => totalBytes += f.size);
+      const mb = (totalBytes / (1024 * 1024)).toFixed(2);
+      document.getElementById("ai-size-text").textContent = `${mb} MB / 100 MB Total`;
+      if (totalBytes > MAX_UPLOAD_BYTES) {
+        alert("Files exceed 100MB per-turn limit. Please select fewer files.");
+        e.target.value = "";
+      }
+    });
+
+    document.getElementById("btn-run-ai-extract").addEventListener("click", async () => {
+      const input = document.getElementById("ai-file-input");
+      const files = Array.from(input.files);
+      if (files.length === 0) { alert("Please choose at least one document or image."); return; }
+
+      const btn = document.getElementById("btn-run-ai-extract");
+      btn.textContent = "AI Scanning...";
+      btn.disabled = true;
+
+      extractedTempEntries = [];
+
+      for (let file of files) {
+        let entry = await parseFileAI(file);
+        extractedTempEntries.push(entry);
+      }
+
+      const previewBox = document.getElementById("ai-preview-items");
+      previewBox.innerHTML = "";
+      extractedTempEntries.forEach((e, i) => {
+        previewBox.innerHTML += `<div><b>#${i+1} ${e.details}</b> (${e.date}) | USD: $${fmt(e.usd)} | Received: ${fmt(e.received)} QR</div>`;
+      });
+
+      document.getElementById("ai-preview-box").classList.remove("hidden");
+      document.getElementById("btn-apply-ai-results").classList.remove("hidden");
+      btn.textContent = "Extract & Verify";
+      btn.disabled = false;
+      logActivity("AI File Scan", `Scanned ${files.length} document(s)`);
+    });
+
+    async function parseFileAI(file) {
+      return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target.result || "";
+          let usd = 0;
+          let received = 0;
+          let date = formatToDDMMYYYY(null);
+
+          const nums = String(content).match(/\b\d{1,3}(?:,\d{3})*(?:\.\d{2})?\b/g);
+          if (nums && nums.length > 0) {
+            const clean = nums.map(n => parseFloat(n.replace(/,/g, ''))).filter(n => n > 10);
+            if (clean[0]) usd = clean[0];
+            if (clean[1]) received = clean[1];
+          }
+
+          resolve({
+            id: "tx_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+            companyId: currentCompanyId,
+            txNum: "AI-" + Math.floor(1000 + Math.random() * 9000),
+            date: date,
+            details: file.name.replace(/\.[^/.]+$/, "").toUpperCase(),
+            usd: usd,
+            comRate: 1.5,
+            convRate: globalLiveRate,
+            received: received,
+            remarks: `Extracted from ${file.name}`,
+            saved: true,
+            createdBy: currentUser ? currentUser.role || currentUser.id : 'admin',
+            overrideDup: false
+          });
+        };
+        if (file.type.includes("text") || file.name.endsWith(".csv")) reader.readAsText(file);
+        else {
+          setTimeout(() => {
+            resolve({
+              id: "tx_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+              companyId: currentCompanyId,
+              txNum: "AI-" + Math.floor(1000 + Math.random() * 9000),
+              date: formatToDDMMYYYY(null),
+              details: file.name.replace(/\.[^/.]+$/, "").toUpperCase(),
+              usd: 0,
+              comRate: 1.5,
+              convRate: globalLiveRate,
+              received: 0,
+              remarks: `Extracted Slip: ${file.name}`,
+              saved: true,
+              createdBy: currentUser ? currentUser.role || currentUser.id : 'admin',
+              overrideDup: false
+            });
+          }, 350);
+        }
+      });
+    }
+
+    document.getElementById("btn-apply-ai-results").addEventListener("click", () => {
+      if (extractedTempEntries.length === 0) return;
+      const ledger = getLedgerData();
+      saveLedgerData(ledger, true);
+
+      extractedTempEntries.forEach(item => ledger.unshift(item));
+      saveLedgerData(ledger, false);
+
+      renderLedger();
+      document.getElementById("ai-extractor-modal").classList.add("hidden");
+      alert(`Successfully filed ${extractedTempEntries.length} entries into ${document.getElementById("select-company").selectedOptions[0].text}!`);
+      logActivity("AI Import", `Filed ${extractedTempEntries.length} entries into ledger`);
+    });
 
     // PDF / Letterhead Print
     function generateLetterheadPDF() {
@@ -1171,6 +1864,7 @@
       document.getElementById("print-stat-bal").textContent = `${fmt(runningBal)} QR`;
 
       window.print();
+      logActivity("Print Statement", `Generated PDF letterhead for ${activeComp.name}`);
     }
 
     // CSV Export
@@ -1195,7 +1889,7 @@
       a.click();
     }
 
-    // Company Creation
+    // Add Company
     document.getElementById("btn-save-company").addEventListener("click", () => {
       const name = document.getElementById("comp-name").value.trim();
       const contact = document.getElementById("comp-contact").value.trim() || "Account Manager";
@@ -1221,8 +1915,10 @@
           saveCompanies(companies);
           currentCompanyId = newComp.id;
           populateCompanySelector();
+          renderCompaniesManager();
           renderLedger();
           document.getElementById("company-modal").classList.add("hidden");
+          logActivity("New Company", `Created company ${newComp.name}`);
         };
         reader.readAsDataURL(logoInput.files[0]);
       } else {
@@ -1230,58 +1926,98 @@
         saveCompanies(companies);
         currentCompanyId = newComp.id;
         populateCompanySelector();
+        renderCompaniesManager();
         renderLedger();
         document.getElementById("company-modal").classList.add("hidden");
+        logActivity("New Company", `Created company ${newComp.name}`);
       }
     });
 
-    // Authentication Handlers
+    // Auth Handlers
     document.getElementById("btn-do-admin-login").addEventListener("click", () => {
       const u = document.getElementById("admin-email").value.trim();
       const p = document.getElementById("admin-password").value.trim();
       if (u === "admin@1994.info" && p === "07107107i") {
-        currentUser = { role: "admin" };
-        resetInactivity();
+        currentUser = { role: "admin", name: "Administrator", isVerified: true };
         document.getElementById("view-auth").classList.add("hidden");
         document.getElementById("view-app").classList.remove("hidden");
-        document.getElementById("app-user-role-badge").textContent = "Administrator (Root)";
+        document.getElementById("app-user-role-badge").textContent = "Administrator (Root Verified)";
+        document.getElementById("drawer-user-info").textContent = "Super Admin (Root)";
+        document.getElementById("menu-user-access").style.display = "flex";
         populateCompanySelector();
-        renderLedger();
+        switchView('ledger');
+        logActivity("Admin Login", "Administrator logged into portal");
       } else {
         alert("Invalid Username or Password.");
       }
     });
 
     document.getElementById("btn-do-member-login").addEventListener("click", () => {
-      const u = document.getElementById("member-login-id").value.trim();
+      const u = document.getElementById("member-login-id").value.trim().toLowerCase();
       const p = document.getElementById("member-login-pass").value.trim();
-      if (u && p) {
-        currentUser = { role: "member", id: "mem_" + u };
-        resetInactivity();
+      const members = getMembers();
+      const member = members.find(m => (m.email === u || m.phone === u) && m.password === p);
+
+      if (member) {
+        currentUser = member;
         document.getElementById("view-auth").classList.add("hidden");
         document.getElementById("view-app").classList.remove("hidden");
-        document.getElementById("app-user-role-badge").textContent = `Member Portal (${u})`;
+        document.getElementById("app-user-role-badge").textContent = member.isVerified ? "✓ Verified Member" : "Member Portal";
+        document.getElementById("drawer-user-info").textContent = `${member.name || u} (${member.isVerified ? 'Verified' : 'Unverified'})`;
+        document.getElementById("menu-user-access").style.display = "none";
         populateCompanySelector();
-        renderLedger();
+        switchView('ledger');
+        logActivity("Member Login", `Member ${member.name || u} signed in`);
       } else {
-        alert("Please enter your credentials.");
+        alert("Invalid credentials. If you haven't created an account, please tap Sign Up.");
       }
     });
 
-    document.getElementById("btn-app-logout").addEventListener("click", () => {
+    document.getElementById("btn-do-member-signup").addEventListener("click", () => {
+      const name = document.getElementById("signup-name").value.trim();
+      const email = document.getElementById("signup-email").value.trim().toLowerCase();
+      const phone = document.getElementById("signup-phone").value.trim();
+      const pass = document.getElementById("signup-pass").value;
+
+      if (!name || !email || !phone || !pass) { alert("Please complete all registration fields."); return; }
+      const members = getMembers();
+      if (members.some(m => m.email === email || m.phone === phone)) {
+        alert("Account already exists with this email or phone."); return;
+      }
+
+      const newMember = {
+        id: "usr_" + Date.now(),
+        name: name,
+        email: email,
+        phone: phone,
+        password: pass,
+        avatar: DEFAULT_AVATAR,
+        isVerified: false,
+        kycSubmitted: false
+      };
+      members.push(newMember);
+      saveMembers(members);
+      alert("Registration successful! You may now sign in and complete your KYC profile.");
+      document.getElementById("member-login-id").value = email;
+      document.getElementById("btn-sub-login").click();
+      logActivity("Member Signup", `New user registered: ${email}`);
+    });
+
+    function doLogout() {
       currentUser = null;
       document.getElementById("view-app").classList.add("hidden");
       document.getElementById("view-auth").classList.remove("hidden");
-    });
+      toggleMenuDrawer(false);
+      logActivity("Logout", "User signed out");
+    }
 
-    // Boot & Listeners
+    // App Initialization
     window.addEventListener("DOMContentLoaded", () => {
       const savedTheme = localStorage.getItem(KEY_THEME) || 'system';
       applyTheme(savedTheme);
 
       document.querySelectorAll(".theme-toggle-btn").forEach(b => b.addEventListener("click", cycleTheme));
 
-      // Undo / Redo Click Bindings
       document.getElementById("btn-undo").addEventListener("click", handleUndo);
       document.getElementById("btn-redo").addEventListener("click", handleRedo);
 
@@ -1313,7 +2049,7 @@
         document.getElementById("member-login-box").classList.add("hidden");
       });
 
-      // Month pills
+      // Month selector
       document.querySelectorAll(".month-pill").forEach(pill => {
         pill.addEventListener("click", () => {
           document.querySelectorAll(".month-pill").forEach(p => p.classList.remove("active"));
@@ -1323,14 +2059,13 @@
         });
       });
 
-      // Company change
       document.getElementById("select-company").addEventListener("change", (e) => {
         currentCompanyId = e.target.value;
         populateCompanySelector();
         renderLedger();
       });
 
-      document.getElementById("btn-add-company-modal").addEventListener("click", () => {
+      document.getElementById("btn-add-comp-trigger").addEventListener("click", () => {
         document.getElementById("company-modal").classList.remove("hidden");
       });
 
